@@ -1,0 +1,50 @@
+{
+    "quote": {
+        "column": {
+            "billink_fee_amount": true,
+            "base_billink_fee_amount": true,
+            "billink_fee_amount_tax": true,
+            "base_billink_fee_amount_tax": true
+        }
+    },
+    "quote_address": {
+        "column": {
+            "billink_fee_amount": true,
+            "base_billink_fee_amount": true,
+            "billink_fee_amount_tax": true,
+            "base_billink_fee_amount_tax": true
+        }
+    },
+    "sales_order": {
+        "column": {
+            "billink_fee_amount": true,
+            "base_billink_fee_amount": true,
+            "billink_fee_amount_tax": true,
+            "base_billink_fee_amount_tax": true
+        }
+    },
+    "sales_order_address": {
+        "column": {
+            "billink_fee_amount": true,
+            "base_billink_fee_amount": true,
+            "billink_fee_amount_tax": true,
+            "base_billink_fee_amount_tax": true
+        }
+    },
+    "sales_invoice": {
+        "column": {
+            "billink_fee_amount": true,
+            "base_billink_fee_amount": true,
+            "billink_fee_amount_tax": true,
+            "base_billink_fee_amount_tax": true
+        }
+    },
+    "sales_creditmemo": {
+        "column": {
+            "billink_fee_amount": true,
+            "base_billink_fee_amount": true,
+            "billink_fee_amount_tax": true,
+            "base_billink_fee_amount_tax": true
+        }
+    }
+}

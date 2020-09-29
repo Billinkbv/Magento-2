@@ -1,0 +1,232 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="BillinkPaymentConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">\Billink\Billink\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Billink\Billink\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Billink\Billink\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="pathPattern" xsi:type="const">Magento\Payment\Gateway\Config\Config::DEFAULT_PATH_PATTERN</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="BillinkLogger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">Billink\Billink\Logger\Handler\BillinkError</item>
+                <item name="critical" xsi:type="object">Billink\Billink\Logger\Handler\BillinkError</item>
+                <item name="debug" xsi:type="object">Billink\Billink\Logger\Handler\BillinkDebug</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillinkPaymentLogger" type="Magento\Payment\Model\Method\Logger">
+        <arguments>
+            <argument name="logger" xsi:type="object">BillinkLogger</argument>
+            <argument name="config" xsi:type="object">BillinkPaymentConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillinkPaymentFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">\Billink\Billink\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">\Billink\Billink\Block\Adminhtml\Order\Create\Billing\Method\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\ConfigurableInfo</argument>
+            <argument name="valueHandlerPool" xsi:type="object">BillinkPaymentValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">BillinkPaymentCommandPool</argument>
+            <argument name="validatorPool" xsi:type="object">BillinkPaymentValidatorPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillinkRequestClient" type="Billink\Billink\Gateway\Http\Client\Zend">
+        <arguments>
+            <argument name="logger" xsi:type="object">BillinkPaymentLogger</argument>
+            <argument name="converter" xsi:type="object">\Billink\Billink\Gateway\Converter\ResponseConverter</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillinkPaymentValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">BillinkPaymentConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="BillinkPaymentConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">BillinkPaymentConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillinkPaymentCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="order" xsi:type="string">BillinkPaymentOrderCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillinkPaymentCheckCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">BillinkPaymentCheckRequestComposite</argument>
+            <argument name="transferFactory" xsi:type="object">Billink\Billink\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">BillinkRequestClient</argument>
+            <argument name="handler" xsi:type="object">Billink\Billink\Gateway\Response\Check\Handler</argument>
+            <argument name="validator" xsi:type="object">Billink\Billink\Gateway\Validator\Check\ResponseValidator</argument>
+            <argument name="logger" xsi:type="object">BillinkLogger</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillinkPaymentOrderCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">BillinkPaymentOrderRequestComposite</argument>
+            <argument name="transferFactory" xsi:type="object">Billink\Billink\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">BillinkRequestClient</argument>
+            <argument name="handler" xsi:type="object">Billink\Billink\Gateway\Response\Order\Handler</argument>
+            <argument name="validator" xsi:type="object">Billink\Billink\Gateway\Validator\Order\ResponseValidator</argument>
+            <argument name="logger" xsi:type="object">BillinkLogger</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillinkPaymentStartWorkflowCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">BillinkPaymentStartWorkflowRequestComposite</argument>
+            <argument name="transferFactory" xsi:type="object">Billink\Billink\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">BillinkRequestClient</argument>
+            <argument name="handler" xsi:type="object">Billink\Billink\Gateway\Response\StartWorkflow\Handler</argument>
+            <argument name="validator" xsi:type="object">Billink\Billink\Gateway\Validator\StartWorkflow\ResponseValidator</argument>
+            <argument name="logger" xsi:type="object">BillinkLogger</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillinkPaymentCheckRequestComposite" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="clientData" xsi:type="string">Billink\Billink\Gateway\Request\ClientDataBuilder</item>
+                <item name="workflowData" xsi:type="string">Billink\Billink\Gateway\Request\WorkflowDataBuilder</item>
+                <item name="actionData" xsi:type="string">BillinkPaymentCheckActionBuilder</item>
+                <item name="companyData" xsi:type="string">Billink\Billink\Gateway\Request\CompanyDataBuilder</item>
+                <item name="deliveryAddressData" xsi:type="string">Billink\Billink\Gateway\Request\DeliveryAddressDataBuilder</item>
+                <item name="customerData" xsi:type="string">Billink\Billink\Gateway\Request\CustomerDataBuilder</item>
+                <item name="orderData" xsi:type="string">Billink\Billink\Gateway\Request\OrderDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="BillinkPaymentCheckActionBuilder" type="Billink\Billink\Gateway\Request\ActionDataBuilder">
+        <arguments>
+            <argument name="action" xsi:type="string">Check</argument>
+            <argument name="service" xsi:type="const">\Billink\Billink\Gateway\Helper\Gateway::SERVICE_CHECK</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillinkPaymentOrderRequestComposite" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="clientData" xsi:type="string">Billink\Billink\Gateway\Request\ClientDataBuilder</item>
+                <item name="workflowData" xsi:type="string">Billink\Billink\Gateway\Request\WorkflowDataBuilder</item>
+                <item name="actionData" xsi:type="string">BillinkPaymentOrderActionBuilder</item>
+                <item name="companyData" xsi:type="string">Billink\Billink\Gateway\Request\CompanyDataBuilder</item>
+                <item name="customerData" xsi:type="string">Billink\Billink\Gateway\Request\CustomerDataBuilder</item>
+                <item name="orderData" xsi:type="string">Billink\Billink\Gateway\Request\OrderDataBuilder</item>
+                <item name="deliveryAddressData" xsi:type="string">Billink\Billink\Gateway\Request\DeliveryAddressDataBuilder</item>
+                <item name="orderItemsData" xsi:type="string">Billink\Billink\Gateway\Request\OrderItemsDataBuilder</item>
+                <item name="validationData" xsi:type="string">Billink\Billink\Gateway\Request\ValidationDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="BillinkPaymentOrderActionBuilder" type="Billink\Billink\Gateway\Request\ActionDataBuilder">
+        <arguments>
+            <argument name="action" xsi:type="string">Order</argument>
+            <argument name="service" xsi:type="const">\Billink\Billink\Gateway\Helper\Gateway::SERVICE_ORDER</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillinkPaymentStartWorkflowRequestComposite" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="clientData" xsi:type="string">Billink\Billink\Gateway\Request\ClientDataBuilder</item>
+                <item name="actionData" xsi:type="string">BillinkPaymentStartWorkflowActionBuilder</item>
+                <item name="invoiceData" xsi:type="string">Billink\Billink\Gateway\Request\InvoiceDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="BillinkPaymentStartWorkflowActionBuilder" type="Billink\Billink\Gateway\Request\ActionDataBuilder">
+        <arguments>
+            <argument name="action" xsi:type="string">activate order</argument>
+            <argument name="service" xsi:type="const">\Billink\Billink\Gateway\Helper\Gateway::SERVICE_START_WORKFLOW</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillinkPaymentValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="global" xsi:type="string">BillinkPaymentOrderDataValidator</item>
+                <item name="country" xsi:type="string">Billink\Billink\Gateway\Validator\CountryValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="BillinkPaymentOrderDataValidator" type="Billink\Billink\Gateway\Validator\OrderDataValidator">
+        <arguments>
+            <argument name="checkCommand" xsi:type="object">BillinkPaymentCheckCommand</argument>
+            <argument name="orderCommand" xsi:type="object">BillinkPaymentOrderCommand</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillinkShipmentObserver" type="Billink\Billink\Observer\ShipmentObserver">
+        <arguments>
+            <argument name="startWorkflowCommand" xsi:type="object">BillinkPaymentStartWorkflowCommand</argument>
+        </arguments>
+    </virtualType>
+
+    <preference for="Billink\Billink\Gateway\Converter\Order\ConverterInterface" type="Billink\Billink\Gateway\Converter\Order\ItemsConverter" />
+    <preference for="Billink\Billink\Model\Billink\Request\Order\ItemInterface" type="Billink\Billink\Model\Billink\Request\Order\Item" />
+    <preference for="Billink\Billink\Model\VersionCheckerInterface" type="Billink\Billink\Model\VersionChecker" />
+
+    <type name="Magento\Quote\Model\Quote\TotalsCollector">
+        <plugin name="Billink_Billink_Plugin_OrderTotalsPlugin" type="Billink\Billink\Plugin\TotalsCollectorPlugin" />
+    </type>
+
+    <type name="Magento\Sales\Model\Order\Email\Sender\InvoiceSender">
+        <plugin name="Billink\Billink\Plugin\InvoiceEmailSenderPlugin" type="Billink\Billink\Plugin\InvoiceEmailSenderPlugin" />
+    </type>
+
+    <type name="\Billink\Billink\Gateway\Request\DeliveryAddressDataBuilder">
+        <arguments>
+            <argument name="checkoutSession" xsi:type="object">Magento\Checkout\Model\Session</argument>
+        </arguments>
+    </type>
+
+    <type name="\Billink\Billink\Controller\Adminhtml\Version\Check">
+        <arguments>
+            <argument name="logger" xsi:type="object">BillinkLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="\Billink\Billink\Gateway\Converter\ResponseConverter">
+        <arguments>
+            <argument name="logger" xsi:type="object">BillinkLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="\Billink\Billink\Gateway\Response\StartWorkflow\Handler">
+        <arguments>
+            <argument name="logger" xsi:type="object">BillinkLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="\Billink\Billink\Observer\ShipmentObserver">
+        <arguments>
+            <argument name="logger" xsi:type="object">BillinkLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="\Billink\Billink\Gateway\Validator\OrderDataValidator">
+        <arguments>
+            <argument name="logger" xsi:type="object">BillinkLogger</argument>
+        </arguments>
+    </type>
+</config>

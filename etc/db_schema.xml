@@ -1,0 +1,39 @@
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="quote" resource="checkout" comment="Sales Flat Quote">
+        <column xsi:type="decimal" name="billink_fee_amount" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Amount"/>
+        <column xsi:type="decimal" name="base_billink_fee_amount" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Base Amount"/>
+        <column xsi:type="decimal" name="billink_fee_amount_tax" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Amount Tax"/>
+        <column xsi:type="decimal" name="base_billink_fee_amount_tax" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Base Amount Tax"/>
+    </table>
+    <table name="quote_address" resource="checkout" comment="Sales Flat Quote Address">
+        <column xsi:type="decimal" name="billink_fee_amount" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Amount"/>
+        <column xsi:type="decimal" name="base_billink_fee_amount" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Base Amount"/>
+        <column xsi:type="decimal" name="billink_fee_amount_tax" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Amount Tax"/>
+        <column xsi:type="decimal" name="base_billink_fee_amount_tax" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Base Amount Tax"/>
+    </table>
+    <table name="sales_order" resource="sales" comment="Sales Flat Order">
+        <column xsi:type="decimal" name="billink_fee_amount" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Amount"/>
+        <column xsi:type="decimal" name="base_billink_fee_amount" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Base Amount"/>
+        <column xsi:type="decimal" name="billink_fee_amount_tax" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Amount Tax"/>
+        <column xsi:type="decimal" name="base_billink_fee_amount_tax" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Base Amount Tax"/>
+    </table>
+    <table name="sales_order_address" resource="sales" comment="Sales Flat Order Address">
+        <column xsi:type="decimal" name="billink_fee_amount" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Amount"/>
+        <column xsi:type="decimal" name="base_billink_fee_amount" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Base Amount"/>
+        <column xsi:type="decimal" name="billink_fee_amount_tax" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Amount Tax"/>
+        <column xsi:type="decimal" name="base_billink_fee_amount_tax" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Base Amount Tax"/>
+    </table>
+    <table name="sales_invoice" resource="sales" comment="Sales Flat Invoice">
+        <column xsi:type="decimal" name="billink_fee_amount" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Amount"/>
+        <column xsi:type="decimal" name="base_billink_fee_amount" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Base Amount"/>
+        <column xsi:type="decimal" name="billink_fee_amount_tax" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Amount Tax"/>
+        <column xsi:type="decimal" name="base_billink_fee_amount_tax" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Base Amount Tax"/>
+    </table>
+    <table name="sales_creditmemo" resource="sales" comment="Sales Flat Creditmemo">
+        <column xsi:type="decimal" name="billink_fee_amount" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Amount"/>
+        <column xsi:type="decimal" name="base_billink_fee_amount" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Base Amount"/>
+        <column xsi:type="decimal" name="billink_fee_amount_tax" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Amount Tax"/>
+        <column xsi:type="decimal" name="base_billink_fee_amount_tax" scale="4" precision="12" unsigned="false" nullable="true" comment="Billink Fee Base Amount Tax"/>
+    </table>
+</schema>

@@ -1,0 +1,315 @@
+<?php
+/**
+ * @var Billink\Billink\Block\Adminhtml\Order\Create\Billing\Method\Form $block
+ */
+?>
+<?php $code = $block->escapeHtml($block->getMethodCode()); ?>
+<fieldset class="admin__fieldset payment-method" id="payment_form_<?php /* @noEscape */
+echo $code; ?>" style="display: none">
+    <div class="field-type radio admin__field _required">
+        <span class="admin__field-label">
+            <span><?php echo __('Workflow Type'); ?></span>
+        </span>
+        <div class="admin__field-control">
+            <?php foreach ($block->getCustomerTypes() as $customerType): ?>
+                <div>
+                    <input type="radio" id="<?php /* @noEscape */
+                    echo $code; ?>_customer_type_<?php echo strtolower($customerType['value']); ?>"
+                           name="payment[<?php echo $code; ?>_customer_type]"
+                           value="<?php echo $customerType['value']; ?>"
+                           class="admin__control-radio required-entry"
+                           data-type-value="<?php /* @noEscape */
+                           echo strtolower($customerType['value']); ?>"
+                        <?php if (strtolower($customerType['value'] == $block->getInfoData($code . '_customer_type'))): ?>
+                            checked
+                        <?php endif; ?>
+                    />
+                    <label class="admin__field-label"
+                           for="<?php /* @noEscape */
+                           echo $code; ?>_customer_type_<?php echo strtolower($customerType['value']); ?>">
+                        <span><?php echo $block->escapeHtml($customerType['label']); ?></span>
+                    </label>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+    <div class="field-type admin__field _required field-type-b" style="display: none">
+        <label class="admin__field-label" for="<?php /* @noEscape */
+        echo $code; ?>_chamber_of_commerce">
+            <span><?php echo $block->escapeHtml(__('Chamber of commerce')); ?></span>
+        </label>
+        <div class="admin__field-control">
+            <input type="text" id="<?php /* @noEscape */
+            echo $code; ?>_chamber_of_commerce" name="payment[<?php /* @noEscape */
+            echo $code; ?>_chamber_of_commerce]"
+                   title="<?php echo $block->escapeHtml(__('Chamber of commerce')); ?>" class="admin__control-text"/>
+        </div>
+    </div>
+
+    <div class="field-type radio admin__field _required field-type-p" style="display: none">
+        <span class="admin__field-label">
+            <span><?php echo __('Sex'); ?></span>
+        </span>
+        <div class="admin__field-control">
+            <div>
+                <input type="radio" id="<?php /* @noEscape */
+                echo $code; ?>_customer_sex_m"
+                       name="payment[<?php /* @noEscape */
+                       echo $code; ?>_customer_sex]" value="M"
+                       class="admin__control-radio"
+                    <?php if ('M' == $block->getInfoData($code . '_customer_sex')): ?>
+                        checked
+                    <?php endif; ?>
+                />
+                <label class="admin__field-label"
+                       for="<?php /* @noEscape */
+                       echo $code; ?>_customer_sex_m">
+                    <span><?php echo $block->escapeHtml(__('Man')); ?></span>
+                </label>
+            </div>
+            <div>
+                <input type="radio" id="<?php /* @noEscape */
+                echo $code; ?>_customer_sex_f"
+                       name="payment[<?php /* @noEscape */
+                       echo $code; ?>_customer_sex]" value="F"
+                       class="admin__control-radio"
+                    <?php if ('F' == $block->getInfoData($code . '_customer_sex')): ?>
+                        checked
+                    <?php endif; ?>
+                />
+                <label class="admin__field-label"
+                       for="<?php /* @noEscape */
+                       echo $code; ?>_customer_sex_f">
+                    <span><?php echo $block->escapeHtml(__('Female')); ?></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="field-type admin__field date _required field-type-p" style="display: none">
+        <label class="admin__field-label" for="<?php echo $code; ?>_birthdate">
+            <span><?php echo $block->escapeHtml(__('Birthdate')); ?></span>
+        </label>
+        <div class="admin__field-control">
+            <input type="text" id="<?php /* @noEscape */
+            echo $code; ?>_birthdate" name="payment[<?php /* @noEscape */
+            echo $code; ?>_customer_birthdate]"
+                   title="<?php echo $block->escapeHtml(__('Birthdate')); ?>" class="admin__control-text"
+                   value="<?php echo $block->getInfoData($code . '_customer_birthdate'); ?>"
+            />
+        </div>
+    </div>
+    <div class="field-type admin__field required _required">
+        <label class="admin__field-label" for="<?php /* @noEscape */
+        echo $code; ?>_street_name">
+            <span><?php echo $block->escapeHtml(__('Street name')); ?></span>
+        </label>
+        <div class="admin__field-control">
+            <input type="text" id="<?php /* @noEscape */
+            echo $code; ?>_street_name" name="payment[<?php /* @noEscape */
+            echo $code; ?>_street]"
+                   title="<?php echo $block->escapeHtml(__('Street name')); ?>"
+                   class="required-entry admin__control-text"
+                   value="<?php echo $block->getInfoData($code . '_street'); ?>"
+            />
+        </div>
+    </div>
+
+    <div class="field-type admin__field _required">
+        <label class="admin__field-label" for="<?php /* @noEscape */
+        echo $code; ?>_house_number">
+            <span><?php echo $block->escapeHtml(__('House number')); ?></span>
+        </label>
+        <div class="admin__field-control">
+            <input type="text" id="<?php /* @noEscape */
+            echo $code; ?>_house_number" name="payment[<?php /* @noEscape */
+            echo $code; ?>_house_number]"
+                   title="<?php echo $block->escapeHtml(__('House number')); ?>"
+                   class="required-entry admin__control-text"
+                   value="<?php echo $block->getInfoData($code . '_house_number'); ?>"
+            />
+        </div>
+    </div>
+
+    <div class="field-type admin__field">
+        <label class="admin__field-label" for="<?php /* @noEscape */
+        echo $code; ?>_house_extension">
+            <span><?php echo $block->escapeHtml(__('House extension')); ?></span>
+        </label>
+        <div class="admin__field-control">
+            <input type="text" id="<?php /* @noEscape */
+            echo $code; ?>_house_extension" name="payment[<?php /* @noEscape */
+            echo $code; ?>_house_extension]"
+                   title="<?php echo $block->escapeHtml(__('House extension')); ?>" class="admin__control-text"
+                   value="<?php echo $block->getInfoData($code . '_house_extension'); ?>"
+            />
+        </div>
+    </div>
+
+    <h3><?php echo $block->escapeHtml(__('Delivery Address')); ?></h3>
+
+    <div class="field-type admin__field">
+        <label class="admin__field-label" for="<?php /* @noEscape */
+        echo $code; ?>_delivery_street_name">
+            <span><?php echo $block->escapeHtml(__('Delivery street name')); ?></span>
+        </label>
+        <div class="admin__field-control">
+            <input type="text" id="<?php /* @noEscape */
+            echo $code; ?>_delivery_street_name" name="payment[<?php /* @noEscape */
+            echo $code; ?>_delivery_address_street]"
+                   title="<?php echo $block->escapeHtml(__('Delivery street name')); ?>" class="admin__control-text"
+                   value="<?php echo $block->getInfoData($code . '_delivery_address_street'); ?>"
+            />
+        </div>
+    </div>
+
+    <div class="field-type admin__field">
+        <label class="admin__field-label" for="<?php /* @noEscape */
+        echo $code; ?>_delivery_house_number">
+            <span><?php echo $block->escapeHtml(__('Delivery house number')); ?></span>
+        </label>
+        <div class="admin__field-control">
+            <input type="text" id="<?php /* @noEscape */
+            echo $code; ?>_delivery_house_number" name="payment[<?php /* @noEscape */
+            echo $code; ?>_delivery_address_housenumber]"
+                   title="<?php echo $block->escapeHtml(__('Delivery house number')); ?>" class="admin__control-text"
+                   value="<?php echo $block->getInfoData($code . '_delivery_address_housenumber'); ?>"
+            />
+        </div>
+    </div>
+
+    <div class="field-type admin__field">
+        <label class="admin__field-label" for="<?php /* @noEscape */
+        echo $code; ?>_delivery_house_extension">
+            <span><?php echo $block->escapeHtml(__('Delivery house Extension')); ?></span>
+        </label>
+        <div class="admin__field-control">
+            <input type="text" id="<?php /* @noEscape */
+            echo $code; ?>_delivery_house_extension" name="payment[<?php /* @noEscape */
+            echo $code; ?>_delivery_address_housenumber_extension]"
+                   title="<?php echo $block->escapeHtml(__('Delivery house Extension')); ?>"
+                   value="<?php echo $block->getInfoData($code . '_delivery_address_housenumber_extension'); ?>"
+                   class="admin__control-text"/>
+        </div>
+    </div>
+    <input type="hidden" name="payment[<?php echo $code; ?>_validate_order]" value="1"/>
+</fieldset>
+<script type="text/javascript">
+    var order = window.order;
+    require(['jquery', "mage/calendar"], function ($) {
+        var billinkPaymentForm = {
+            currentType: 'p',
+            methodCode: '<?php /* @noEscape */ echo $code;?>',
+            init: function () {
+                this.initEvents();
+                this.initDatepicker();
+                this.initType();
+                this.resetFields();
+            },
+
+            initType: function () {
+                if ($('#' + this.methodCode + '_customer_type_b:checked, #' + this.methodCode + '_customer_type_p:checked').length === 0) {
+                    if ($('#order-billing_address_vat_id').val().length > 1 || $('#order-billing_address_company').val().length > 1) {
+                        this.currentType = 'b'
+                        $('#' + this.methodCode + '_customer_type_b').prop("checked", true);
+                    } else {
+                        this.currentType = 'p'
+                        $('#' + this.methodCode + '_customer_type_p').prop("checked", true);
+                    }
+                    this.resetFields();
+                }
+            },
+
+            initEvents: function () {
+                var self = this;
+                $('input[name^="payment[' + this.methodCode + '_customer_type]"').on('change', (e) => {
+                    this.currentType = $(e.currentTarget).data('type-value');
+
+                    setTimeout(function () {
+                        order.loadArea(['totals'], true, {});
+                    }, 500);
+
+                    self.resetFields();
+                });
+            },
+
+            initDatepicker: function () {
+                $('.date input').datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    yearRange: "-100:+00",
+                    dateFormat: "yy-mm-dd"
+                })
+            },
+
+            initAddress: function () {
+                let addresses = {billing: [], shipping: []};
+                $("[data-ui-id*=-address-fieldset-element-form-field-street] input").each(function () {
+                    if (this.name.indexOf("[billing_address]") !== -1) {
+                        addresses.billing.push($(this).val());
+                    } else {
+                        addresses.shipping.push($(this).val());
+                    }
+                });
+                addresses.billing = this.getSplitAddres(addresses.billing.join(" ").trim());
+                addresses.shipping = this.getSplitAddres(addresses.shipping.join(" ").trim());
+                ['_street_name', '_house_number', '_house_extension'].forEach((e, idx) => {
+                    let el = $('#' + this.methodCode + e)
+                    if (el.val() === '') {
+                        el.val(addresses.billing[idx])
+                    }
+                });
+                ['_delivery_street_name', '_delivery_house_number', '_delivery_house_extension'].forEach((e, idx) => {
+                    let el = $('#' + this.methodCode + e)
+                    if (el.val() === '') {
+                        el.val(addresses.shipping[idx])
+                    }
+                });
+
+                return true;
+            },
+
+            getSplitAddres: function (address) {
+                let regex = /^(\d*[\wäöüß\d '\-\.]+)[,\s]+(\d+)\s*([\wäöüß\d\-\/]*)$/i
+                let match = address.match(regex);
+                if (match) {
+                    match.shift()
+                    return match;
+                }
+
+                // Could not find proper numbers/street
+                return ["","",""]
+            },
+            initBusiness: function () {
+                // Load company
+                let fields = [...new Set(
+                    $("[data-ui-id*=-address-fieldset-element-form-field-company] input")
+                        .map(function () {
+                            return $(this).val();
+                        })
+                        .get()
+                )];
+                if (fields.length) {
+                    $('#' + this.methodCode + '_chamber_of_commerce').val(fields.shift())
+                }
+            },
+            initPrivate: function () {
+            },
+
+            resetFields: function () {
+                $('.field-type-p, .field-type-b').hide();
+                $('.field-type-' + this.currentType).show();
+
+                this.initAddress();
+                if (this.currentType === 'b') {
+                    this.initBusiness();
+                } else {
+                    this.initPrivate();
+                }
+            }
+        }
+
+        billinkPaymentForm.init();
+    })
+</script>

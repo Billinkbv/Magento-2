@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Sales:etc/sales.xsd">
+    <section name="quote">
+        <group name="totals">
+            <item name="billink_fee" instance="Billink\Billink\Model\Total\Quote\BillinkFee" sort_order="900"/>
+        </group>
+    </section>
+    <section name="order_invoice">
+        <group name="totals">
+            <item name="billink_fee" instance="Billink\Billink\Model\Total\Invoice\BillinkFee" sort_order="900"/>
+        </group>
+    </section>
+</config>

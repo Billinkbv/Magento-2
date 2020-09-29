@@ -1,0 +1,104 @@
+#  Check service error translations
+"billink_check_error_code_501","Billink heeft uw aanvraag afgekeurd. Neem contact op met billink via www.billink.nl of kies een andere betaalmethode."
+"billink_check_error_code_402","Het telefoonnummer is ongeldig"
+"billink_check_error_code_406","Maak een keuze tussen particulier en bedrijf"
+"billink_check_error_code_407","Maak een keuze tussen particulier en bedrijf"
+"billink_check_error_code_408","Bedrijfsnaam ontbreekt"
+"billink_check_error_code_410","Achternaam ontbreekt"
+"billink_check_error_code_411","KvK ontbreekt"
+"billink_check_error_code_412","Voornaam ontbreekt"
+"billink_check_error_code_414","Huisnummer ontbreekt"
+"billink_check_error_code_415","Postcode ontbreekt"
+"billink_check_error_code_416","Verkeerde postcode formaat"
+"billink_check_error_code_417","Telefoonummer ontbreekt, pas dit aan in uw account (rechts boven)"
+"billink_check_error_code_418","Ongeldige geboortedatum"
+"billink_check_error_code_422","Minimale leeftijd voor bestellingen via Billink is 16 jaarm"
+"billink_check_error_code_607","Opdrachtgever of klant niet gevonden"
+#  Order service error translations
+"billink_order_error_code_406","Maak een keuze tussen particulier en bedrijf"
+"billink_order_error_code_407","Maak een keuze tussen particulier en bedrijf"
+"billink_order_error_code_408","Bedrijfsnaam ontbreekt"
+"billink_order_error_code_410","Achternaam ontbreekt"
+"billink_order_error_code_441","Voornaam ontbreekt"
+"billink_order_error_code_411","Maak een keuze tussen man of vrouw"
+"billink_order_error_code_412","Maak een keuze tussen man of vrouw"
+"billink_order_error_code_413","Straat ontbreekt"
+"billink_order_error_code_414","Huisnummer ontbreekt"
+"billink_order_error_code_415","Postcode ontbreekt"
+"billink_order_error_code_415","Stad ontbreekt"
+"billink_order_error_code_417","Telefoonummer ontbreekt, pas dit aan in uw account (rechts boven)"
+"billink_order_error_code_418","Email ontbreekt"
+"billink_order_error_code_420","Landcode is ongeldig"
+"billink_order_error_code_425","Rekeningnummer ontbreekt"
+"billink_order_error_code_426","Naam van rekeninghouder ontbreekt"
+"billink_order_error_code_427","KvK ontbreekt"
+"billink_order_error_code_429","KvK is ongeldig"
+"billink_order_error_code_443","Rekeningnummer is ongeldig"
+
+"Workflow Type","Workflow Type"
+From,From
+To,To
+Amount,Amount
+Type,Type
+Number,Number
+"Max Amount","Max Amount"
+"With Check?","With Check?"
+Yes,Yes
+No,No
+"Payment Fee","Payment Fee"
+"Missing UUID","Missing UUID"
+Private,Private
+Business,Business
+"Please contact your system administrator with a code 5001","Please contact your system administrator with a code 5001"
+"Please contact your system administrator with a code 5002","Please contact your system administrator with a code 5002"
+"Please contact your system administrator with a code 5003","Please contact your system administrator with a code 5003"
+"Please contact your system administrator with a code 5004","Please contact your system administrator with a code 5004"
+"The Billink workflow for order %1 has started","The Billink workflow for order %1 has started"
+"The start of the Billink workflow failed. Log in via the Billink portal to start the workflow from there.","The start of the Billink workflow failed. Log in via the Billink portal to start the workflow from there."
+"Order totals do not match. ID: %d ; Calculated: %s ; QuoteTotal: %s ","Order totals do not match. ID: %d ; Calculated: %s ; QuoteTotal: %s "
+"Order totals do not match","Order totals do not match"
+"Chamber of commerce","Chamber of commerce"
+Man,Man
+Female,Female
+Birthdate,Birthdate
+"Street name","Street name"
+"House number","House number"
+"House extension","House extension"
+"Delivery Address","Delivery Address"
+"Delivery street name","Delivery street name"
+"Delivery house number","Delivery house number"
+"Delivery house Extension","Delivery house Extension"
+"Add after","Add after"
+"Checking module version...","Checking module version..."
+"Billink Billing Information","Billink Billing Information"
+Woman,Woman
+Birthday,Birthday
+"Delivery house extension","Delivery house extension"
+"Place Order","Place Order"
+"There was an error from server. Please refresh the page.","There was an error from server. Please refresh the page."
+"Version %1 is available!","Version %1 is available!"
+Billink,Billink
+Version,Version
+Enabled,Enabled
+Title,Title
+Logo,Logo
+"Sort Order","Sort Order"
+"Billink Account Name","Billink Account Name"
+"Billink Account ID","Billink Account ID"
+"Debug Mode","Debug Mode"
+"If 'Yes' is selected, orders are sent to the Billink test environment. Select 'No' to use a normal production site.","If 'Yes' is selected, orders are sent to the Billink test environment. Select 'No' to use a normal production site."
+"Enable Backdoor Option","Enable Backdoor Option"
+"Lets you determine what should be the result of the Billink credit check when the system is in Test mode.","Lets you determine what should be the result of the Billink credit check when the system is in Test mode."
+"Workflow List","Workflow List"
+"Is Alternate Delivery Address Allowed?","Is Alternate Delivery Address Allowed?"
+"Payment from Applicable Countries","Payment from Applicable Countries"
+"Payment From Specific Countries","Payment From Specific Countries"
+"Order Total Check","Order Total Check"
+"Billink Fee Active","Billink Fee Active"
+"Billink Fee Label","Billink Fee Label"
+"Billink Fee Type","Billink Fee Type"
+"Billink Fee Tax Class","Billink Fee Tax Class"
+"Billink Fee Ranges","Billink Fee Ranges"
+"I agree with the terms and conditions of Billink","I agree with the terms and conditions of Billink"
+"I agree with","I agree with"
+"the terms and conditions of Billink","the terms and conditions of Billink"

@@ -1,0 +1,24 @@
+<span id="billink-module-version-txt" data-bind="scope: 'BillinkVersionChecker'">
+    <!-- ko if: loading() -->
+    <span class="loading">
+        <img src="<?php echo $this->getViewFileUrl('Magento_Catalog::catalog/images/spinner.gif'); ?>"
+                alt="image-icon"/>
+        &nbsp; <?php echo __('Checking module version...'); ?>
+    </span>
+    <!-- /ko -->
+    <span data-bind="text: versionText(), style: { color: isError() ? 'red' : 'green' }"></span>
+</span>
+<script type="text/x-magento-init">
+{
+    "#billink-module-version-txt": {
+        "Magento_Ui/js/core/app": {
+            "components": {
+                "BillinkVersionChecker": {
+                    "component": "Billink_Billink/js/version-checker",
+                    "checkUrl": "<?php echo $block->getUrl('billink/version/check'); ?>"
+                }
+            }
+        }
+    }
+}
+</script>

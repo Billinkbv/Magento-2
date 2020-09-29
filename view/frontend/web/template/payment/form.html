@@ -1,0 +1,230 @@
+<div class="payment-method" data-bind="if: !disablePaymentMethods(), css: {'_active': (getCode() == isChecked())}">
+    <div class="payment-method-title field choice">
+        <input type="radio"
+               name="payment[method]"
+               class="radio"
+               data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()"/>
+        <label class="label" data-bind="attr: {'for': getCode()}">
+            <img class="billink-payment-method-logo" data-bind="attr:{src: getLogo()}" />
+            <span data-bind="text: getTitle()"></span>
+        </label>
+    </div>
+
+    <div class="payment-method-content">
+        <!-- ko foreach: getRegion('messages') -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!--/ko-->
+
+        <div class="payment-method-billing-address" data-bind="if: isAlternateDeliveryAddressAllowed()">
+            <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+        </div>
+        <form id="form-billink" class="form" data-mage-init='{"validation": {}}' method="post" action="#">
+            <fieldset data-bind="attr: {class: 'fieldset ' + getCode(), id: 'payment_form_' + getCode()}">
+                <legend class="legend">
+                    <span><!-- ko i18n: 'Billink Billing Information'--><!-- /ko --></span>
+                </legend>
+                <br/>
+
+                <div class="field radio required">
+                    <span class="label"><!-- ko i18n: 'Workflow Type'--><!-- /ko --></span>
+
+                    <div class="control">
+                        <!-- ko foreach: { data: customerTypes, as: 'workflow' } -->
+                        <input type="radio" name="payment[customer_type]" class="input-text"
+                               data-validate="{'validate-one-required-by-name':true}"
+                               data-bind="disable: !$parent.showWorkflowOption(workflow.value),
+                                    value: workflow.value,
+                                    checked: $parent.selectedCustomerType,
+                                    attr: {
+                                        autocomplete: 'off',
+                                        id: $parent.getCode() + '_customer_type_' + workflow.type.toLowerCase(),
+                                        title: $t('Customer Type ' + workflow.type)}"/>
+                        <label data-bind="attr: {for: $parent.getCode() + '_customer_type_' + workflow.type.toLowerCase()}"
+                               class="label">
+                            <span data-bind="text: workflow.type"></span>
+                        </label>
+                        <br/>
+                        <!--/ko-->
+                    </div>
+                </div>
+
+                <!-- ko if: selectedCustomerType -->
+                    <!-- ko if: isSelectedType('B') -->
+                    <div class="field date required"
+                         data-bind="attr: {id: getCode() + '_customer_chamber_of_commerce'}">
+                        <label data-bind="attr: {for: getCode() + '_customer_chamber_of_commerce'}" class="label">
+                            <span><!-- ko i18n: 'Chamber of commerce'--><!-- /ko --></span>
+                        </label>
+                        <div class="control">
+                            <input type="text" name="payment[customer_chamber_of_commerce]"
+                                   data-validate="{required:true}"
+                                   data-bind="value: inputFields[getCode() + '_chamber_of_commerce']"/>
+                        </div>
+                    </div>
+                    <!--/ko-->
+
+                    <!-- ko if: isSelectedType('P') -->
+                    <div class="field radio required">
+                        <span class="label"><!-- ko i18n: 'Sex'--><!-- /ko --></span>
+                        <div class="control">
+                            <input type="radio" name="payment[customer_sex]" class="input-text" value="M"
+                                   data-bind="value: 'M', checked: inputFields[getCode() + '_customer_sex'], attr: {
+                                        autocomplete: 'off',
+                                        id: getCode() + '_customer_sex_man',
+                                        title: $t('Customer Sex man')}"
+                                   data-validate="{'validate-one-required-by-name':true}"
+                            />
+                            <label data-bind="attr: {for: getCode() + '_customer_sex_man'}" class="label">
+                                <span><!-- ko i18n: 'Man'--><!-- /ko --></span>
+                            </label>
+
+                            <br/>
+
+                            <input type="radio" name="payment[customer_sex]" class="input-text" value="W"
+                                   data-bind="value: 'W', checked: inputFields[getCode() + '_customer_sex'], attr: {
+                                        autocomplete: 'off',
+                                        id: getCode() + '_customer_sex_woman',
+                                        title: $t('Customer Sex Woman')}"
+                                   data-validate="{'validate-one-required-by-name':true}"/>
+                            <label data-bind="attr: {for: getCode() + '_customer_sex_woman'}" class="label">
+                                <span><!-- ko i18n: 'Woman'--><!-- /ko --></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="field date required" data-bind="attr: {id: getCode() + '_customer_birthday_div'}">
+                        <label data-bind="attr: {for: getCode() + '_customer_birthdate'}" class="label">
+                            <span><!-- ko i18n: 'Birthday'--><!-- /ko --></span>
+                        </label>
+                        <div class="control">
+                            <input type="text"
+                                   style="width: 100%"
+                                   data-bind="value: inputFields[getCode() + '_customer_birthdate'], afterRender: initDatetime"
+                                   data-validate="{required:true}"
+                                   name="payment[customer_birthday]" class="datepicker" id="calendar_inputField"/>
+                        </div>
+                    </div>
+                    <!--/ko-->
+
+                <div class="field date required"
+                     data-bind="attr: {id: getCode() + '_customer_street_name'}">
+                    <label data-bind="attr: {for: getCode() + '_customer_street_name'}" class="label">
+                        <span><!-- ko i18n: 'Street name'--><!-- /ko --></span>
+                    </label>
+                    <div class="control">
+                        <input type="text" data-bind="value: inputFields[getCode() + '_street']"
+                               maxlength="100" name="payment[customer_street_name]"
+                               data-validate="{required:true}"/>
+                    </div>
+                </div>
+                <div class="field date required"
+                     data-bind="attr: {id: getCode() + '_customer_house_number'}">
+                    <label data-bind="attr: {for: getCode() + '_customer_house_number'}" class="label">
+                        <span><!-- ko i18n: 'House number'--><!-- /ko --></span>
+                    </label>
+                    <div class="control">
+                        <input type="text" data-bind="value: inputFields[getCode() + '_house_number']"
+                               maxlength="20" name="payment[customer_house_number]" data-validate="{required:true}"/>
+                    </div>
+                </div>
+                <div class="field date"
+                     data-bind="attr: {id: getCode() + '_customer_house_extension'}">
+                    <label data-bind="attr: {for: getCode() + '_customer_house_extension'}" class="label">
+                        <span><!-- ko i18n: 'House extension'--><!-- /ko --></span>
+                    </label>
+                    <div class="control">
+                        <input type="text" data-bind="value: inputFields[getCode() + '_house_extension']"
+                               maxlength="20" name="payment[customer_house_extension]"/>
+                    </div>
+                </div>
+                <!-- ko if: !isAddressSameAsShipping() -->
+                <div class="field date required"
+                     data-bind="attr: {id: getCode() + '_delivery_address_street'}">
+                    <label data-bind="attr: {for: getCode() + '_delivery_address_street'}"
+                           class="label">
+                        <span><!-- ko i18n: 'Delivery street name'--><!-- /ko --></span>
+                    </label>
+                    <div class="control">
+                        <input type="text"
+                               data-bind="value: inputFields[getCode() + '_delivery_address_street']"
+                               data-validate="{required:true}"
+                               maxlength="100" name="payment[delivery_address_street]"/>
+                    </div>
+                </div>
+                <div class="field date required"
+                     data-bind="attr: {id: getCode() + '_delivery_address_housenumber'}">
+                    <label data-bind="attr: {for: getCode() + '_delivery_address_housenumber'}"
+                           class="label">
+                        <span><!-- ko i18n: 'Delivery house number'--><!-- /ko --></span>
+                    </label>
+                    <div class="control">
+                        <input type="text"
+                               data-bind="value: inputFields[getCode() + '_delivery_address_housenumber']"
+                               data-validate="{required:true}"
+                               maxlength="100" name="payment[delivery_address_housenumber]"/>
+                    </div>
+                </div>
+                <div class="field date"
+                     data-bind="attr: {id: getCode() + '_delivery_address_housenumber_extension'}">
+                    <label data-bind="attr: {for: getCode() + '_delivery_address_housenumber_extension'}"
+                           class="label">
+                        <span><!-- ko i18n: 'Delivery house extension'--><!-- /ko --></span>
+                    </label>
+                    <div class="control">
+                        <input type="text"
+                               data-bind="value: inputFields[getCode() + '_delivery_address_housenumber_extension']"
+                               maxlength="100" name="payment[delivery_address_housenumber_extension]"/>
+                    </div>
+                </div>
+                <!--/ko-->
+                <!--/ko-->
+
+                <div class="field checkbox required"
+                     data-bind="attr: {id: getCode() + '_terms_agreement'}">
+                    <div class="control">
+                        <label class="label">
+                            <input type="checkbox"
+                                   data-validate="{'required':true}"
+                                   data-bind="value: inputFields[getCode() + '_terms_agreement'], attr: {id: getCode() + '_terms_agreement'}"
+                                   maxlength="100" name="payment[terms_agreement]"/>
+                            <span><!-- ko i18n: 'I agree with' --><!-- /ko -->
+                                <a href="https://www.billink.nl/docs/gebruikersvoorwaarden.pdf" target="_blank">
+                                    <!-- ko i18n: 'the terms and conditions of Billink'--><!-- /ko -->
+                                </a>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+        <div class="checkout-agreements-block">
+            <!-- ko foreach: $parent.getRegion('before-place-order') -->
+                <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+        </div>
+        
+        <div class="actions-toolbar" style="margin-top: 20px">
+            <div class="primary">
+                <button class="action primary checkout"
+                        type="submit"
+                        data-bind="
+                        click: placeOrder,
+                        attr: {title: $t('Place Order')}
+                        ">
+                    <span data-bind="i18n: 'Place Order'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="payment-method" data-bind="if: disablePaymentMethods(), css: {'_active': (getCode() == isChecked())}">
+    <div class="payment-method-title field choice">
+        <input type="radio" class="radio" disabled/>
+        <label class="label">
+            <span style="color: gray" data-bind="text: getTitle()"></span>
+        </label>
+    </div>
+</div>
