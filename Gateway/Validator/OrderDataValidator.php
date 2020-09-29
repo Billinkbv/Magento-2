@@ -97,7 +97,6 @@ class OrderDataValidator extends \Magento\Payment\Gateway\Validator\AbstractVali
         parent::__construct($resultFactory);
     }
 
-
     /**
      * Performs domain-related validation for business object
      *
@@ -158,8 +157,12 @@ class OrderDataValidator extends \Magento\Payment\Gateway\Validator\AbstractVali
 
                 if (!$this->numberHelper->floatsAreEqual($calculatedTotal, $quoteTotal)) {
                     $this->logger->error(
-                        __('Order totals do not match. ID: %d ; Calculated: %s ; QuoteTotal: %s ', $orderData->getId(),
-                            $calculatedTotal, $quoteTotal)
+                        __(
+                            'Order totals do not match. ID: %d ; Calculated: %s ; QuoteTotal: %s ',
+                            $orderData->getId(),
+                            $calculatedTotal,
+                            $quoteTotal
+                        )
                     );
 
                     throw new LocalizedException(__('Order totals do not match'));

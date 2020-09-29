@@ -65,7 +65,7 @@ class Handler implements HandlerInterface
         if ($order->canInvoice()) {
             $invoice = $order->prepareInvoice()
                 ->register()
-                ->pay();
+                ->setState(\Magento\Sales\Model\Order\Invoice::STATE_PAID);
             $this->transactionFactory->create()
                 ->addObject($order)
                 ->addObject($invoice)

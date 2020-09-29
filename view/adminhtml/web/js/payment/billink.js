@@ -5,20 +5,19 @@ define([
     'ko',
     'underscore',
     'uiComponent',
-    'mage/translate',
-    "mage/calendar"
+    'mage/translate'
 ], function ($, ko, _, Component) {
     'use strict';
 
     return Component.extend({
+        customerTypes: ko.observable(),
+        selectedCustomerType: ko.observable('P'),
         additionalData: ko.observable({}),
         grandTotal: ko.observable(),
 
         defaults: {
-            template: 'Billink_Billink/payment/form',
             workflow: '',
-            workflowPrefix: '',
-            customerType: ko.observable("p"),
+            workflowPrefix: ''
         },
 
         inputFields: {
@@ -43,12 +42,18 @@ define([
                 elem.disabled = false;
             });
             this.grandTotal(data.grandTotal);
+            this.placeOrder();
+
+
+            console.log(window.order);
+            console.log(window.order.loadArea(false, false, {test:'test'}));
         },
 
         initObservable: function () {
-            this._super()
-                .observe('customerType')
-            ;
+            this._super();
+
+            this.selectedCustomerType.subscribe(this.selectWorkflowType.bind(this));
+            this.customerTypes(this.getWorkflowTypes());
 
             return this;
         },

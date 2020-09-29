@@ -182,16 +182,12 @@
         </arguments>
     </virtualType>
 
-    <preference for="Billink\Billink\Gateway\Converter\Order\ConverterInterface" type="Billink\Billink\Gateway\Converter\Order\ItemsConverter" />
-    <preference for="Billink\Billink\Model\Billink\Request\Order\ItemInterface" type="Billink\Billink\Model\Billink\Request\Order\Item" />
-    <preference for="Billink\Billink\Model\VersionCheckerInterface" type="Billink\Billink\Model\VersionChecker" />
+    <preference for="Billink\Billink\Gateway\Converter\Order\ConverterInterface" type="Balticode\Billink\Gateway\Converter\Order\ItemsConverter" />
+    <preference for="Billink\Billink\Model\Billink\Request\Order\ItemInterface" type="Balticode\Billink\Model\Billink\Request\Order\Item" />
+    <preference for="Billink\Billink\Model\VersionCheckerInterface" type="Balticode\Billink\Model\VersionChecker" />
 
     <type name="Magento\Quote\Model\Quote\TotalsCollector">
-        <plugin name="Billink_Billink_Plugin_OrderTotalsPlugin" type="Billink\Billink\Plugin\TotalsCollectorPlugin" />
-    </type>
-
-    <type name="Magento\Sales\Model\Order\Email\Sender\InvoiceSender">
-        <plugin name="Billink\Billink\Plugin\InvoiceEmailSenderPlugin" type="Billink\Billink\Plugin\InvoiceEmailSenderPlugin" />
+        <plugin name="Billink_Billink_Plugin_OrderTotalsPlugin" type="Balticode\Billink\Plugin\TotalsCollectorPlugin" />
     </type>
 
     <type name="\Billink\Billink\Gateway\Request\DeliveryAddressDataBuilder">

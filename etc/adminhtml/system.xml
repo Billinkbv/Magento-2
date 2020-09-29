@@ -53,11 +53,6 @@
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                 </field>
 
-                <field id="is_invoice_email_enabled" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable Invoice Emails</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-
                 <field id="is_alternate_delivery_address_allowed" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Is Alternate Delivery Address Allowed?</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
