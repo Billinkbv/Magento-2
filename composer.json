@@ -11,5 +11,8 @@
     "psr-4": {
       "Billink\\Billink\\": ""
     }
+  },
+  "require": {
+        "magento/framework": "^102.0.0"
   }
 }
