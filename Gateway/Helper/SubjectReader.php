@@ -14,6 +14,7 @@ class SubjectReader
 {
     const INDEX_PAYMENT = 'payment';
     const INDEX_ADDITIONAL_INFO = 'additional_information';
+    const INDEX_REFUND_AMOUNT = 'amount';
 
     /**
      * @param array $subject
@@ -97,6 +98,15 @@ class SubjectReader
     public function readOrder(array $subject)
     {
         return $this->readPayment($subject)->getOrder();
+    }
+
+    /**
+     * @param array $subject
+     * @return float
+     */
+    public function readRefundAmount(array $subject)
+    {
+        return (float)$subject[self::INDEX_REFUND_AMOUNT];
     }
 
     /**

@@ -18,6 +18,7 @@ class Gateway
     const SERVICE_CHECK = 'check';
     const SERVICE_ORDER = 'order';
     const SERVICE_START_WORKFLOW = 'start-workflow';
+    const SERVICE_CREDIT = 'credit';
 
     /**
      * @var Config
