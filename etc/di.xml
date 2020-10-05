@@ -66,6 +66,7 @@
         <arguments>
             <argument name="commands" xsi:type="array">
                 <item name="order" xsi:type="string">BillinkPaymentOrderCommand</item>
+                <item name="refund" xsi:type="string">BillinkPaymentRefundCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -99,6 +100,17 @@
             <argument name="client" xsi:type="object">BillinkRequestClient</argument>
             <argument name="handler" xsi:type="object">Billink\Billink\Gateway\Response\StartWorkflow\Handler</argument>
             <argument name="validator" xsi:type="object">Billink\Billink\Gateway\Validator\StartWorkflow\ResponseValidator</argument>
+            <argument name="logger" xsi:type="object">BillinkLogger</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillinkPaymentRefundCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">BillinkPaymentRefundRequestComposite</argument>
+            <argument name="transferFactory" xsi:type="object">Billink\Billink\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">BillinkRequestClient</argument>
+            <argument name="handler" xsi:type="object">Billink\Billink\Gateway\Response\Order\Refund\Handler</argument>
+            <argument name="validator" xsi:type="object">Billink\Billink\Gateway\Validator\Order\Refund\ResponseValidator</argument>
             <argument name="logger" xsi:type="object">BillinkLogger</argument>
         </arguments>
     </virtualType>
@@ -145,6 +157,22 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="BillinkPaymentRefundRequestComposite" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="clientData" xsi:type="string">Billink\Billink\Gateway\Request\ClientDataBuilder</item>
+                <item name="actionData" xsi:type="string">BillinkPaymentRefundActionBuilder</item>
+                <item name="invoiceData" xsi:type="string">Billink\Billink\Gateway\Request\CreditDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="BillinkPaymentRefundActionBuilder" type="Billink\Billink\Gateway\Request\ActionDataBuilder">
+        <arguments>
+            <argument name="action" xsi:type="string">Credit</argument>
+            <argument name="service" xsi:type="const">\Billink\Billink\Gateway\Helper\Gateway::SERVICE_CREDIT</argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="BillinkPaymentStartWorkflowRequestComposite" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
@@ -182,12 +210,12 @@
         </arguments>
     </virtualType>
 
-    <preference for="Billink\Billink\Gateway\Converter\Order\ConverterInterface" type="Balticode\Billink\Gateway\Converter\Order\ItemsConverter" />
-    <preference for="Billink\Billink\Model\Billink\Request\Order\ItemInterface" type="Balticode\Billink\Model\Billink\Request\Order\Item" />
-    <preference for="Billink\Billink\Model\VersionCheckerInterface" type="Balticode\Billink\Model\VersionChecker" />
+    <preference for="Billink\Billink\Gateway\Converter\Order\ConverterInterface" type="Billink\Billink\Gateway\Converter\Order\ItemsConverter" />
+    <preference for="Billink\Billink\Model\Billink\Request\Order\ItemInterface" type="Billink\Billink\Model\Billink\Request\Order\Item" />
+    <preference for="Billink\Billink\Model\VersionCheckerInterface" type="Billink\Billink\Model\VersionChecker" />
 
     <type name="Magento\Quote\Model\Quote\TotalsCollector">
-        <plugin name="Billink_Billink_Plugin_OrderTotalsPlugin" type="Balticode\Billink\Plugin\TotalsCollectorPlugin" />
+        <plugin name="Billink_Billink_Plugin_OrderTotalsPlugin" type="Billink\Billink\Plugin\TotalsCollectorPlugin" />
     </type>
 
     <type name="\Billink\Billink\Gateway\Request\DeliveryAddressDataBuilder">
