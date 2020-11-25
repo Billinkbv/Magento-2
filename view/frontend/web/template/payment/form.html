@@ -180,6 +180,23 @@
                 </div>
                 <!--/ko-->
                 <!--/ko-->
+
+                <div class="field checkbox required"
+                     data-bind="attr: {id: getCode() + '_terms_agreement'}">
+                    <div class="control">
+                        <label class="label">
+                            <input type="checkbox"
+                                   data-validate="{'required':true}"
+                                   data-bind="value: inputFields[getCode() + '_terms_agreement'], attr: {id: getCode() + '_terms_agreement'}"
+                                   maxlength="100" name="payment[terms_agreement]"/>
+                            <span><!-- ko i18n: 'I agree with' --><!-- /ko -->
+                                <a href="https://www.billink.nl/docs/gebruikersvoorwaarden.pdf" target="_blank">
+                                    <!-- ko i18n: 'the terms and conditions of Billink'--><!-- /ko -->
+                                </a>
+                            </span>
+                        </label>
+                    </div>
+                </div>
             </fieldset>
         </form>
 

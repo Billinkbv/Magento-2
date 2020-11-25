@@ -63,13 +63,12 @@ class Handler implements HandlerInterface
         $order->addStatusHistoryComment('Order was created in Billink system.');
 
         if ($order->canInvoice()) {
-            $txnId = "billink-".$order->getIncrementId();
+            $txnId = "billink-" . $order->getIncrementId();
             $order->getPayment()->setLastTransId($txnId);
-
             $invoice = $order->prepareInvoice()
                 ->register()
                 ->setTransactionId($txnId)
-                ->setState(\Magento\Sales\Model\Order\Invoice::STATE_PAID);
+                ->pay();
             $this->transactionFactory->create()
                 ->addObject($order)
                 ->addObject($invoice)

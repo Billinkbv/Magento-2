@@ -43,8 +43,14 @@ define(
             resetData();
         }
 
-        var billinkBillingStreetName = quote.billingAddress().street[0] !== undefined ? quote.billingAddress().street[0] : '';
-        var billinkShippingStreetName = quote.shippingAddress().street[0] !== undefined ? quote.shippingAddress().street[0] : '';
+        var billinkBillingStreetName = '';
+        var billinkShippingStreetName = '';
+        try {
+            billinkBillingStreetName = quote.billingAddress().street[0] !== undefined ? quote.billingAddress().street[0] : '';
+            billinkShippingStreetName = quote.shippingAddress().street[0] !== undefined ? quote.shippingAddress().street[0] : '';
+        } catch (e) {
+            // In case street or one of the fields isn't properly set just continue with the default empty values
+        }
 
         // const regex = /\d+?\S+$/g;
         // const regexNumber = /[0-9]+/g;

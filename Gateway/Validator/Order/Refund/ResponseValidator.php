@@ -15,6 +15,7 @@ use Billink\Billink\Model\Billink\Response\Response;
 class ResponseValidator extends AbstractResponseValidator
 {
     const RESULT_SUCCESS = 200;
+
     /**
      * @var string
      */
@@ -28,7 +29,7 @@ class ResponseValidator extends AbstractResponseValidator
         return array_merge(
             parent::getResponseValidators(),
             [
-                function($response) {
+                function ($response) {
                     $rows = $response->getMsg(Response::INDEX_MSG_STATUSES_ITEM);
                     if (is_numeric(key($rows))) {
                         foreach ($rows as $row) {
@@ -49,8 +50,7 @@ class ResponseValidator extends AbstractResponseValidator
      *
      * @throws InvalidResponseException
      */
-    private function validateItem($code)
-    {
+    private function validateItem($code) {
         if ((int)$code !== self::RESULT_SUCCESS) {
             throw new InvalidResponseException('Invalid Credit result');
         }
