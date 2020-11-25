@@ -14,7 +14,7 @@ use Magento\Store\Model\StoreManagerInterface;
  * Class ConfigProvider
  * @package Billink\Billink\Model\Ui
  */
-final class ConfigProvider implements ConfigProviderInterface
+class ConfigProvider implements ConfigProviderInterface
 {
     /**
      * Payment method code used in the system
