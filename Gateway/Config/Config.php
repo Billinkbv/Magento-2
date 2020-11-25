@@ -34,6 +34,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     const FIELD_FEE_TYPE = 'fee_type';
     const FIELD_FEE_TAX_CLASS = 'fee_tax_class';
     const FIELD_FEE_RANGE = 'fee_range';
+    const FIELD_IS_INVOICE_EMAIL_ENABLED = 'is_invoice_email_enabled';
 
     /**
      * @var Repository
@@ -215,5 +216,14 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     public function getFeeRange()
     {
         return json_decode($this->getValue(self::FIELD_FEE_RANGE), true);
+    }
+
+    /**
+     * @param int $storeId
+     * @return bool
+     */
+    public function getIsInvoiceEmailEnabled($storeId = null)
+    {
+        return !!$this->getValue(self::FIELD_IS_INVOICE_EMAIL_ENABLED, $storeId);
     }
 }

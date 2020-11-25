@@ -16,6 +16,7 @@ class Response implements ResponseInterface
     const INDEX_UUID = 'UUID';
     const INDEX_MSG_CODE = 'MSG/CODE';
     const INDEX_ERROR_CODE = 'ERROR/CODE';
+    const INDEX_MSG_STATUSES_ITEM = 'MSG/STATUSES/ITEM';
 
     const RESULT_ERROR = 'ERROR';
     const RESULT_SUCCESS = 'MSG';

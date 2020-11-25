@@ -1,6 +1,6 @@
 <?php
 
-namespace Billink\Billink\Gateway\Response\Order;
+namespace Billink\Billink\Gateway\Response\Order\Refund;
 
 use Billink\Billink\Gateway\Config\Config;
 use Billink\Billink\Gateway\Helper\SubjectReader;
@@ -10,7 +10,8 @@ use Magento\Framework\DB\TransactionFactory;
 
 /**
  * Class Handler
- * @package Billink\Billink\Gateway\Response\Order
+ *
+ * @package Billink\Billink\Gateway\Response\Order\Refund
  */
 class Handler implements HandlerInterface
 {
@@ -46,11 +47,8 @@ class Handler implements HandlerInterface
     }
 
     /**
-     * Handles response
-     *
      * @param array $handlingSubject
      * @param array $response
-     * @return void
      */
     public function handle(array $handlingSubject, array $response)
     {
@@ -60,20 +58,11 @@ class Handler implements HandlerInterface
 
         /** @var \Magento\Sales\Model\Order $order */
         $order = $this->subjectReader->readOrder($handlingSubject);
-        $order->addStatusHistoryComment('Order was created in Billink system.');
+        $order->addStatusHistoryComment('Refund was created in Billink system.');
 
-        if ($order->canInvoice()) {
-            $txnId = "billink-" . $order->getIncrementId();
-            $order->getPayment()->setLastTransId($txnId);
-            $invoice = $order->prepareInvoice()
-                ->register()
-                ->setTransactionId($txnId)
-                ->pay();
-            $this->transactionFactory->create()
-                ->addObject($order)
-                ->addObject($invoice)
-                ->save();
-            $order->addStatusHistoryComment('Invoice was automatically registered and set to paid');
-        }
+        $payment = $order->getPayment();
+        // +1 because the creditmemo is not created yet
+        $idx = $order->getCreditmemosCollection()->getSize() + 1;
+        $payment->setLastTransId('billink-refund-' . $order->getIncrementId() . '-' . $idx);
     }
 }

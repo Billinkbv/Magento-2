@@ -23,16 +23,23 @@ class ShipmentObserver implements \Magento\Framework\Event\ObserverInterface
     private $logger;
 
     /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
+
+    /**
      * ShipmentObserver constructor.
      * @param GatewayCommand $startWorkflowCommand
      * @param LoggerInterface $logger
      */
     public function __construct(
         GatewayCommand $startWorkflowCommand,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        StoreManagerInterface $storeManager
     ) {
         $this->startWorkflowCommand = $startWorkflowCommand;
         $this->logger = $logger;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -46,13 +53,18 @@ class ShipmentObserver implements \Magento\Framework\Event\ObserverInterface
 
         $method = $payment->getMethodInstance();
 
-        if($method->getCode() != "billink")
-        {
-            return true;
+        if ($method->getCode() != "billink") {
+            return;
         }
 
         try {
+            $originalStore = $this->storeManager->getStore()->getId();
+            $this->storeManager->setCurrentStore($observer->getData('shipment')->getStoreId());
+
             $this->startWorkflowCommand->execute(['payment' => $payment]);
+
+            // restore current store
+            $this->storeManager->setCurrentStore($originalStore);
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
 

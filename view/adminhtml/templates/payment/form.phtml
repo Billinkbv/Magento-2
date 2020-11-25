@@ -10,12 +10,14 @@ echo $code; ?>" style="display: none">
                 <div>
                     <input type="radio" id="<?php /* @noEscape */
                     echo $code; ?>_customer_type_<?php echo strtolower($customerType['value']); ?>"
-                           name="payment[<?php /* @noEscape */
-                           echo $code; ?>_customer_type]" value="<?php echo $customerType['value']; ?>"
-                           class="admin__control-radio required-entry" data-field-class="field-type-<?php echo strtolower($customerType['value']); ?>"
-                            <?php if ( strtolower($customerType['value'] == $block->getInfoData($code . '_customer_type'))): ?>
+                           name="payment[<?php echo $code; ?>_customer_type]"
+                           value="<?php echo $customerType['value']; ?>"
+                           class="admin__control-radio required-entry"
+                           data-type-value="<?php /* @noEscape */
+                           echo strtolower($customerType['value']); ?>"
+                        <?php if (strtolower($customerType['value'] == $block->getInfoData($code . '_customer_type'))): ?>
                             checked
-                            <?php endif;?>
+                        <?php endif; ?>
                     />
                     <label class="admin__field-label"
                            for="<?php /* @noEscape */
@@ -53,7 +55,7 @@ echo $code; ?>" style="display: none">
                        class="admin__control-radio"
                     <?php if ('M' == $block->getInfoData($code . '_customer_sex')): ?>
                         checked
-                    <?php endif;?>
+                    <?php endif; ?>
                 />
                 <label class="admin__field-label"
                        for="<?php /* @noEscape */
@@ -69,7 +71,7 @@ echo $code; ?>" style="display: none">
                        class="admin__control-radio"
                     <?php if ('F' == $block->getInfoData($code . '_customer_sex')): ?>
                         checked
-                    <?php endif;?>
+                    <?php endif; ?>
                 />
                 <label class="admin__field-label"
                        for="<?php /* @noEscape */
@@ -81,8 +83,7 @@ echo $code; ?>" style="display: none">
     </div>
 
     <div class="field-type admin__field date _required field-type-p" style="display: none">
-        <label class="admin__field-label" for="<?php /* @noEscape */
-        echo $code; ?>_birthdate">
+        <label class="admin__field-label" for="<?php echo $code; ?>_birthdate">
             <span><?php echo $block->escapeHtml(__('Birthdate')); ?></span>
         </label>
         <div class="admin__field-control">
@@ -90,7 +91,7 @@ echo $code; ?>" style="display: none">
             echo $code; ?>_birthdate" name="payment[<?php /* @noEscape */
             echo $code; ?>_customer_birthdate]"
                    title="<?php echo $block->escapeHtml(__('Birthdate')); ?>" class="admin__control-text"
-            value="<?php echo $block->getInfoData($code . '_customer_birthdate'); ?>"
+                   value="<?php echo $block->getInfoData($code . '_customer_birthdate'); ?>"
             />
         </div>
     </div>
@@ -103,7 +104,8 @@ echo $code; ?>" style="display: none">
             <input type="text" id="<?php /* @noEscape */
             echo $code; ?>_street_name" name="payment[<?php /* @noEscape */
             echo $code; ?>_street]"
-                   title="<?php echo $block->escapeHtml(__('Street name')); ?>" class="required-entry admin__control-text"
+                   title="<?php echo $block->escapeHtml(__('Street name')); ?>"
+                   class="required-entry admin__control-text"
                    value="<?php echo $block->getInfoData($code . '_street'); ?>"
             />
         </div>
@@ -118,7 +120,8 @@ echo $code; ?>" style="display: none">
             <input type="text" id="<?php /* @noEscape */
             echo $code; ?>_house_number" name="payment[<?php /* @noEscape */
             echo $code; ?>_house_number]"
-                   title="<?php echo $block->escapeHtml(__('House number')); ?>" class="required-entry admin__control-text"
+                   title="<?php echo $block->escapeHtml(__('House number')); ?>"
+                   class="required-entry admin__control-text"
                    value="<?php echo $block->getInfoData($code . '_house_number'); ?>"
             />
         </div>
@@ -185,33 +188,44 @@ echo $code; ?>" style="display: none">
                    class="admin__control-text"/>
         </div>
     </div>
-    <input type="hidden" name="payment[<?php /* @noEscape */
-    echo $code; ?>_validate_order]" value="1"/>
+    <input type="hidden" name="payment[<?php echo $code; ?>_validate_order]" value="1"/>
 </fieldset>
-<script>
+<script type="text/javascript">
     var order = window.order;
-    require(['jquery'], function ($) {
+    require(['jquery', "mage/calendar"], function ($) {
         var billinkPaymentForm = {
+            currentType: 'p',
+            methodCode: '<?php /* @noEscape */ echo $code;?>',
             init: function () {
                 this.initEvents();
                 this.initDatepicker();
-                <?php if ($type = $block->getInfoData($code . '_customer_type')): ?>
-                this.resetFields('field-type-<?php echo strtolower($type); ?>');
-                <?php endif;?>
+                this.initType();
+                this.resetFields();
+            },
+
+            initType: function () {
+                if ($('#' + this.methodCode + '_customer_type_b:checked, #' + this.methodCode + '_customer_type_p:checked').length === 0) {
+                    if ($('#order-billing_address_vat_id').val().length > 1 || $('#order-billing_address_company').val().length > 1) {
+                        this.currentType = 'b'
+                        $('#' + this.methodCode + '_customer_type_b').prop("checked", true);
+                    } else {
+                        this.currentType = 'p'
+                        $('#' + this.methodCode + '_customer_type_p').prop("checked", true);
+                    }
+                    this.resetFields();
+                }
             },
 
             initEvents: function () {
                 var self = this;
-                $('input[name^="payment[<?php /* @noEscape */
-                    echo $code; ?>_customer_type]"').on('change', function (e) {
-                    var fieldClass = $(this).data('field-class');
+                $('input[name^="payment[' + this.methodCode + '_customer_type]"').on('change', (e) => {
+                    this.currentType = $(e.currentTarget).data('type-value');
 
                     setTimeout(function () {
                         order.loadArea(['totals'], true, {});
                     }, 500);
 
-                    self.resetFields(fieldClass);
-
+                    self.resetFields();
                 });
             },
 
@@ -224,9 +238,70 @@ echo $code; ?>" style="display: none">
                 })
             },
 
-            resetFields: function (fieldClass) {
+            initAddress: function () {
+                let addresses = {billing: [], shipping: []};
+                $("[data-ui-id*=-address-fieldset-element-form-field-street] input").each(function () {
+                    if (this.name.indexOf("[billing_address]") !== -1) {
+                        addresses.billing.push($(this).val());
+                    } else {
+                        addresses.shipping.push($(this).val());
+                    }
+                });
+                addresses.billing = this.getSplitAddres(addresses.billing.join(" ").trim());
+                addresses.shipping = this.getSplitAddres(addresses.shipping.join(" ").trim());
+                ['_street_name', '_house_number', '_house_extension'].forEach((e, idx) => {
+                    let el = $('#' + this.methodCode + e)
+                    if (el.val() === '') {
+                        el.val(addresses.billing[idx])
+                    }
+                });
+                ['_delivery_street_name', '_delivery_house_number', '_delivery_house_extension'].forEach((e, idx) => {
+                    let el = $('#' + this.methodCode + e)
+                    if (el.val() === '') {
+                        el.val(addresses.shipping[idx])
+                    }
+                });
+
+                return true;
+            },
+
+            getSplitAddres: function (address) {
+                let regex = /^(\d*[\wäöüß\d '\-\.]+)[,\s]+(\d+)\s*([\wäöüß\d\-\/]*)$/i
+                let match = address.match(regex);
+                if (match) {
+                    match.shift()
+                    return match;
+                }
+
+                // Could not find proper numbers/street
+                return ["","",""]
+            },
+            initBusiness: function () {
+                // Load company
+                let fields = [...new Set(
+                    $("[data-ui-id*=-address-fieldset-element-form-field-company] input")
+                        .map(function () {
+                            return $(this).val();
+                        })
+                        .get()
+                )];
+                if (fields.length) {
+                    $('#' + this.methodCode + '_chamber_of_commerce').val(fields.shift())
+                }
+            },
+            initPrivate: function () {
+            },
+
+            resetFields: function () {
                 $('.field-type-p, .field-type-b').hide();
-                $('.' + fieldClass).show();
+                $('.field-type-' + this.currentType).show();
+
+                this.initAddress();
+                if (this.currentType === 'b') {
+                    this.initBusiness();
+                } else {
+                    this.initPrivate();
+                }
             }
         }
 

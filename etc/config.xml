@@ -19,9 +19,12 @@
                 <payment_action>order</payment_action>
                 <currency>EUR</currency>
                 <can_order>1</can_order>
+                <can_refund>1</can_refund>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
                 <can_use_checkout>1</can_use_checkout>
                 <can_use_internal>1</can_use_internal>
                 <is_gateway>1</is_gateway>
+                <is_invoice_email_enabled>1</is_invoice_email_enabled>
             </billink>
         </payment>
     </default>
