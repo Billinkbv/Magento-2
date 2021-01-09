@@ -3,14 +3,16 @@
 namespace Billink\Billink\Observer;
 
 use Magento\Framework\Event\Observer;
+use Magento\Framework\Event\ObserverInterface;
 use Magento\Payment\Gateway\Command\GatewayCommand;
+use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 
 /**
  * Class ShipmentObserver
  * @package Billink\Billink\Observer
  */
-class ShipmentObserver implements \Magento\Framework\Event\ObserverInterface
+class ShipmentObserver implements ObserverInterface
 {
     /**
      * @var GatewayCommand
@@ -31,6 +33,7 @@ class ShipmentObserver implements \Magento\Framework\Event\ObserverInterface
      * ShipmentObserver constructor.
      * @param GatewayCommand $startWorkflowCommand
      * @param LoggerInterface $logger
+     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         GatewayCommand $startWorkflowCommand,
