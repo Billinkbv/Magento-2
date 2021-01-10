@@ -17,7 +17,8 @@ define(
         'Magento_Checkout/js/action/select-payment-method',
         'Magento_Checkout/js/checkout-data',
         'mage/validation',
-        'mage/translate'
+        'mage/translate',
+        'mage/calendar'
     ],
     function (_, ko, $, storage, Component, quote, getTotalsAction, urlBuilder, fullScreenLoader, billinkFee, customer, totals, customerData, billingAddress, selectPaymentMethodAction, checkoutData) {
         'use strict';
@@ -51,24 +52,6 @@ define(
         } catch (e) {
             // In case street or one of the fields isn't properly set just continue with the default empty values
         }
-
-        // const regex = /\d+?\S+$/g;
-        // const regexNumber = /[0-9]+/g;
-        // const regexExt = /[a-zA-Z]+/g;
-
-        // var houseNumberWithExtension = "";
-        // var housenumber = "";
-        // var extension = "";
-
-        // houseNumberWithExtension = regex.exec(billinkBillingStreetName);
-        // housenumber = regexNumber.exec(houseNumberWithExtension);
-        // extension = regexExt.exec(houseNumberWithExtension);
-
-        // if(extension == "null"){
-        //     extension = "";
-        // }
-
-        // billinkBillingStreetName = billinkBillingStreetName.replace(houseNumberWithExtension,'');
 
         return Component.extend({
             lastDetectedMethod: null,
