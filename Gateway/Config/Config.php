@@ -76,7 +76,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
         $value = $this->getValue(self::FIELD_LOGO);
 
         if (!$value) {
-            return $this->assetRepository->getUrl('Billink_Billink::images/logo.png');
+            return $this->assetRepository->getUrl('Billink_Billink::images/billink-logo-default.svg');
         }
 
         if ($store instanceof Store) {
