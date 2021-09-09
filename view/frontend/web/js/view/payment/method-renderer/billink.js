@@ -153,6 +153,7 @@ define(
                     paymentData = data ? data : quote.paymentMethod();
 
                 delete(paymentData['title']);
+                delete(paymentData['__disableTmpl']);
 
                 fullScreenLoader.startLoader();
 
