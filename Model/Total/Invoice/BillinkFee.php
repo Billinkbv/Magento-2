@@ -45,15 +45,22 @@ class BillinkFee extends AbstractTotal
         $invoice->setBaseBillinkFeeAmountTax($order->getBaseBillinkFeeAmountTax());
 
         if ($this->isApplicable($order)) {
-            $invoice->setTaxAmount($invoice->getTaxAmount() + $invoice->getBillinkFeeAmountTax());
-            $invoice->setBaseTaxAmount($invoice->getBaseTaxAmount() + $invoice->getBaseBillinkFeeAmountTax());
+
+            $allowedTax = $order->getTaxAmount() - $order->getTaxInvoiced() - $invoice->getTaxAmount();
+            $allowedBaseTax = $order->getBaseTaxAmount() - $order->getBaseTaxInvoiced() - $invoice->getBaseTaxAmount();
+
+            $totalTaxAmount = min($invoice->getBillinkFeeAmountTax(), $allowedTax);
+            $baseTotalTaxAmount = min($invoice->getBaseBillinkFeeAmountTax(), $allowedBaseTax);
+
+            $invoice->setTaxAmount($totalTaxAmount);
+            $invoice->setBaseTaxAmount($baseTotalTaxAmount);
 
             $invoice->setGrandTotal(
-                $invoice->getGrandTotal() + $invoice->getBillinkFeeAmount() + $invoice->getBillinkFeeAmountTax()
+                $invoice->getGrandTotal() + $invoice->getBillinkFeeAmount() + $totalTaxAmount
             );
 
             $invoice->setBaseGrandTotal(
-                $invoice->getBaseGrandTotal() + $invoice->getBaseBillinkFeeAmount() + $invoice->getBillinkFeeAmountTax()
+                $invoice->getBaseGrandTotal() + $invoice->getBaseBillinkFeeAmount() + $baseTotalTaxAmount
             );
         }
         return $this;
