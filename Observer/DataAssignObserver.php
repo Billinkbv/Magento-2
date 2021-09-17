@@ -80,6 +80,12 @@ class DataAssignObserver extends AbstractDataAssignObserver
 
         $paymentInfo = $this->readPaymentModelArgument($observer);
 
+        $needRecalculate = false;
+        if (isset($additionalData[self::CUSTOMER_TYPE]) &&
+            $paymentInfo->getAdditionalInformation(self::CUSTOMER_TYPE) != $additionalData[self::CUSTOMER_TYPE]) {
+            $needRecalculate = true;
+        }
+
         $paymentInfo->setAdditionalInformation(
             self::WORKFLOW_NUMBER,
             $this->workflowHelper->getNumber($additionalData[self::CUSTOMER_TYPE])
@@ -92,6 +98,10 @@ class DataAssignObserver extends AbstractDataAssignObserver
                     $additionalData[$additionalInformationKey]
                 );
             }
+        }
+        //if customer type changed we need to recalculate totals to apply proper billink fee
+        if ($needRecalculate) {
+            $paymentInfo->getQuote()->setTotalsCollectedFlag(false)->collectTotals();
         }
     }
 }
