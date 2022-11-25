@@ -102,7 +102,7 @@ class CustomerDataBuilder implements BuilderInterface
 
             $result = array_merge($result, [
                 self::SEX => $this->subjectReader->readPaymentAIField(DataAssignObserver::SEX, $buildSubject),
-                self::BIRTHDATE => $this->dateTime->date('d-m-Y', $birthDate)
+                self::BIRTHDATE => $this->dateTime->date('d-m-Y', $birthDate .' 00:00:01')
             ]);
         }
 
