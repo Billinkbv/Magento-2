@@ -16,6 +16,7 @@ class Response implements ResponseInterface
     const INDEX_UUID = 'UUID';
     const INDEX_MSG_CODE = 'MSG/CODE';
     const INDEX_ERROR_CODE = 'ERROR/CODE';
+    const INDEX_ERROR_DESCRIPTION = 'ERROR/DESCRIPTION';
     const INDEX_MSG_STATUSES_ITEM = 'MSG/STATUSES/ITEM';
 
     const RESULT_ERROR = 'ERROR';
@@ -78,6 +79,19 @@ class Response implements ResponseInterface
         }
 
         return $this->getValueByPath(self::INDEX_ERROR_CODE);
+    }
+
+    public function getErrorDescription()
+    {
+        if (!$this->hasError()) {
+            return false;
+        }
+
+        if (!isset($this->data[self::INDEX_ERROR])) {
+            throw new InvalidResponseException('Error is not set');
+        }
+
+        return $this->getValueByPath(self::INDEX_ERROR_DESCRIPTION);
     }
 
     /**

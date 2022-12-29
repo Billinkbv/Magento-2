@@ -167,6 +167,16 @@
                     </div>
                 </div>
                 <!--/ko-->
+
+                <div class="field date"
+                     data-bind="attr: {id: getCode() + '_customer_reference'}">
+                    <label data-bind="attr: {for: getCode() + '_customer_reference'}" class="label">
+                        <span><!-- ko i18n: 'Reference'--><!-- /ko --></span>
+                    </label>
+                    <div class="control">
+                        <input type="text" data-bind="value: inputFields[getCode() + '_reference']" name="payment[customer_reference]"/>
+                    </div>
+                </div>
                 <!--/ko-->
 
                 <div class="field checkbox required"
