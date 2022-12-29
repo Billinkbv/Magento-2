@@ -2,6 +2,8 @@
 
 namespace Billink\Billink\Gateway\Config;
 
+use Billink\Billink\Model\Config\Source\UsedWorkflow;
+use Billink\Billink\Observer\DataAssignObserver;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Asset\Repository;
@@ -35,6 +37,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     const FIELD_FEE_TAX_CLASS = 'fee_tax_class';
     const FIELD_FEE_RANGE = 'fee_range';
     const FIELD_IS_INVOICE_EMAIL_ENABLED = 'is_invoice_email_enabled';
+    const FIELD_USED_WORKFLOW = 'use_workflow';
 
     /**
      * @var Repository
@@ -123,19 +126,38 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     /**
      * @return array
      */
-    public function getWorkflow()
+    public function getWorkflow($storeId = null)
     {
-        $result = json_decode($this->getValue(self::FIELD_WORKFLOW), true);
+        $workflowSettings = json_decode($this->getValue(self::FIELD_WORKFLOW), true);
 
-        if (!is_array($result) || empty($result)) {
+        if (!is_array($workflowSettings) || empty($workflowSettings)) {
             return [];
         }
 
-        foreach ($result as $key => $workflow) {
-            $result[$key]['type'] = __($workflow['type']);
+        $availableWorkflows = $this->getUsedWorkflow($storeId);
+
+        switch ($availableWorkflows) {
+            case UsedWorkflow::CONFIG_WORKFLOW_PRIVATE:
+                if(isset($workflowSettings[UsedWorkflow::CONFIG_WORKFLOW_PRIVATE])) {
+                    $workflowSettings[UsedWorkflow::CONFIG_WORKFLOW_PRIVATE]['type'] = __($workflowSettings[UsedWorkflow::CONFIG_WORKFLOW_PRIVATE]['type']);
+
+                    return [UsedWorkflow::CONFIG_WORKFLOW_PRIVATE => $workflowSettings[UsedWorkflow::CONFIG_WORKFLOW_PRIVATE]];
+                }
+                return [];
+            case UsedWorkflow::CONFIG_WORKFLOW_BUSINESS:
+                if(isset($workflowSettings[UsedWorkflow::CONFIG_WORKFLOW_BUSINESS])) {
+                    $workflowSettings[UsedWorkflow::CONFIG_WORKFLOW_BUSINESS]['type'] = __($workflowSettings[UsedWorkflow::CONFIG_WORKFLOW_BUSINESS]['type']);
+
+                    return [UsedWorkflow::CONFIG_WORKFLOW_BUSINESS => $workflowSettings[UsedWorkflow::CONFIG_WORKFLOW_BUSINESS]];
+                }
+                return [];
+            default:
+                foreach ($workflowSettings as $key => $workflow) {
+                    $workflowSettings[$key]['type'] = __($workflow['type']);
+                }
         }
 
-        return $result;
+        return $workflowSettings;
     }
 
     /**
@@ -225,5 +247,14 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     public function getIsInvoiceEmailEnabled($storeId = null)
     {
         return !!$this->getValue(self::FIELD_IS_INVOICE_EMAIL_ENABLED, $storeId);
+    }
+
+    /**
+     * @param int $storeId
+     * @return ?string
+     */
+    public function getUsedWorkflow($storeId = null)
+    {
+        return $this->getValue(self::FIELD_USED_WORKFLOW, $storeId);
     }
 }

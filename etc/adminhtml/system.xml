@@ -46,10 +46,13 @@
                         <field id="*/*/debug">1</field>
                     </depends>
                 </field>
-
+                <field id="use_workflow" translate="label" type="select" sortOrder="75" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Used workflow</label>
+                    <source_model>Billink\Billink\Model\Config\Source\UsedWorkflow</source_model>
+                </field>
                 <field id="workflow" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Workflow List</label>
-                    <frontend_model>\Billink\Billink\Block\Adminhtml\System\Config\Form\Field\Workflow</frontend_model>
+                    <frontend_model>Billink\Billink\Block\Adminhtml\System\Config\Form\Field\Workflow</frontend_model>
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                 </field>
 

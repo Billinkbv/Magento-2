@@ -16,7 +16,7 @@ class DataAssignObserver extends AbstractDataAssignObserver
     const WORKFLOW_NUMBER = 'billink_workflow_number';
 
     const CUSTOMER_TYPE = 'billink_customer_type';
-    const COMPANY_NAME = 'billink_company_name';
+    const COMPANY_NAME = 'billink_company';
     const CHAMBER_OF_COMMERCE = 'billink_chamber_of_commerce';
     const HOUSE_NUMBER = 'billink_house_number';
     const HOUSE_EXTENSION = 'billink_house_extension';
