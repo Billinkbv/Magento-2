@@ -23,6 +23,7 @@ class DataAssignObserver extends AbstractDataAssignObserver
     const STREET = 'billink_street';
     const BIRTHDATE = 'billink_customer_birthdate';
     const SEX = 'billink_customer_sex';
+    const REFERENCE = 'billink_reference';
 
     // Delivery Address
     const DELIVERY_ADDRESS_STREET = 'billink_delivery_address_street';
@@ -46,7 +47,8 @@ class DataAssignObserver extends AbstractDataAssignObserver
         self::DELIVERY_ADDRESS_STREET,
         self::DELIVERY_ADDRESS_HOUSENUMBER,
         self::DELIVERY_ADDRESS_HOUSEEXTENSION,
-        self::VALIDATE_ORDER_FLAG
+        self::VALIDATE_ORDER_FLAG,
+        self::REFERENCE
     ];
 
     /**
