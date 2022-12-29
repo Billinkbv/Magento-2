@@ -53,6 +53,15 @@ class Workflow
     }
 
     /**
+     * @param int $storeId
+     * @return ?string
+     */
+    public function getUsedWorkflows($storeId = null)
+    {
+        return $this->config->getUsedWorkflow($storeId);
+    }
+
+    /**
      * @param string $type
      * @return string
      */
