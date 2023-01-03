@@ -19,9 +19,6 @@
             <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
             <!-- ko template: getTemplate() --><!-- /ko -->
             <!--/ko-->
-<!--            <button type="button" class="action action-edit-address" data-bind="click: editAddress" style="">-->
-<!--                <span data-bind="i18n: 'Edit'">Edit</span>-->
-<!--            </button>-->
         </div>
         <form id="form-billink" class="form" data-mage-init='{"validation": {}}' method="post" action="#">
             <fieldset data-bind="attr: {class: 'fieldset ' + getCode(), id: 'payment_form_' + getCode()}" style="display: none;">
