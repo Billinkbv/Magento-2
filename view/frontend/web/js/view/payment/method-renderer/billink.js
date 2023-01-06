@@ -34,6 +34,7 @@ define(
         };
 
         return Component.extend({
+            toggle: ko.observable(false),
             lastDetectedMethod: null,
             additionalData: ko.observable({}),
             customerTypes: ko.observable([]),
@@ -77,13 +78,14 @@ define(
             },
             initAddressData: function () {
                 if (quote.billingAddress() !== undefined) {
+                    if (quote.billingAddress().company.length) {
+                        this.inputFields.billink_company(quote.billingAddress().company);
+                    }
+
                     if (quote.billingAddress().street.length) {
                         this.inputFields.billink_street(quote.billingAddress().street[0]); //todo parse street and number
                         this.inputFields.billink_house_number(quote.billingAddress().street[1]); //todo parse street and number
                         this.inputFields.billink_house_extension(quote.billingAddress().street[2]); //todo parse street and number
-                    }
-                    if (quote.billingAddress().company.length) {
-                        this.inputFields.billink_company(quote.billingAddress().company);
                     }
                 }
             },
@@ -296,6 +298,10 @@ define(
                 var $form = $('#form-billink');
 
                 return $form.validation() && $form.validation('isValid');
+            },
+
+            toggleView: function () {
+                this.toggle(!this.toggle());
             }
         });
     }
