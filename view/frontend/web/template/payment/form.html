@@ -29,11 +29,14 @@
                 <br/>
 
                 <div class="field NEW">
-                    <!-- ko if: selectedCustomerType -->
-                        <!-- ko if: isSelectedType('B') -->
-                            <span><!-- ko i18n: 'Company'--><!-- /ko -->:&nbsp;</span><span data-bind="text: inputFields[getCode() + '_company']"></span>
-                        <!--/ko-->
-                    <!--/ko-->
+                    <div data-bind="visible: inputFields[getCode() + '_company']">
+                        <span><!-- ko i18n: 'Company'--><!-- /ko -->: </span>
+                        <span data-bind="text: inputFields[getCode() + '_company']"></span>
+                        <div data-bind="visible: inputFields[getCode() + '_chamber_of_commerce']()">
+                            <span><!-- ko i18n: 'Chamber of commerce'--><!-- /ko -->: </span>
+                            <span data-bind="text: inputFields[getCode() + '_chamber_of_commerce']"></span>
+                        </div>
+                    </div>
                     <div>
                         <span><!-- ko i18n: 'Street'--><!-- /ko -->: </span>
                         <span data-bind="text: inputFields[getCode() + '_street']"></span>
@@ -48,7 +51,7 @@
                 <!-- ko if: selectedCustomerType -->
                     <!-- ko if: isSelectedType('B') -->
                         <div class="field date required"
-                             data-bind="attr: {id: getCode() + '_customer_company'}, visible: !inputFields[getCode() + '_company']()">
+                             data-bind="attr: {id: getCode() + '_customer_company'}, visible: !inputFields[getCode() + '_company']() || toggle">
                             <label data-bind="attr: {for: getCode() + '_customer_company'}" class="label">
                                 <span><!-- ko i18n: 'Company'--><!-- /ko --></span>
                             </label>
@@ -60,7 +63,7 @@
                         </div>
 
                         <div class="field date required"
-                             data-bind="attr: {id: getCode() + '_customer_chamber_of_commerce'}">
+                             data-bind="attr: {id: getCode() + '_customer_chamber_of_commerce'}, visible: !inputFields[getCode() + '_chamber_of_commerce']() || toggle">
                             <label data-bind="attr: {for: getCode() + '_customer_chamber_of_commerce'}" class="label">
                                 <span><!-- ko i18n: 'Chamber of commerce'--><!-- /ko --></span>
                             </label>
