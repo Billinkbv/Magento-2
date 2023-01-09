@@ -8,4 +8,7 @@
         <observer name="billink_payment_quote_submit_before"
                   instance="Billink\Billink\Observer\SalesModelServiceQuoteSubmitObserver"/>
     </event>
+    <event name="sales_order_shipment_save_after">
+        <observer name="billink_sales_order_shipment_after" instance="BillinkShipmentObserver"/>
+    </event>
 </config>
