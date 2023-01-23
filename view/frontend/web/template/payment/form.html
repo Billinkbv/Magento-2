@@ -149,46 +149,7 @@
                                maxlength="20" name="payment[customer_house_extension]"/>
                     </div>
                 </div>
-                <!-- ko if: !isAddressSameAsShipping() -->
-                <div class="field date required"
-                     data-bind="attr: {id: getCode() + '_delivery_address_street'}">
-                    <label data-bind="attr: {for: getCode() + '_delivery_address_street'}"
-                           class="label">
-                        <span><!-- ko i18n: 'Delivery street name'--><!-- /ko --></span>
-                    </label>
-                    <div class="control">
-                        <input type="text"
-                               data-bind="value: inputFields[getCode() + '_delivery_address_street']"
-                               data-validate="{required:true}"
-                               maxlength="100" name="payment[delivery_address_street]"/>
-                    </div>
-                </div>
-                <div class="field date required"
-                     data-bind="attr: {id: getCode() + '_delivery_address_housenumber'}">
-                    <label data-bind="attr: {for: getCode() + '_delivery_address_housenumber'}"
-                           class="label">
-                        <span><!-- ko i18n: 'Delivery house number'--><!-- /ko --></span>
-                    </label>
-                    <div class="control">
-                        <input type="text"
-                               data-bind="value: inputFields[getCode() + '_delivery_address_housenumber']"
-                               data-validate="{required:true}"
-                               maxlength="100" name="payment[delivery_address_housenumber]"/>
-                    </div>
-                </div>
-                <div class="field date"
-                     data-bind="attr: {id: getCode() + '_delivery_address_housenumber_extension'}">
-                    <label data-bind="attr: {for: getCode() + '_delivery_address_housenumber_extension'}"
-                           class="label">
-                        <span><!-- ko i18n: 'Delivery house extension'--><!-- /ko --></span>
-                    </label>
-                    <div class="control">
-                        <input type="text"
-                               data-bind="value: inputFields[getCode() + '_delivery_address_housenumber_extension']"
-                               maxlength="100" name="payment[delivery_address_housenumber_extension]"/>
-                    </div>
-                </div>
-                <!--/ko-->
+
                 <div class="field" data-bind="visible: toggle">
                     <button class="action action-update" type="button" data-bind="click: updateAddress, click: toggleView">
                         <span data-bind="i18n: 'Update'">Update</span>

@@ -78,7 +78,7 @@ define(
             },
             initAddressData: function () {
                 if (quote.billingAddress() !== undefined) {
-                    if (quote.billingAddress().company.length) {
+                    if (quote.billingAddress().company !== undefined && quote.billingAddress().company.length) {
                         this.inputFields.billink_company(quote.billingAddress().company);
                     }
 
