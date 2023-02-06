@@ -10,6 +10,7 @@
                 <title>Billink Payment Method</title>
                 <debug>0</debug>
                 <sort_order>1</sort_order>
+                <use_workflow>workflow_all</use_workflow>
                 <workflow>{"workflow_P":{"type":"Private","number":"3","max_amount":"400","is_with_check":"1"},"workflow_B":{"type":"Business","number":"3","max_amount":"500","is_with_check":"1"}}</workflow>
                 <is_alternate_delivery_address_allowed>1</is_alternate_delivery_address_allowed>
                 <fee_type>1</fee_type>

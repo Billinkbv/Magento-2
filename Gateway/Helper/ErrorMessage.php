@@ -13,10 +13,11 @@ class ErrorMessage
     /**
      * @param string $code
      * @param string $service
+     * @param string|null $errorDescription
      * @return \Magento\Framework\Phrase
      * @throws InvalidResponseException
      */
-    public static function get($code, $service)
+    public static function get($code, $service, $errorDescription = null)
     {
         $messageId = 'billink_' . $service . '_error_code_' . $code;
         $message = __($messageId);
@@ -24,10 +25,10 @@ class ErrorMessage
         if ($messageId == $message) {
             throw new InvalidResponseException(
                 'Got error ' . $code . ' from ' . strtoupper($service) .
-                ' service, no translation for this error is present'
+                ' service: ' . $errorDescription
             );
         }
 
-        return $message;
+        return $message . ': ' . $errorDescription;
     }
 }

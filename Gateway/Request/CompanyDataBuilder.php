@@ -38,24 +38,21 @@ class CompanyDataBuilder implements BuilderInterface
      */
     public function build(array $buildSubject)
     {
-        $payment = $this->subjectReader->readPayment($buildSubject);
         $workflowType = $this->subjectReader->readPaymentWorkflowType($buildSubject);
-
-        $orderData = $payment->getQuote() ?: $payment->getOrder();
-        $billingAddress = $orderData->getBillingAddress();
 
         if (WorkflowHelper::TYPE_BUSINESS !== $workflowType) {
             return [];
         }
 
-        $result = [
-            self::COMPANYNAME => $billingAddress->getCompany(),
+        return [
+            self::COMPANYNAME => $this->subjectReader->readPaymentAIField(
+                DataAssignObserver::COMPANY_NAME,
+                $buildSubject
+            ),
             self::CHAMBEROFCOMMERCE => $this->subjectReader->readPaymentAIField(
                 DataAssignObserver::CHAMBER_OF_COMMERCE,
                 $buildSubject
             )
         ];
-
-        return $result;
     }
 }
