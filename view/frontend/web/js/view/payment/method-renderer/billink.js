@@ -81,11 +81,17 @@ define(
                     if (quote.billingAddress().company !== undefined && quote.billingAddress().company.length) {
                         this.inputFields.billink_company(quote.billingAddress().company);
                     }
-
                     if (quote.billingAddress().street.length) {
-                        this.inputFields.billink_street(quote.billingAddress().street[0]); //todo parse street and number
-                        this.inputFields.billink_house_number(quote.billingAddress().street[1]); //todo parse street and number
-                        this.inputFields.billink_house_extension(quote.billingAddress().street[2]); //todo parse street and number
+                        if ( quote.billingAddress().street[0].split(/(\d+)/g)[1] !== "" ) {
+                            this.inputFields.billink_street(quote.billingAddress().street[0].split(/(\d+)/g)[0]);
+                            this.inputFields.billink_house_number(quote.billingAddress().street[0].split(/(\d+)/g)[1]);
+                            this.inputFields.billink_house_extension(quote.billingAddress().street[0].split(/(\d+)/g)[2]);
+                        }
+                        else {
+                            this.inputFields.billink_street(quote.billingAddress().street[0]);
+                            this.inputFields.billink_house_number(quote.billingAddress().street[1]);
+                            this.inputFields.billink_house_extension(quote.billingAddress().street[2]);
+                        }
                     }
                 }
             },
