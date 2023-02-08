@@ -211,6 +211,16 @@ define(
                 return this.selectedCustomerType() === type;
             },
 
+            isSelectedWorkflow: function () {
+                if (this.selectedCustomerType() === false) {
+                    return true;
+                }
+                if (quote.billingAddress().company !== undefined && quote.billingAddress().company.length) {
+                    return this.selectedCustomerType() === 'B';
+                }
+                return this.selectedCustomerType() === 'P';
+            },
+
             initDatetime: function (elements) {
                 $(elements).datepicker({
                     changeMonth: true,
