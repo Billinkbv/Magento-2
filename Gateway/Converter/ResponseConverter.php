@@ -56,7 +56,7 @@ class ResponseConverter implements \Magento\Payment\Gateway\Http\ConverterInterf
         } catch (\Exception $e) {
             $result = false;
             $this->logger->error('Could not convert Gateway Response. Error was: ' . $e->getMessage()
-                . ' ; Response was: ' . $response);
+                . ' ; Response was: ' . $data);
         }
 
         return ['result' => $result];
