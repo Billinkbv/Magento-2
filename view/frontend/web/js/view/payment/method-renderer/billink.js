@@ -126,7 +126,6 @@ define(
             updateCustomerTypeSelect: function () {
                 var workflow = window.checkoutConfig.payment.billink.workflow;
                 if (!this.disablePaymentMethods() && quote.billingAddress() !== null) {
-                    console.log("quote.billingAddress().company: ", quote.billingAddress().company);
                     if (!(typeof quote.billingAddress().company === undefined || quote.billingAddress().company === null)) {
                         if (workflow.hasOwnProperty("workflow_B")) {
                             this.selectedCustomerType('B');
