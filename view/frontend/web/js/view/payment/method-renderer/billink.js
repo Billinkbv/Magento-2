@@ -78,7 +78,7 @@ define(
             },
             initAddressData: function () {
                 if (quote.billingAddress() !== undefined) {
-                    if (quote.billingAddress().company !== undefined && quote.billingAddress().company.length) {
+                    if (!(typeof quote.billingAddress().company === undefined || quote.billingAddress().company === null)) {
                         this.inputFields.billink_company(quote.billingAddress().company);
                     }
                     if (quote.billingAddress().street.length) {
@@ -126,7 +126,8 @@ define(
             updateCustomerTypeSelect: function () {
                 var workflow = window.checkoutConfig.payment.billink.workflow;
                 if (!this.disablePaymentMethods() && quote.billingAddress() !== null) {
-                    if (quote.billingAddress().company !== undefined && quote.billingAddress().company.length) {
+                    console.log("quote.billingAddress().company: ", quote.billingAddress().company);
+                    if (!(typeof quote.billingAddress().company === undefined || quote.billingAddress().company === null)) {
                         if (workflow.hasOwnProperty("workflow_B")) {
                             this.selectedCustomerType('B');
                         }
@@ -212,10 +213,12 @@ define(
             },
 
             isSelectedWorkflow: function () {
+                console.log( this.selectedCustomerType() );
+
                 if (this.selectedCustomerType() === false) {
                     return true;
                 }
-                if (quote.billingAddress().company !== undefined && quote.billingAddress().company.length) {
+                if (!(typeof quote.billingAddress().company === undefined || quote.billingAddress().company === null)) {
                     return this.selectedCustomerType() === 'B';
                 }
                 return this.selectedCustomerType() === 'P';
