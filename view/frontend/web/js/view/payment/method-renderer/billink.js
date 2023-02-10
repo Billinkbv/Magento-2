@@ -33,50 +33,65 @@ define(
             customerData.set(cacheKey, data);
         };
 
-        var resetData = function() {
-            var data = {
-                'selectedCustomerType': null,
-            };
-            saveData(data);
-        };
-
-        if ($.isEmptyObject(getData())) {
-            resetData();
-        }
-
-        var billinkBillingStreetName = '';
-        var billinkShippingStreetName = '';
-        try {
-            billinkBillingStreetName = quote.billingAddress().street[0] !== undefined ? quote.billingAddress().street[0] : '';
-            billinkShippingStreetName = quote.shippingAddress().street[0] !== undefined ? quote.shippingAddress().street[0] : '';
-        } catch (e) {
-            // In case street or one of the fields isn't properly set just continue with the default empty values
-        }
-
         return Component.extend({
+            toggle: ko.observable(false),
             lastDetectedMethod: null,
             additionalData: ko.observable({}),
             customerTypes: ko.observable([]),
             isAddressSameAsShipping: billingAddress().isAddressSameAsShipping,
-
+            selectedCustomerType: ko.observable(''),
             inputFields: {
+                billink_reference: ko.observable(''),
+                billink_company: ko.observable(''),
                 billink_chamber_of_commerce: ko.observable(''),
-                billink_street: ko.observable(billinkBillingStreetName),
+                billink_street: ko.observable(''),
                 billink_house_number: ko.observable(''),
                 billink_house_extension: ko.observable(''),
                 billink_customer_birthdate: ko.observable(''),
                 billink_customer_sex: ko.observable(''),
-                billink_delivery_address_street: ko.observable(billinkShippingStreetName),
+                billink_delivery_address_street: ko.observable(''),
                 billink_delivery_address_housenumber: ko.observable(''),
                 billink_delivery_address_housenumber_extension: ko.observable('')
             },
 
-            dbSelectedCustomerType: window.checkoutConfig.quoteData.selected_workflow,
             dbSelectedPaymentMethod: window.checkoutConfig.quoteData.payment_method,
             isFeeActive: window.checkoutConfig.payment.billink.feeActive,
 
             defaults: {
                 template: 'Billink_Billink/payment/form'
+            },
+            initialize: function() {
+                this._super();
+                this.updateCustomerTypeSelect();
+                this.initAddressData();
+                this.selectedCustomerType(window.checkoutConfig.quoteData.selected_workflow);
+            },
+            initObservable: function () {
+                this._super();
+
+                quote.paymentMethod.subscribe(this.changePaymentMethod.bind(this));
+                quote.billingAddress.subscribe(this.updateAddressData.bind(this));
+                this.selectedCustomerType.subscribe(this.selectWorkflowType.bind(this));
+                this.customerTypes(this.getWorkflowTypes());
+
+                return this;
+            },
+            initAddressData: function () {
+                if (quote.billingAddress() !== undefined) {
+                    if (quote.billingAddress().company !== undefined && quote.billingAddress().company.length) {
+                        this.inputFields.billink_company(quote.billingAddress().company);
+                    }
+
+                    if (quote.billingAddress().street.length) {
+                        this.inputFields.billink_street(quote.billingAddress().street[0]); //todo parse street and number
+                        this.inputFields.billink_house_number(quote.billingAddress().street[1]); //todo parse street and number
+                        this.inputFields.billink_house_extension(quote.billingAddress().street[2]); //todo parse street and number
+                    }
+                }
+            },
+            updateAddressData: function () {
+                this.updateCustomerTypeSelect();
+                this.initAddressData();// todo this must be changed for setting edit address functional
             },
 
             getCode: function () {
@@ -102,15 +117,18 @@ define(
                 return true;
             },
 
-            initialize: function() {
-                this._super();
-
-                this.updateCustomerTypeSelect();
-            },
-
             updateCustomerTypeSelect: function () {
-                if (!this.disablePaymentMethods()) {
-                    this.selectedCustomerType(this.dbSelectedCustomerType);
+                var workflow = window.checkoutConfig.payment.billink.workflow;
+                if (!this.disablePaymentMethods() && quote.billingAddress() !== null) {
+                    if (quote.billingAddress().company !== undefined && quote.billingAddress().company.length) {
+                        if (workflow.hasOwnProperty("workflow_B")) {
+                            this.selectedCustomerType('B');
+                        }
+                    } else {
+                        if (workflow.hasOwnProperty("workflow_P")) {
+                            this.selectedCustomerType('P');
+                        }
+                    }
                 }
             },
 
@@ -123,11 +141,13 @@ define(
                     'billink_street': this.inputFields.billink_street(),
                     'billink_house_number': this.inputFields.billink_house_number(),
                     'billink_house_extension': this.inputFields.billink_house_extension(),
-                    'billink_validate_order': true
+                    'billink_validate_order': true,
+                    'billink_reference': this.inputFields.billink_reference()
                 });
                 if (this.isSelectedType('B')) {
                     additionalData = Object.assign(additionalData, {
-                        'billink_chamber_of_commerce': this.inputFields.billink_chamber_of_commerce()
+                        'billink_chamber_of_commerce': this.inputFields.billink_chamber_of_commerce(),
+                        'billink_company': this.inputFields.billink_company()
                     });
                 }
                 if (this.isSelectedType('P')) {
@@ -228,7 +248,7 @@ define(
                 return quotePayment ? quotePayment : null;
             }),
 
-            selectedCustomerType: ko.observable(''),
+
 
             changePaymentMethod: function () {
                 var paymentMethod = quote.paymentMethod().method;
@@ -259,16 +279,6 @@ define(
                 }
             },
 
-            initObservable: function () {
-                this._super();
-
-                quote.paymentMethod.subscribe(this.changePaymentMethod.bind(this));
-                this.selectedCustomerType.subscribe(this.selectWorkflowType.bind(this));
-                this.customerTypes(this.getWorkflowTypes());
-
-                return this;
-            },
-
             getWorkflowTypes: function () {
                 var customerTypes = [];
                 var workflow = window.checkoutConfig.payment.billink.workflow;
@@ -288,6 +298,10 @@ define(
                 var $form = $('#form-billink');
 
                 return $form.validation() && $form.validation('isValid');
+            },
+
+            toggleView: function () {
+                this.toggle(!this.toggle());
             }
         });
     }

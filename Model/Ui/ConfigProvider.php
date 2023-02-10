@@ -5,6 +5,7 @@ namespace Billink\Billink\Model\Ui;
 use Billink\Billink\Gateway\Config\Config;
 use Billink\Billink\Gateway\Helper\SubjectReader;
 use Billink\Billink\Gateway\Helper\Workflow as WorkflowHelper;
+use Billink\Billink\Model\Config\Source\UsedWorkflow;
 use Billink\Billink\Observer\DataAssignObserver;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Checkout\Model\Session;
@@ -84,7 +85,7 @@ class ConfigProvider implements ConfigProviderInterface
                 'logo' => $this->config->getLogo($this->storeManager->getStore()),
                 'isActive' => $this->config->isActive(),
                 'isAlternateDeliveryAddressAllowed' => $this->config->getIsAlternateDeliveryAddressAllowed(),
-                'workflow' => $this->config->getWorkflow(),
+                'workflow' => $this->config->getWorkflow($this->storeManager->getStore()->getId()),
                 'workflowTypePrefix' => WorkflowHelper::WORKFLOW_TYPE_PREFIX,
                 'feeActive' => $this->config->getIsFeeActive(),
                 'feeLabel' => $this->config->getFeeLabel()
@@ -103,10 +104,21 @@ class ConfigProvider implements ConfigProviderInterface
             return [];
         }
 
-        $selectedWorkflow = $this->subjectReader->readPaymentAIField(
-            DataAssignObserver::CUSTOMER_TYPE,
-            ['payment' => $payment]
-        );
+        $usedWorkflows = $this->config->getUsedWorkflow($quote->getStoreId());
+
+        switch ($usedWorkflows) {
+            case UsedWorkflow::CONFIG_WORKFLOW_PRIVATE:
+                $selectedWorkflow = 'P';
+                break;
+            case UsedWorkflow::CONFIG_WORKFLOW_BUSINESS:
+                $selectedWorkflow = 'B';
+                break;
+            default:
+                $selectedWorkflow = $this->subjectReader->readPaymentAIField(
+                    DataAssignObserver::CUSTOMER_TYPE,
+                    ['payment' => $payment]
+                );
+        }
 
         return [
             'payment_method' => $payment->getMethod(),
