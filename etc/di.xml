@@ -219,6 +219,10 @@
         <plugin name="Billink_Billink_Plugin_OrderTotalsPlugin" type="Billink\Billink\Plugin\TotalsCollectorPlugin" />
     </type>
 
+    <type name="Magento\Sales\Model\Order\Email\Sender\InvoiceSender">
+         <plugin name="Billink\Billink\Plugin\InvoiceEmailSenderPlugin" type="Billink\Billink\Plugin\InvoiceEmailSenderPlugin" />
+    </type>
+
     <type name="\Billink\Billink\Gateway\Request\DeliveryAddressDataBuilder">
         <arguments>
             <argument name="checkoutSession" xsi:type="object">Magento\Checkout\Model\Session</argument>

@@ -48,7 +48,7 @@ abstract class AbstractResponseValidator extends \Magento\Payment\Gateway\Valida
         $response = $this->subjectReader->readResponse($validationSubject);
 
         try {
-            if (!$response->hasData()) {
+            if (!$response || !$response->hasData()) {
                 throw new InvalidResponseException('Could not retrieve any data from Billink service');
             }
 

@@ -78,14 +78,20 @@ define(
             },
             initAddressData: function () {
                 if (quote.billingAddress() !== undefined) {
-                    if (quote.billingAddress().company !== undefined && quote.billingAddress().company.length) {
+                    if (!(typeof quote.billingAddress().company === undefined || quote.billingAddress().company === null)) {
                         this.inputFields.billink_company(quote.billingAddress().company);
                     }
-
                     if (quote.billingAddress().street.length) {
-                        this.inputFields.billink_street(quote.billingAddress().street[0]); //todo parse street and number
-                        this.inputFields.billink_house_number(quote.billingAddress().street[1]); //todo parse street and number
-                        this.inputFields.billink_house_extension(quote.billingAddress().street[2]); //todo parse street and number
+                        if ( quote.billingAddress().street[0].split(/(\d+)/g)[1] !== "" ) {
+                            this.inputFields.billink_street(quote.billingAddress().street[0].split(/(\d+)/g)[0]);
+                            this.inputFields.billink_house_number(quote.billingAddress().street[0].split(/(\d+)/g)[1]);
+                            this.inputFields.billink_house_extension(quote.billingAddress().street[0].split(/(\d+)/g)[2]);
+                        }
+                        else {
+                            this.inputFields.billink_street(quote.billingAddress().street[0]);
+                            this.inputFields.billink_house_number(quote.billingAddress().street[1]);
+                            this.inputFields.billink_house_extension(quote.billingAddress().street[2]);
+                        }
                     }
                 }
             },
@@ -120,7 +126,7 @@ define(
             updateCustomerTypeSelect: function () {
                 var workflow = window.checkoutConfig.payment.billink.workflow;
                 if (!this.disablePaymentMethods() && quote.billingAddress() !== null) {
-                    if (quote.billingAddress().company !== undefined && quote.billingAddress().company.length) {
+                    if (!(typeof quote.billingAddress().company === undefined || quote.billingAddress().company === null)) {
                         if (workflow.hasOwnProperty("workflow_B")) {
                             this.selectedCustomerType('B');
                         }
@@ -203,6 +209,18 @@ define(
 
             isSelectedType: function (type) {
                 return this.selectedCustomerType() === type;
+            },
+
+            isSelectedWorkflow: function () {
+                console.log( this.selectedCustomerType() );
+
+                if (this.selectedCustomerType() === false) {
+                    return true;
+                }
+                if (!(typeof quote.billingAddress().company === undefined || quote.billingAddress().company === null)) {
+                    return this.selectedCustomerType() === 'B';
+                }
+                return this.selectedCustomerType() === 'P';
             },
 
             initDatetime: function (elements) {
