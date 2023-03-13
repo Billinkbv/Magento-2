@@ -94,6 +94,10 @@ define(
                             this.inputFields.billink_house_extension(quote.billingAddress().street[2]);
                         }
                     }
+                    // Optional custom fields added by webshop owner in step 1
+                    if (!(typeof quote.billingAddress().chamberOfCommerce === undefined || quote.billingAddress().chamberOfCommerce === null)) {
+                        this.inputFields.billink_chamber_of_commerce(quote.billingAddress().chamberOfCommerce);
+                    }
                 }
             },
             updateAddressData: function () {
