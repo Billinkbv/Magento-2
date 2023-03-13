@@ -42,6 +42,7 @@ define(
             selectedCustomerType: ko.observable(''),
             inputFields: {
                 billink_reference: ko.observable(''),
+                billink_email2: ko.observable(''),
                 billink_company: ko.observable(''),
                 billink_chamber_of_commerce: ko.observable(''),
                 billink_street: ko.observable(''),
@@ -148,6 +149,7 @@ define(
                     'billink_house_number': this.inputFields.billink_house_number(),
                     'billink_house_extension': this.inputFields.billink_house_extension(),
                     'billink_validate_order': true,
+                    'billink_email2': this.inputFields.billink_email2(),
                     'billink_reference': this.inputFields.billink_reference()
                 });
                 if (this.isSelectedType('B')) {
@@ -212,8 +214,6 @@ define(
             },
 
             isSelectedWorkflow: function () {
-                console.log( this.selectedCustomerType() );
-
                 if (this.selectedCustomerType() === false) {
                     return true;
                 }

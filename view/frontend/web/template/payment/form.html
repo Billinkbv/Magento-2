@@ -36,6 +36,10 @@
                             <span><!-- ko i18n: 'Chamber of commerce'--><!-- /ko -->: </span>
                             <span data-bind="text: inputFields[getCode() + '_chamber_of_commerce']"></span>
                         </div>
+                        <div data-bind="visible: inputFields[getCode() + '_email2']()">
+                            <span><!-- ko i18n: 'Invoice e-mail address'--><!-- /ko -->: </span>
+                            <span data-bind="text: inputFields[getCode() + '_email2']"></span>
+                        </div>
                     </div>
                     <div>
                         <span><!-- ko i18n: 'Street'--><!-- /ko -->: </span>
@@ -71,6 +75,16 @@
                                 <input type="text" name="payment[customer_chamber_of_commerce]"
                                        data-validate="{required:true}"
                                        data-bind="value: inputFields[getCode() + '_chamber_of_commerce']"/>
+                            </div>
+                        </div>
+
+                        <div class="field"
+                             data-bind="attr: {id: getCode() + '_customer_email2'}, visible: !inputFields[getCode() + '_email2']() || toggle">
+                            <label data-bind="attr: {for: getCode() + '_customer_email2'}" class="label">
+                                <span><!-- ko i18n: 'Invoice e-mail address'--><!-- /ko --></span>
+                            </label>
+                            <div class="control">
+                                <input type="text" data-bind="value: inputFields[getCode() + '_email2']"/>
                             </div>
                         </div>
                     <!--/ko-->
