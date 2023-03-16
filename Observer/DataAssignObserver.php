@@ -23,7 +23,7 @@ class DataAssignObserver extends AbstractDataAssignObserver
     const STREET = 'billink_street';
     const BIRTHDATE = 'billink_customer_birthdate';
     const SEX = 'billink_customer_sex';
-    const EMAIL = 'billink_email2';
+    const INVOICE_EMAIL = 'billink_email2';
     const REFERENCE = 'billink_reference';
 
     // Delivery Address
@@ -49,7 +49,7 @@ class DataAssignObserver extends AbstractDataAssignObserver
         self::DELIVERY_ADDRESS_HOUSENUMBER,
         self::DELIVERY_ADDRESS_HOUSEEXTENSION,
         self::VALIDATE_ORDER_FLAG,
-        self::EMAIL,
+        self::INVOICE_EMAIL,
         self::REFERENCE
     ];
 
