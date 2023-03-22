@@ -15,12 +15,7 @@
         <!-- ko template: getTemplate() --><!-- /ko -->
         <!--/ko-->
 
-        <div class="payment-method-billing-address" data-bind="if: isAlternateDeliveryAddressAllowed()">
-            <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
-            <!-- ko template: getTemplate() --><!-- /ko -->
-            <!--/ko-->
-        </div>
-
+        <div class="step-title"><!-- ko i18n: 'Shipping Address'--><!-- /ko --></div>
         <form id="form-billink" class="form" data-mage-init='{"validation": {}}' method="post" action="#">
             <fieldset data-bind="attr: {class: 'fieldset ' + getCode(), id: 'payment_form_' + getCode()}">
                 <legend class="legend">
@@ -30,24 +25,24 @@
 
                 <div class="field">
                     <div data-bind="visible: inputFields[getCode() + '_company']">
-                        <span><!-- ko i18n: 'Company'--><!-- /ko -->: </span>
+                        <label class="label"><!-- ko i18n: 'Company'--><!-- /ko -->: </label>
                         <span data-bind="text: inputFields[getCode() + '_company']"></span>
                         <div data-bind="visible: inputFields[getCode() + '_chamber_of_commerce']()">
-                            <span><!-- ko i18n: 'Chamber of commerce'--><!-- /ko -->: </span>
+                            <label class="label"><!-- ko i18n: 'Chamber of commerce'--><!-- /ko -->: </label>
                             <span data-bind="text: inputFields[getCode() + '_chamber_of_commerce']"></span>
                         </div>
                         <div data-bind="visible: inputFields[getCode() + '_email2']()">
-                            <span><!-- ko i18n: 'Invoice e-mail address'--><!-- /ko -->: </span>
+                            <label class="label"><!-- ko i18n: 'Invoice e-mail address'--><!-- /ko -->: </label>
                             <span data-bind="text: inputFields[getCode() + '_email2']"></span>
                         </div>
                     </div>
                     <div>
-                        <span><!-- ko i18n: 'Street'--><!-- /ko -->: </span>
+                        <label class="label"><!-- ko i18n: 'Street'--><!-- /ko -->: </label>
                         <span data-bind="text: inputFields[getCode() + '_street']"></span>
                         <span data-bind="text: inputFields[getCode() + '_house_number']"></span>
                         <span data-bind="text: inputFields[getCode() + '_house_extension']"></span>
                     </div>
-                    <button type="button" class="action action-edit-address" data-bind="visible: inputFields[getCode() + '_house_number']() && inputFields[getCode() + '_street'](), click: toggleView">
+                    <button type="button" class="action action-edit-address" data-bind="click: toggleView, hidden: toggle">
                         <span data-bind="i18n: 'Edit'"></span>
                     </button>
                 </div>
@@ -164,12 +159,6 @@
                     </div>
                 </div>
 
-                <div class="field" data-bind="visible: toggle">
-                    <button class="action action-update" type="button" data-bind="click: updateAddress, click: toggleView">
-                        <span data-bind="i18n: 'Update'">Update</span>
-                    </button>
-                </div>
-
                 <div class="field"
                      data-bind="attr: {id: getCode() + '_customer_reference'}">
                     <label data-bind="attr: {for: getCode() + '_customer_reference'}" class="label">
@@ -179,9 +168,21 @@
                         <input type="text" data-bind="value: inputFields[getCode() + '_reference']" name="payment[customer_reference]"/>
                     </div>
                 </div>
+
+                <div class="field update" data-bind="visible: toggle">
+                    <button class="action action-update" type="button" data-bind="click: updateAddress, click: toggleView">
+                        <span data-bind="i18n: 'Update'">Update</span>
+                    </button>
+                </div>
                 <!--/ko-->
 
-                <div class="field checkbox required"
+                <div class="payment-method-billing-address" data-bind="if: isAlternateDeliveryAddressAllowed()">
+                    <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
+                    <!-- ko template: getTemplate() --><!-- /ko -->
+                    <!--/ko-->
+                </div>
+
+                <div class="checkbox required"
                      data-bind="attr: {id: getCode() + '_terms_agreement'}">
                     <div class="control">
                         <label class="label">
@@ -220,6 +221,7 @@
         </div>
     </div>
 </div>
+
 <div class="payment-method" data-bind="if: disablePaymentMethods(), css: {'_active': (getCode() == isChecked())}">
     <div class="payment-method-title field choice">
         <input type="radio" class="radio" disabled/>

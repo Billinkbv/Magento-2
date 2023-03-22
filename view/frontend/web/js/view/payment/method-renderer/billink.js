@@ -84,6 +84,7 @@ define(
                     }
                     if (quote.billingAddress().street.length) {
                         if ( quote.billingAddress().street[0].split(/(\d+)/g)[1] !== "" ) {
+                            console.log("Huisnummer niet in eerste veld ingevuld");
                             this.inputFields.billink_street(quote.billingAddress().street[0].split(/(\d+)/g)[0]);
                             this.inputFields.billink_house_number(quote.billingAddress().street[0].split(/(\d+)/g)[1]);
                             this.inputFields.billink_house_extension(quote.billingAddress().street[0].split(/(\d+)/g)[2]);
