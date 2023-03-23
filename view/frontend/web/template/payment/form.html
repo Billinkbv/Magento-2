@@ -15,7 +15,6 @@
         <!-- ko template: getTemplate() --><!-- /ko -->
         <!--/ko-->
 
-        <div class="step-title"><!-- ko i18n: 'Shipping Address'--><!-- /ko --></div>
         <form id="form-billink" class="form" data-mage-init='{"validation": {}}' method="post" action="#">
             <fieldset data-bind="attr: {class: 'fieldset ' + getCode(), id: 'payment_form_' + getCode()}">
                 <legend class="legend">
@@ -23,7 +22,16 @@
                 </legend>
                 <br/>
 
+                <div class="step-title">
+                    <div class="title">
+                        <!-- ko i18n: 'Billing Address'--><!-- /ko -->
+                    </div>
+                </div>
+
                 <div class="field">
+                    <label class="label"><!-- ko i18n: 'Name'--><!-- /ko -->: </label>
+                    <span data-bind="text: inputFields['firstname']"></span> <span data-bind="text: inputFields['middlename']"></span> <span data-bind="text: inputFields['lastname']"></span>
+
                     <div data-bind="visible: inputFields[getCode() + '_company']">
                         <label class="label"><!-- ko i18n: 'Company'--><!-- /ko -->: </label>
                         <span data-bind="text: inputFields[getCode() + '_company']"></span>
@@ -36,11 +44,24 @@
                             <span data-bind="text: inputFields[getCode() + '_email2']"></span>
                         </div>
                     </div>
+
                     <div>
-                        <label class="label"><!-- ko i18n: 'Street'--><!-- /ko -->: </label>
+                        <label class="label"><!-- ko i18n: 'Street and housenumber'--><!-- /ko -->: </label>
                         <span data-bind="text: inputFields[getCode() + '_street']"></span>
                         <span data-bind="text: inputFields[getCode() + '_house_number']"></span>
                         <span data-bind="text: inputFields[getCode() + '_house_extension']"></span>
+                    </div>
+
+                    <div>
+                        <label class="label"><!-- ko i18n: 'City and postcode'--><!-- /ko -->: </label>
+                        <span data-bind="text: inputFields['city']"></span>,
+                        <span data-bind="text: inputFields['postcode']"></span><br>
+
+                        <label class="label"><!-- ko i18n: 'Country'--><!-- /ko -->: </label>
+                        <span data-bind="text: inputFields['countryId']"></span><br>
+
+                        <label class="label"><!-- ko i18n: 'Telephone'--><!-- /ko -->: </label>
+                        <span data-bind="text: inputFields['telephone']"></span>
                     </div>
                     <button type="button" class="action action-edit-address" data-bind="click: toggleView, hidden: toggle">
                         <span data-bind="i18n: 'Edit'"></span>

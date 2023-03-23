@@ -41,6 +41,15 @@ define(
             isAddressSameAsShipping: billingAddress().isAddressSameAsShipping,
             selectedCustomerType: ko.observable(''),
             inputFields: {
+                // Default Magento fields added to render
+                firstname: ko.observable(''),
+                middlename: ko.observable(''),
+                lastname: ko.observable(''),
+                city: ko.observable(''),
+                postcode: ko.observable(''),
+                countryId: ko.observable(''),
+                telephone: ko.observable(''),
+                // Additional billink fields
                 billink_reference: ko.observable(''),
                 billink_email2: ko.observable(''),
                 billink_company: ko.observable(''),
@@ -79,6 +88,17 @@ define(
             },
             initAddressData: function () {
                 if (quote.billingAddress() !== undefined) {
+                    // render default Magento fields
+                    this.inputFields.firstname(quote.billingAddress().firstname);
+                    this.inputFields.middlename(quote.billingAddress().middlename);
+                    this.inputFields.lastname(quote.billingAddress().lastname);
+                    this.inputFields.city(quote.billingAddress().city);
+                    this.inputFields.postcode(quote.billingAddress().postcode);
+                    this.inputFields.countryId(quote.billingAddress().countryId);
+                    this.inputFields.telephone(quote.billingAddress().telephone);
+                    console.log(quote.billingAddress());
+                    console.log(quote.billingAddress().country);
+
                     if (quote.billingAddress().company) {
                         this.inputFields.billink_company(quote.billingAddress().company);
                     }
