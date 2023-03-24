@@ -15,14 +15,50 @@
 
     .step-title {
       padding: 0 12px;
+      position: relative;
 
       .title {
         border-bottom: 1px solid #cccccc;
         padding: 12px 0;
       }
+
+      .action-edit {
+        background: transparent;
+        border: 0;
+        position: absolute;
+        right: 12px;
+        top: 12px;
+
+        &:before {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          font-size: 18px;
+          line-height: 20px;
+          color: #757575;
+          content: '\e601';
+          font-family: 'luma-icons';
+          vertical-align: middle;
+          display: inline-block;
+          font-weight: normal;
+          overflow: hidden;
+          speak: none;
+          text-align: center;
+        }
+
+        span {
+          border: 0;
+          clip: rect(0, 0, 0, 0);
+          height: 1px;
+          margin: -1px;
+          overflow: hidden;
+          padding: 0;
+          position: absolute;
+          width: 1px;
+        }
+      }
     }
 
-    > .field {
+    > .field, #billing-address-details {
       padding: 12px 12px;
       margin: 0;
 
@@ -44,7 +80,7 @@
     }
 
     .checkbox {
-      padding: 0 12px 12px 12px;
+      padding: 0 12px 24px 12px;
     }
   }
 
@@ -60,7 +96,22 @@
     }
   }
 
-  .field-select-billing, .billing-address-details {
+  .billing-address-details {
+    height: 0;
+    visibility: hidden;
+
+    button {
+      position: absolute;
+      top: -100px;
+      visibility: visible;
+    }
+  }
+
+  .checkout-billing-address {
+    margin: 0;
+  }
+
+  .hide {
     display: none;
   }
 }

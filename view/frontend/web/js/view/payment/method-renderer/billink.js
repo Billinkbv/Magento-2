@@ -87,7 +87,7 @@ define(
                 return this;
             },
             initAddressData: function () {
-                if (quote.billingAddress() !== undefined) {
+                if (quote.billingAddress()) {
                     // render default Magento fields
                     this.inputFields.firstname(quote.billingAddress().firstname);
                     this.inputFields.middlename(quote.billingAddress().middlename);
@@ -96,11 +96,11 @@ define(
                     this.inputFields.postcode(quote.billingAddress().postcode);
                     this.inputFields.countryId(quote.billingAddress().countryId);
                     this.inputFields.telephone(quote.billingAddress().telephone);
-                    console.log(quote.billingAddress());
-                    console.log(quote.billingAddress().country);
 
                     if (quote.billingAddress().company) {
                         this.inputFields.billink_company(quote.billingAddress().company);
+                    } else {
+                        this.inputFields.billink_company('');
                     }
                     if (quote.billingAddress().street.length) {
                         this.number = quote.billingAddress().street[0].split(/(\d+)/g)[1];
@@ -122,7 +122,7 @@ define(
             },
             updateAddressData: function () {
                 this.updateCustomerTypeSelect();
-                this.initAddressData();// todo this must be changed for setting edit address functional
+                this.initAddressData();
             },
 
             getCode: function () {
@@ -238,7 +238,7 @@ define(
             },
 
             isSelectedWorkflow: function () {
-                if (this.selectedCustomerType() === false) {
+                if ((this.selectedCustomerType() === false) || (!quote.billingAddress())) {
                     return true;
                 }
                 if (quote.billingAddress().company) {
@@ -342,8 +342,16 @@ define(
                 return $form.validation() && $form.validation('isValid');
             },
 
-            toggleView: function () {
-                this.toggle(!this.toggle());
+            editBillingAddress: function() {
+                const editButton = document.querySelector('#payment_form_billink .action-edit-address');
+                const computedStyle = window.getComputedStyle(editButton);
+                const displayValue = computedStyle.getPropertyValue('display');
+
+                if (displayValue === 'none') {
+                    document.getElementById("billing-address-same-as-shipping-billink").click();
+                } else {
+                    editButton.click();
+                }
             }
         });
     }

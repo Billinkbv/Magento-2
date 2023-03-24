@@ -26,9 +26,12 @@
                     <div class="title">
                         <!-- ko i18n: 'Billing Address'--><!-- /ko -->
                     </div>
+                    <button class="action action-edit" data-bind="click: editBillingAddress">
+                        <span data-bind="i18n: 'edit'">edit</span>
+                    </button>
                 </div>
 
-                <div class="field">
+                <div id="billing-address-details">
                     <label class="label"><!-- ko i18n: 'Name'--><!-- /ko -->: </label>
                     <span data-bind="text: inputFields['firstname']"></span> <span data-bind="text: inputFields['middlename']"></span> <span data-bind="text: inputFields['lastname']"></span>
 
@@ -63,9 +66,6 @@
                         <label class="label"><!-- ko i18n: 'Telephone'--><!-- /ko -->: </label>
                         <span data-bind="text: inputFields['telephone']"></span>
                     </div>
-                    <button type="button" class="action action-edit-address" data-bind="click: toggleView, hidden: toggle">
-                        <span data-bind="i18n: 'Edit'"></span>
-                    </button>
                 </div>
 
                 <!-- ko if: selectedCustomerType -->
@@ -188,12 +188,6 @@
                     <div class="control">
                         <input type="text" data-bind="value: inputFields[getCode() + '_reference']" name="payment[customer_reference]"/>
                     </div>
-                </div>
-
-                <div class="field update" data-bind="visible: toggle">
-                    <button class="action action-update" type="button" data-bind="click: updateAddress, click: toggleView">
-                        <span data-bind="i18n: 'Update'">Update</span>
-                    </button>
                 </div>
                 <!--/ko-->
 
