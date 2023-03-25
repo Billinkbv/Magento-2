@@ -343,7 +343,7 @@ define(
             },
 
             editBillingAddress: function() {
-                const editButton = document.querySelector('#payment_form_billink .action-edit-address');
+                const editButton = document.querySelector('#form-billink .action-edit-address');
                 const computedStyle = window.getComputedStyle(editButton);
                 const displayValue = computedStyle.getPropertyValue('display');
 
