@@ -52,7 +52,8 @@ class CompanyDataBuilder implements BuilderInterface
             self::CHAMBEROFCOMMERCE => $this->subjectReader->readPaymentAIField(
                 DataAssignObserver::CHAMBER_OF_COMMERCE,
                 $buildSubject
-            )
+            ),
+
         ];
     }
 }
