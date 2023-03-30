@@ -15,7 +15,7 @@ echo $code; ?>" style="display: none">
                            class="admin__control-radio required-entry"
                            data-type-value="<?php /* @noEscape */
                            echo strtolower($customerType['value']); ?>"
-                        <?php if (strtolower($customerType['value'] == $block->getInfoData($code . '_customer_type'))): ?>
+                        <?php if (strtolower($customerType['value']) == strtolower($block->getInfoData($code . '_customer_type'))): ?>
                             checked
                         <?php endif; ?>
                     />
@@ -50,9 +50,10 @@ echo $code; ?>" style="display: none">
         </label>
         <div class="admin__field-control">
             <input type="text" id="<?php /* @noEscape */
-            echo $code; ?>_chamber_of_commerce" name="payment[<?php /* @noEscape */
-            echo $code; ?>_chamber_of_commerce]"
-                   title="<?php echo $block->escapeHtml(__('Chamber of commerce')); ?>" class="admin__control-text"/>
+               echo $code; ?>_chamber_of_commerce" name="payment[<?php /* @noEscape */
+               echo $code; ?>_chamber_of_commerce]"
+               value="<?php echo $block->getInfoData($code . '_chamber_of_commerce'); ?>"
+               title="<?php echo $block->escapeHtml(__('Chamber of commerce')); ?>" class="admin__control-text"/>
         </div>
     </div>
 
@@ -208,7 +209,7 @@ echo $code; ?>" style="display: none">
     var order = window.order;
     require(['jquery', "mage/calendar"], function ($) {
         var billinkPaymentForm = {
-            currentType: 'p',
+            currentType: '<?php /* @noEscape */ echo $block->getInfoData($code . '_customer_type') ? strtolower($block->getInfoData($code . '_customer_type')): 'p' ?>',
             methodCode: '<?php /* @noEscape */ echo $code;?>',
             init: function () {
                 this.initEvents();
