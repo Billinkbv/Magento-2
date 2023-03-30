@@ -29,7 +29,6 @@ class CustomerDataBuilder implements BuilderInterface
     const DEVICE = 'DEVICE';
     const BROWSER = 'BROWSER';
     const REFERENCE = 'ADITIONALTEXT';
-    const INVOICE_EMAIL = 'EMAIL2';
 
     /**
      * @var SubjectReader
@@ -97,8 +96,7 @@ class CustomerDataBuilder implements BuilderInterface
             self::IP => $orderData->getRemoteIp(),
             self::DEVICE => $headerData['platform'],
             self::BROWSER => $headerData['browser'] . ' ' . $headerData['version'],
-            self::REFERENCE => $this->subjectReader->readPaymentAIField(DataAssignObserver::REFERENCE, $buildSubject),
-            self::INVOICE_EMAIL => $this->subjectReader->readPaymentAIField(DataAssignObserver::INVOICE_EMAIL, $buildSubject)
+            self::REFERENCE => $this->subjectReader->readPaymentAIField(DataAssignObserver::REFERENCE, $buildSubject)
         ];
 
         if (WorkflowHelper::TYPE_PRIVATE === $workflowType) {
