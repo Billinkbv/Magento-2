@@ -56,7 +56,7 @@ abstract class AbstractResponseValidator extends \Magento\Payment\Gateway\Valida
                 $validationResult = $validator($response);
 
                 if (!$validationResult['result']) {
-                    throw new ResponseException($validationResult['code'], $this->getService(), $validationResult['message']);
+                    throw new ResponseException($validationResult['code'], $this->getService(), $validationResult['message'] ?? '');
                 }
             }
         } catch (InvalidResponseException $e) {

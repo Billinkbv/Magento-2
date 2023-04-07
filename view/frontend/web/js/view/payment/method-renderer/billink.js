@@ -41,7 +41,17 @@ define(
             isAddressSameAsShipping: billingAddress().isAddressSameAsShipping,
             selectedCustomerType: ko.observable(''),
             inputFields: {
+                // Default Magento fields added to render
+                firstname: ko.observable(''),
+                middlename: ko.observable(''),
+                lastname: ko.observable(''),
+                city: ko.observable(''),
+                postcode: ko.observable(''),
+                countryId: ko.observable(''),
+                telephone: ko.observable(''),
+                // Additional billink fields
                 billink_reference: ko.observable(''),
+                billink_email2: ko.observable(''),
                 billink_company: ko.observable(''),
                 billink_chamber_of_commerce: ko.observable(''),
                 billink_street: ko.observable(''),
@@ -77,27 +87,42 @@ define(
                 return this;
             },
             initAddressData: function () {
-                if (quote.billingAddress() !== undefined) {
-                    if (!(typeof quote.billingAddress().company === undefined || quote.billingAddress().company === null)) {
+                if (quote.billingAddress()) {
+                    // render default Magento fields
+                    this.inputFields.firstname(quote.billingAddress().firstname);
+                    this.inputFields.middlename(quote.billingAddress().middlename);
+                    this.inputFields.lastname(quote.billingAddress().lastname);
+                    this.inputFields.city(quote.billingAddress().city);
+                    this.inputFields.postcode(quote.billingAddress().postcode);
+                    this.inputFields.countryId(quote.billingAddress().countryId);
+                    this.inputFields.telephone(quote.billingAddress().telephone);
+
+                    if (quote.billingAddress().company) {
                         this.inputFields.billink_company(quote.billingAddress().company);
+                    } else {
+                        this.inputFields.billink_company('');
                     }
                     if (quote.billingAddress().street.length) {
-                        if ( quote.billingAddress().street[0].split(/(\d+)/g)[1] !== "" ) {
+                        this.number = quote.billingAddress().street[0].split(/(\d+)/g)[1];
+                        if ( !(this.number === "" || this.number === undefined)) {
                             this.inputFields.billink_street(quote.billingAddress().street[0].split(/(\d+)/g)[0]);
                             this.inputFields.billink_house_number(quote.billingAddress().street[0].split(/(\d+)/g)[1]);
                             this.inputFields.billink_house_extension(quote.billingAddress().street[0].split(/(\d+)/g)[2]);
-                        }
-                        else {
+                        } else {
                             this.inputFields.billink_street(quote.billingAddress().street[0]);
                             this.inputFields.billink_house_number(quote.billingAddress().street[1]);
                             this.inputFields.billink_house_extension(quote.billingAddress().street[2]);
                         }
                     }
+                    // Optional custom fields added by webshop owner in step 1
+                    if (!(typeof quote.billingAddress().chamberOfCommerce === undefined || quote.billingAddress().chamberOfCommerce === null)) {
+                        this.inputFields.billink_chamber_of_commerce(quote.billingAddress().chamberOfCommerce);
+                    }
                 }
             },
             updateAddressData: function () {
                 this.updateCustomerTypeSelect();
-                this.initAddressData();// todo this must be changed for setting edit address functional
+                this.initAddressData();
             },
 
             getCode: function () {
@@ -126,7 +151,7 @@ define(
             updateCustomerTypeSelect: function () {
                 var workflow = window.checkoutConfig.payment.billink.workflow;
                 if (!this.disablePaymentMethods() && quote.billingAddress() !== null) {
-                    if (!(typeof quote.billingAddress().company === undefined || quote.billingAddress().company === null)) {
+                    if (quote.billingAddress().company) {
                         if (workflow.hasOwnProperty("workflow_B")) {
                             this.selectedCustomerType('B');
                         }
@@ -148,6 +173,7 @@ define(
                     'billink_house_number': this.inputFields.billink_house_number(),
                     'billink_house_extension': this.inputFields.billink_house_extension(),
                     'billink_validate_order': true,
+                    'billink_email2': this.inputFields.billink_email2(),
                     'billink_reference': this.inputFields.billink_reference()
                 });
                 if (this.isSelectedType('B')) {
@@ -212,12 +238,10 @@ define(
             },
 
             isSelectedWorkflow: function () {
-                console.log( this.selectedCustomerType() );
-
-                if (this.selectedCustomerType() === false) {
+                if ((this.selectedCustomerType() === false) || (!quote.billingAddress())) {
                     return true;
                 }
-                if (!(typeof quote.billingAddress().company === undefined || quote.billingAddress().company === null)) {
+                if (quote.billingAddress().company) {
                     return this.selectedCustomerType() === 'B';
                 }
                 return this.selectedCustomerType() === 'P';
@@ -318,8 +342,16 @@ define(
                 return $form.validation() && $form.validation('isValid');
             },
 
-            toggleView: function () {
-                this.toggle(!this.toggle());
+            editBillingAddress: function() {
+                const editButton = document.querySelector('#form-billink .action-edit-address');
+                const computedStyle = window.getComputedStyle(editButton);
+                const displayValue = computedStyle.getPropertyValue('display');
+
+                if (displayValue === 'none') {
+                    document.getElementById("billing-address-same-as-shipping-billink").click();
+                } else {
+                    editButton.click();
+                }
             }
         });
     }
