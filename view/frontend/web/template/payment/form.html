@@ -70,7 +70,7 @@
                 <!-- ko if: selectedCustomerType -->
                     <!-- ko if: isSelectedType('B') -->
                         <div class="field required"
-                             data-bind="attr: {id: getCode() + '_customer_company'}, visible: !inputFields[getCode() + '_company']() || toggle">
+                             data-bind="attr: {id: getCode() + '_customer_company'}, visible: !inputFields[getCode() + '_company']()">
                             <label data-bind="attr: {for: getCode() + '_customer_company'}" class="label">
                                 <span><!-- ko i18n: 'Company'--><!-- /ko --></span>
                             </label>
@@ -148,7 +148,7 @@
                     <!--/ko-->
 
                 <div class="field required"
-                     data-bind="attr: {id: getCode() + '_customer_street_name'}, visible: !inputFields[getCode() + '_street']() || toggle">
+                     data-bind="attr: {id: getCode() + '_customer_street_name'}, visible: !inputFields[getCode() + '_street']()">
                     <label data-bind="attr: {for: getCode() + '_customer_street_name'}" class="label">
                         <span><!-- ko i18n: 'Street name'--><!-- /ko --></span>
                     </label>
@@ -159,23 +159,13 @@
                     </div>
                 </div>
                 <div class="field required"
-                     data-bind="attr: {id: getCode() + '_customer_house_number'}, visible: !inputFields[getCode() + '_house_number']() || toggle">
+                     data-bind="attr: {id: getCode() + '_customer_house_number'}, visible: !inputFields[getCode() + '_house_number']()">
                     <label data-bind="attr: {for: getCode() + '_customer_house_number'}" class="label">
                         <span><!-- ko i18n: 'House number'--><!-- /ko --></span>
                     </label>
                     <div class="control">
                         <input type="text" data-bind="value: inputFields[getCode() + '_house_number']"
                                maxlength="20" name="payment[customer_house_number]" data-validate="{required:true}"/>
-                    </div>
-                </div>
-                <div class="field"
-                     data-bind="attr: {id: getCode() + '_customer_house_extension'}, visible: toggle">
-                    <label data-bind="attr: {for: getCode() + '_customer_house_extension'}" class="label">
-                        <span><!-- ko i18n: 'House extension'--><!-- /ko --></span>
-                    </label>
-                    <div class="control">
-                        <input type="text" data-bind="value: inputFields[getCode() + '_house_extension']"
-                               maxlength="20" name="payment[customer_house_extension]"/>
                     </div>
                 </div>
 
