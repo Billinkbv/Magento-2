@@ -15,7 +15,7 @@ echo $code; ?>" style="display: none">
                            class="admin__control-radio required-entry"
                            data-type-value="<?php /* @noEscape */
                            echo strtolower($customerType['value']); ?>"
-                        <?php if (strtolower($customerType['value'] == $block->getInfoData($code . '_customer_type'))): ?>
+                        <?php if (strtolower($customerType['value']) == strtolower($block->getInfoData($code . '_customer_type'))): ?>
                             checked
                         <?php endif; ?>
                     />
@@ -30,15 +30,30 @@ echo $code; ?>" style="display: none">
     </div>
 
     <div class="field-type admin__field _required field-type-b" style="display: none">
+        <label class="admin__field-label" for="<?php /* @noEscape */ echo $code; ?>_company">
+            <span><?php echo $block->escapeHtml(__('Company')); ?></span>
+        </label>
+        <div class="admin__field-control">
+            <input type="text"
+                   id="<?php /* @noEscape */ echo $code; ?>_company"
+                   name="payment[<?php /* @noEscape */ echo $code; ?>_company]"
+                   title="<?php echo $block->escapeHtml(__('Company')); ?>"
+                   class="admin__control-text"
+                   value="<?php echo $block->getInfoData($code . '_company'); ?>" />
+        </div>
+    </div>
+
+    <div class="field-type admin__field _required field-type-b" style="display: none">
         <label class="admin__field-label" for="<?php /* @noEscape */
         echo $code; ?>_chamber_of_commerce">
             <span><?php echo $block->escapeHtml(__('Chamber of commerce')); ?></span>
         </label>
         <div class="admin__field-control">
             <input type="text" id="<?php /* @noEscape */
-            echo $code; ?>_chamber_of_commerce" name="payment[<?php /* @noEscape */
-            echo $code; ?>_chamber_of_commerce]"
-                   title="<?php echo $block->escapeHtml(__('Chamber of commerce')); ?>" class="admin__control-text"/>
+               echo $code; ?>_chamber_of_commerce" name="payment[<?php /* @noEscape */
+               echo $code; ?>_chamber_of_commerce]"
+               value="<?php echo $block->getInfoData($code . '_chamber_of_commerce'); ?>"
+               title="<?php echo $block->escapeHtml(__('Chamber of commerce')); ?>" class="admin__control-text"/>
         </div>
     </div>
 
@@ -194,7 +209,7 @@ echo $code; ?>" style="display: none">
     var order = window.order;
     require(['jquery', "mage/calendar"], function ($) {
         var billinkPaymentForm = {
-            currentType: 'p',
+            currentType: '<?php /* @noEscape */ echo $block->getInfoData($code . '_customer_type') ? strtolower($block->getInfoData($code . '_customer_type')): 'p' ?>',
             methodCode: '<?php /* @noEscape */ echo $code;?>',
             init: function () {
                 this.initEvents();
@@ -249,7 +264,7 @@ echo $code; ?>" style="display: none">
                 });
                 addresses.billing = this.getSplitAddres(addresses.billing.join(" ").trim());
                 addresses.shipping = this.getSplitAddres(addresses.shipping.join(" ").trim());
-                ['_street_name', '_house_number', '_house_extension'].forEach((e, idx) => {
+                ['_street_name', '_house_number', '_house_extension', '_company'].forEach((e, idx) => {
                     let el = $('#' + this.methodCode + e)
                     if (el.val() === '') {
                         el.val(addresses.billing[idx])
@@ -286,7 +301,7 @@ echo $code; ?>" style="display: none">
                         .get()
                 )];
                 if (fields.length) {
-                    $('#' + this.methodCode + '_chamber_of_commerce').val(fields.shift())
+                    $('#' + this.methodCode + '_company').val(fields.shift())
                 }
             },
             initPrivate: function () {
