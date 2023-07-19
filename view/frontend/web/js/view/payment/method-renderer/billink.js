@@ -55,6 +55,7 @@ define(
                 billink_company: ko.observable(''),
                 billink_chamber_of_commerce: ko.observable(''),
                 billink_street: ko.observable(''),
+                billink_telephone: ko.observable(''),
                 billink_house_number: ko.observable(''),
                 billink_house_extension: ko.observable(''),
                 billink_customer_birthdate: ko.observable(''),
@@ -133,6 +134,10 @@ define(
                 return window.checkoutConfig.payment.billink.logo;
             },
 
+            isTelephoneEmpty: function() {
+                return !this.inputFields['telephone']();
+            },
+
             getData: function () {
                 return {
                     'method': this.item.method,
@@ -194,6 +199,11 @@ define(
                         'billink_delivery_address_housenumber': this.inputFields.billink_delivery_address_housenumber(),
                         'billink_delivery_address_housenumber_extension': this.inputFields.billink_delivery_address_housenumber_extension()
                     });
+                }
+
+                if (this.isTelephoneEmpty()) {
+                    console.log('Setting telephone to: ' + this.inputFields.billink_telephone());
+                    quote.billingAddress().telephone = this.inputFields.billink_telephone();
                 }
 
                 this.additionalData(additionalData);

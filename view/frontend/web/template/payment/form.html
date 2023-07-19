@@ -189,6 +189,19 @@
                     </div>
                 </div>
                 <!--/ko-->
+                <!-- ko if: isTelephoneEmpty() -->
+                    <div class="field required"
+                         data-bind="attr: {id: getCode() + '_telephone'}, visible: !inputFields['telephone']()">
+                        <label data-bind="attr: {for: getCode() + '_telephone'}" class="label">
+                            <span><!-- ko i18n: 'Telephone'--><!-- /ko --></span>
+                        </label>
+                        <div class="control">
+                            <input type="text" name="payment[customer_telephone]"
+                                   data-validate="{required:true}"
+                                   data-bind="value: inputFields[getCode() + '_telephone']"/>
+                        </div>
+                    </div>
+                <!--/ko-->
 
                 <div class="checkbox required"
                      data-bind="attr: {id: getCode() + '_terms_agreement'}">
