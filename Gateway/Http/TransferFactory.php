@@ -5,6 +5,7 @@ namespace Billink\Billink\Gateway\Http;
 use Billink\Billink\Gateway\Helper\Gateway as GatewayHelper;
 use Billink\Billink\Gateway\Helper\Xml as XmlHelper;
 use Billink\Billink\Gateway\Request\ActionDataBuilder;
+use Laminas\Http\Request;
 use Magento\Payment\Gateway\Http\TransferBuilder;
 use Magento\Payment\Gateway\Http\TransferFactoryInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
@@ -61,7 +62,7 @@ class TransferFactory implements TransferFactoryInterface
             ->setHeaders(['Content-Type' => 'text/xml'])
             ->setBody($body)
             ->setUri($this->gatewayHelper->getUrl($service))
-            ->setMethod(\Zend_Http_Client::POST)
+            ->setMethod(Request::METHOD_POST)
             ->build();
     }
 }
