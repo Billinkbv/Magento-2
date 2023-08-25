@@ -2,8 +2,11 @@
 
 namespace Billink\Billink\Gateway\Http\Client;
 
-use Magento\Framework\HTTP\ZendClientFactory;
-use Magento\Framework\HTTP\ZendClient;
+use Laminas\Http\Request;
+use Laminas\Http\Exception\RuntimeException as LaminasRuntimeException;
+use Laminas\Http\Client\Exception\RuntimeException;
+use Magento\Framework\HTTP\LaminasClientFactory;
+use Magento\Framework\HTTP\LaminasClient;
 use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\ConverterException;
@@ -12,14 +15,14 @@ use Magento\Payment\Gateway\Http\TransferInterface;
 use Magento\Payment\Model\Method\Logger;
 
 /**
- * Class Zend
+ * Class Laminas
  * @package Magento\Payment\Gateway\Http\Client
  * @api
  */
-class Zend implements ClientInterface
+class Laminas implements ClientInterface
 {
     /**
-     * @var ZendClientFactory
+     * @var LaminasClientFactory
      */
     private $clientFactory;
 
@@ -34,12 +37,12 @@ class Zend implements ClientInterface
     private $logger;
 
     /**
-     * @param ZendClientFactory $clientFactory
+     * @param LaminasClientFactory $clientFactory
      * @param Logger $logger
      * @param ConverterInterface | null $converter
      */
     public function __construct(
-        ZendClientFactory $clientFactory,
+        LaminasClientFactory $clientFactory,
         Logger $logger,
         ConverterInterface $converter = null
     ) {
@@ -50,35 +53,36 @@ class Zend implements ClientInterface
 
     /**
      * {inheritdoc}
-     * @see \Magento\Payment\Gateway\Http\Client\Zend
      * @param TransferInterface $transferObject
      *
      * @return array
      *
      * @throws ClientException
      * @throws ConverterException
-     * @throws \Zend_Http_Client_Exception
      */
     public function placeRequest(TransferInterface $transferObject)
     {
         $log = [
             'request' => $transferObject->getBody(),
-            'request_uri' => $transferObject->getUri()
+            'request_uri' => $transferObject->getUri(),
+            'method' => $transferObject->getMethod(),
         ];
         $result = [];
-        /** @var ZendClient $client */
+        /** @var LaminasClient $client */
         $client = $this->clientFactory->create();
 
-        $client->setConfig($transferObject->getClientConfig());
+        $client->setOptions($transferObject->getClientConfig());
         $client->setMethod($transferObject->getMethod());
 
+        $body = $transferObject->getBody();
+
         switch ($transferObject->getMethod()) {
-            case \Zend_Http_Client::GET:
-                $client->setParameterGet($transferObject->getBody());
+            case Request::METHOD_GET:
+                $client->setParameterGet($body);
                 break;
-            case \Zend_Http_Client::POST:
+            case Request::METHOD_POST:
                 // AW Modified - set RAW data instead of POST parameters
-                $client->setRawData($transferObject->getBody());
+                $client->setRawBody($body);
                 break;
             default:
                 throw new \LogicException(
@@ -94,18 +98,16 @@ class Zend implements ClientInterface
         $client->setUri($transferObject->getUri());
 
         try {
-            $response = $client->request();
+            $response = $client->send();
 
             $result = $this->converter
                 ? $this->converter->convert($response->getBody())
                 : [$response->getBody()];
             $log['response'] = $result;
-        } catch (\Zend_Http_Client_Exception $e) {
+        } catch (RuntimeException|LaminasRuntimeException $e) {
             throw new ClientException(
                 __($e->getMessage())
             );
-        } catch (ConverterException $e) {
-            throw $e;
         } finally {
             $this->logger->debug($log);
         }

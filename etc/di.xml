@@ -42,10 +42,10 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="BillinkRequestClient" type="Billink\Billink\Gateway\Http\Client\Zend">
+    <virtualType name="BillinkRequestClient" type="Billink\Billink\Gateway\Http\Client\Laminas">
         <arguments>
             <argument name="logger" xsi:type="object">BillinkPaymentLogger</argument>
-            <argument name="converter" xsi:type="object">\Billink\Billink\Gateway\Converter\ResponseConverter</argument>
+            <argument name="converter" xsi:type="object">Billink\Billink\Gateway\Converter\ResponseConverter</argument>
         </arguments>
     </virtualType>
 
