@@ -110,9 +110,9 @@
                             <span><!-- ko i18n: 'Birthday'--><!-- /ko --></span>
                         </label>
                         <div class="control">
-                            <input type="text"
+                            <input type="date"
                                    style="width: 100%"
-                                   data-bind="value: inputFields[getCode() + '_customer_birthdate'], afterRender: initDatetime"
+                                   data-bind="value: inputFields[getCode() + '_customer_birthdate']"
                                    data-validate="{required:true}"
                                    name="payment[customer_birthday]" class="datepicker" id="calendar_inputField"/>
                         </div>
