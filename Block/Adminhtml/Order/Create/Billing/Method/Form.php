@@ -50,12 +50,7 @@ class Form extends \Magento\Payment\Block\Form
             /** @var Customer $customer */
             $customer = $quote->getCustomer();
 
-            if ($field === $this->getMethodCode() . "_customer_sex") {
-                $gender = $customer->getGender();
-                if ($gender !== null) {
-                    $instance->setData($field, $gender == 1 ? 'M' : 'F');
-                }
-            } elseif ($field === $this->getMethodCode() . "_customer_birthdate") {
+            if ($field === $this->getMethodCode() . "_customer_birthdate") {
                 $dob = $customer->getDob();
                 if ($dob !== null) {
                     $instance->setData($field, $dob);

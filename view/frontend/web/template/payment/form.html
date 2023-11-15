@@ -105,34 +105,6 @@
                     <!--/ko-->
 
                     <!-- ko if: isSelectedType('P') -->
-                    <div class="field radio required">
-                        <span class="label"><!-- ko i18n: 'Sex'--><!-- /ko --></span>
-                        <div class="control">
-                            <input type="radio" name="payment[customer_sex]" class="input-text" value="M"
-                                   data-bind="value: 'M', checked: inputFields[getCode() + '_customer_sex'], attr: {
-                                        autocomplete: 'off',
-                                        id: getCode() + '_customer_sex_man',
-                                        title: $t('Customer Sex man')}"
-                                   data-validate="{'validate-one-required-by-name':true}"
-                            />
-                            <label data-bind="attr: {for: getCode() + '_customer_sex_man'}" class="label">
-                                <span><!-- ko i18n: 'Man'--><!-- /ko --></span>
-                            </label>
-
-                            <br/>
-
-                            <input type="radio" name="payment[customer_sex]" class="input-text" value="W"
-                                   data-bind="value: 'W', checked: inputFields[getCode() + '_customer_sex'], attr: {
-                                        autocomplete: 'off',
-                                        id: getCode() + '_customer_sex_woman',
-                                        title: $t('Customer Sex Woman')}"
-                                   data-validate="{'validate-one-required-by-name':true}"/>
-                            <label data-bind="attr: {for: getCode() + '_customer_sex_woman'}" class="label">
-                                <span><!-- ko i18n: 'Woman'--><!-- /ko --></span>
-                            </label>
-                        </div>
-                    </div>
-
                     <div class="field required" data-bind="attr: {id: getCode() + '_customer_birthday_div'}">
                         <label data-bind="attr: {for: getCode() + '_customer_birthdate'}" class="label">
                             <span><!-- ko i18n: 'Birthday'--><!-- /ko --></span>

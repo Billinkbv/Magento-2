@@ -25,7 +25,6 @@ class CustomerDataBuilder implements BuilderInterface
     const STREET = 'STREET';
     const COUNTRYCODE = 'COUNTRYCODE';
     const CITY = 'CITY';
-    const SEX = 'SEX';
     const DEVICE = 'DEVICE';
     const BROWSER = 'BROWSER';
     const REFERENCE = 'ADITIONALTEXT';
@@ -103,7 +102,6 @@ class CustomerDataBuilder implements BuilderInterface
             $birthDate = $this->subjectReader->readPaymentAIField(DataAssignObserver::BIRTHDATE, $buildSubject);
 
             $result = array_merge($result, [
-                self::SEX => $this->subjectReader->readPaymentAIField(DataAssignObserver::SEX, $buildSubject),
                 self::BIRTHDATE => $this->dateTime->date('d-m-Y', $birthDate .' 00:00:01')
             ]);
         }

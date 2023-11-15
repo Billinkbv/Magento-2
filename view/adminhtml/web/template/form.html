@@ -46,46 +46,6 @@ echo $code; ?>" style="display: none" data-mage-init='{"Billink_Billink/js/payme
         </div>
     </div>
 
-    <div class="field-type radio admin__field _required field-type-p" style="display: none">
-        <span class="admin__field-label">
-            <span><?php echo __('Sex'); ?></span>
-        </span>
-        <div class="admin__field-control">
-            <div>
-                <input type="radio" id="<?php /* @noEscape */
-                echo $code; ?>_customer_sex_m"
-                       name="payment[<?php /* @noEscape */
-                       echo $code; ?>_customer_sex]" value="M"
-                       class="admin__control-radio"
-                <?php if ('M' == $block->getInfoData($code . '_customer_sex')): ?>
-                checked
-                <?php endif; ?>
-                />
-                <label class="admin__field-label"
-                       for="<?php /* @noEscape */
-                       echo $code; ?>_customer_sex_m">
-                    <span><?php echo $block->escapeHtml(__('Man')); ?></span>
-                </label>
-            </div>
-            <div>
-                <input type="radio" id="<?php /* @noEscape */
-                echo $code; ?>_customer_sex_f"
-                       name="payment[<?php /* @noEscape */
-                       echo $code; ?>_customer_sex]" value="F"
-                       class="admin__control-radio"
-                <?php if ('F' == $block->getInfoData($code . '_customer_sex')): ?>
-                checked
-                <?php endif; ?>
-                />
-                <label class="admin__field-label"
-                       for="<?php /* @noEscape */
-                       echo $code; ?>_customer_sex_f">
-                    <span><?php echo $block->escapeHtml(__('Female')); ?></span>
-                </label>
-            </div>
-        </div>
-    </div>
-
     <div class="field-type admin__field date _required field-type-p" style="display: none">
         <label class="admin__field-label" for="<?php /* @noEscape */
         echo $code; ?>_birthdate">
