@@ -11,20 +11,11 @@ use Billink\Billink\Gateway\Helper\Workflow as WorkflowHelper;
  */
 class Fee
 {
+    const COUNTRY = 'country';
     const INDEX_WORKFLOW_TYPE = 'workflow_type';
     const INDEX_TOTAL_FROM = 'total_from';
     const INDEX_TOTAL_TO = 'total_to';
     const INDEX_AMOUNT = 'amount';
-
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * @var Workflow
-     */
-    private $workflowHelper;
 
     /**
      * Fee constructor.
@@ -32,17 +23,15 @@ class Fee
      * @param WorkflowHelper $workflowHelper
      */
     public function __construct(
-        Config $config,
-        WorkflowHelper $workflowHelper
+        private readonly Config $config,
+        private readonly WorkflowHelper $workflowHelper
     ) {
-        $this->config = $config;
-        $this->workflowHelper = $workflowHelper;
     }
 
     /**
      * @return bool
      */
-    public function getIsFeeActive()
+    public function getIsFeeActive(): bool
     {
         return (bool)$this->config->getIsFeeActive();
     }
@@ -50,7 +39,7 @@ class Fee
     /**
      * @return string
      */
-    public function getFeeLabel()
+    public function getFeeLabel(): string
     {
         return $this->config->getFeeLabel();
     }
@@ -59,7 +48,7 @@ class Fee
     /**
      * @return string
      */
-    public function getFeeTaxClass()
+    public function getFeeTaxClass(): string
     {
         return $this->config->getFeeTaxClass();
     }
@@ -67,7 +56,7 @@ class Fee
     /**
      * @return bool
      */
-    public function getFeeIncludesTax()
+    public function getFeeIncludesTax(): bool
     {
         return (bool)$this->config->getFeeType();
     }
@@ -75,30 +64,33 @@ class Fee
     /**
      * @param float $total
      * @param string $workflowType
-     * @return mixed
+     * @param string $country
+     * @return float
      */
-    public function getFeeAmount($total, $workflowType = WorkflowHelper::TYPE_PRIVATE)
+    public function getFeeAmount(float $total, string $workflowType = WorkflowHelper::TYPE_PRIVATE, string $country = "other"): float
     {
         $feeRanges = $this->config->getFeeRange();
-        $result = 0.00;
 
-        foreach ($feeRanges as $feeRange) {
-            if (
-                $feeRange[self::INDEX_WORKFLOW_TYPE] == $this->workflowHelper->getOptionKey($workflowType) &&
-                $this->isFeeInRange($total, $feeRange)
-            ) {
-                $configFee = $feeRange[self::INDEX_AMOUNT];
+        foreach ([$country, "other"] as $customerCountry) {
+            foreach ($feeRanges as $feeRange) {
+                if (
+                    $feeRange[self::COUNTRY] === $customerCountry &&
+                    $feeRange[self::INDEX_WORKFLOW_TYPE] == $this->workflowHelper->getOptionKey($workflowType) &&
+                    $this->isFeeInRange($total, $feeRange)
+                ) {
+                    $configFee = $feeRange[self::INDEX_AMOUNT];
 
-                if (substr($configFee, -1) == '%') {
-                    $percentage = (float)$configFee;
-                    $result = $total * ($percentage / 100);
-                } else {
-                    $result = (float)$configFee;
+                    if (str_ends_with($configFee, '%')) {
+                        $percentage = (float)$configFee;
+                        return $total * ($percentage / 100);
+                    } else {
+                        return (float)$configFee;
+                    }
                 }
             }
         }
 
-        return $result;
+        return 0;
     }
 
     /**
@@ -106,7 +98,7 @@ class Fee
      * @param array $range
      * @return bool
      */
-    public function isFeeInRange($total, array $range)
+    public function isFeeInRange(float $total, array $range): bool
     {
         $min = $range[self::INDEX_TOTAL_FROM];
         $max = $range[self::INDEX_TOTAL_TO];

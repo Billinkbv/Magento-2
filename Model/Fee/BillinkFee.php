@@ -112,7 +112,7 @@ class BillinkFee
 
         $quoteTotal = $this->quoteHelper->getTotalInclTax($quote);
 
-        return $this->feeHelper->getFeeAmount($quoteTotal, $workflowType);
+        return $this->feeHelper->getFeeAmount($quoteTotal, $workflowType, $quote->getBillingAddress()->getCountryId());
     }
 
     /**

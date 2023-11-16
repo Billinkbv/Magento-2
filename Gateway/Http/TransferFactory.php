@@ -20,12 +20,12 @@ class TransferFactory implements TransferFactoryInterface
     private $transferBuilder;
 
     /**
-     * @var Xml
+     * @var XmlHelper
      */
     private $xmlHelper;
 
     /**
-     * @var Gateway
+     * @var GatewayHelper
      */
     private $gatewayHelper;
 

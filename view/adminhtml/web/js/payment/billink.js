@@ -27,7 +27,6 @@ define([
             billink_house_number: ko.observable(''),
             billink_house_extension: ko.observable(''),
             billink_customer_birthdate: ko.observable(''),
-            billink_customer_sex: ko.observable(''),
             billink_delivery_address_street: ko.observable(''),
             billink_delivery_address_housenumber: ko.observable(''),
             billink_delivery_address_housenumber_extension: ko.observable('')
@@ -131,11 +130,6 @@ define([
                 this.inputFields.billink_customer_birthdate.subscribe(function () {
                     self.additionalData(Object.assign(self.additionalData(), {
                         'billink_customer_birthdate': self.inputFields.billink_customer_birthdate()
-                    }));
-                });
-                this.inputFields.billink_customer_sex.subscribe(function () {
-                    self.additionalData(Object.assign(self.additionalData(), {
-                        'billink_customer_sex': self.inputFields.billink_customer_sex()
                     }));
                 });
             }

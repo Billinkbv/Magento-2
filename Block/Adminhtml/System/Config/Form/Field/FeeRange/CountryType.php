@@ -2,34 +2,22 @@
 
 namespace Billink\Billink\Block\Adminhtml\System\Config\Form\Field\FeeRange;
 
-use Billink\Billink\Gateway\Helper\Workflow;
 use Magento\Backend\Block\Template\Context;
+use Magento\Directory\Model\Config\Source\Country as SourceCountry;
 use Magento\Framework\View\Element\Html\Select;
 
 /**
  * Class WorkflowType
  * @package Billink\Billink\Block\Adminhtml\System\Config\Form\Field\FeeRange
  */
-class WorkflowType extends Select
+class CountryType extends Select
 {
-    /**
-     * @var Workflow
-     */
-    private $workflowHelper;
-
-    /**
-     * WorkflowType constructor.
-     * @param Context $context
-     * @param Workflow $workflowHelper
-     * @param array $data
-     */
     public function __construct(
         Context $context,
-        Workflow $workflowHelper,
+        private readonly SourceCountry $sourceCountry,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->workflowHelper = $workflowHelper;
     }
 
     /**
@@ -38,11 +26,10 @@ class WorkflowType extends Select
     protected function _toHtml()
     {
         if (!$this->getOptions()) {
-            $types = $this->workflowHelper->getTypes();
+            $types = $this->sourceCountry->toOptionArray();
+            $this->addOption('other', __("Other countries"));
             foreach ($types as $type) {
-                $key = $this->workflowHelper->getOptionKey($type['value']);
-
-                $this->addOption($key, $type['label']);
+                $this->addOption($type['value'], $type['label']);
             }
         }
 

@@ -2,12 +2,14 @@
 
 namespace Billink\Billink\Block\Adminhtml\System\Config\Form\Field;
 
+use Billink\Billink\Block\Adminhtml\System\Config\Form\Field\FeeRange\CountryType;
 use Billink\Billink\Block\Adminhtml\System\Config\Form\Field\FeeRange\WorkflowType;
-use Billink\Billink\Gateway\Helper\Workflow as WorkflowHelper;
 use Billink\Billink\Helper\Fee;
 use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 use Magento\Framework\DataObject;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\View\Element\BlockInterface;
 
 /**
  * Class FeeRange
@@ -15,38 +17,32 @@ use Magento\Framework\DataObject;
  */
 class FeeRange extends AbstractFieldArray
 {
-    /**
-     * @var Workflow
-     */
-    private $workflowHelper;
+    private ?WorkflowType $typeRenderer = null;
+    private ?CountryType $countryRenderer = null;
 
     /**
      * FeeRange constructor.
      *
      * @param Context $context
-     * @param WorkflowHelper $workflowHelper
      * @param array $data
      */
     public function __construct(
         Context $context,
-        WorkflowHelper $workflowHelper,
         array $data = []
     ) {
-        $this->workflowHelper = $workflowHelper;
-
         parent::__construct($context, $data);
     }
-
-    /**
-     * @var WorkflowType
-     */
-    private $typeRenderer;
 
     /**
      * Add table system config columns
      */
     protected function _prepareToRender()
     {
+        $this->addColumn(Fee::COUNTRY, [
+            'label' => __('Country'),
+            'renderer' => $this->getCountryRenderer()
+        ]);
+
         $this->addColumn(Fee::INDEX_WORKFLOW_TYPE, [
             'label' => __('Workflow Type'),
             'renderer' => $this->getWorkflowTypeRenderer()
@@ -68,12 +64,12 @@ class FeeRange extends AbstractFieldArray
     }
 
     /**
-     * @return WorkflowType|\Magento\Framework\View\Element\BlockInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return WorkflowType|BlockInterface
+     * @throws LocalizedException
      */
-    protected function getWorkflowTypeRenderer()
+    protected function getWorkflowTypeRenderer(): WorkflowType|BlockInterface
     {
-        if (!$this->typeRenderer) {
+        if ($this->typeRenderer === null) {
             $this->typeRenderer = $this->getLayout()->createBlock(
                 WorkflowType::class,
                 '',
@@ -83,17 +79,37 @@ class FeeRange extends AbstractFieldArray
         return $this->typeRenderer;
     }
 
+    protected function getCountryRenderer(): CountryType|BlockInterface
+    {
+        if ($this->countryRenderer === null) {
+            $this->countryRenderer = $this->getLayout()->createBlock(
+                CountryType::class,
+                '',
+                ['data' => ['is_render_to_js_template' => true]]
+            );
+        }
+        return $this->countryRenderer;
+    }
+
     /**
      * @param DataObject $row
      *
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
-    protected function _prepareArrayRow(DataObject $row)
+    protected function _prepareArrayRow(DataObject $row): void
     {
-        $workflowType = $row->getWorkflowType();
+        $options = $row->getData('option_extra_attrs') ?? [];
 
+        $workflowType = $row->getWorkflowType();
         if ($workflowType) {
             $optionType = $this->getWorkflowTypeRenderer()->calcOptionHash($workflowType);
+
+            $options['option_' . $optionType] = 'selected="selected"';
+        }
+
+        $countryType = $row->getCountry();
+        if ($countryType) {
+            $optionType = $this->getCountryRenderer()->calcOptionHash($countryType);
 
             $options['option_' . $optionType] = 'selected="selected"';
         }
