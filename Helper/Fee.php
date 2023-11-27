@@ -67,12 +67,16 @@ class Fee
      * @param string $country
      * @return float
      */
-    public function getFeeAmount(float $total, string $workflowType = WorkflowHelper::TYPE_PRIVATE, string $country = "other"): float
+    public function getFeeAmount(float $total, string $workflowType = WorkflowHelper::TYPE_PRIVATE, ?string $country = "other"): float
     {
         $feeRanges = $this->config->getFeeRange();
 
         foreach ([$country, "other"] as $customerCountry) {
             foreach ($feeRanges as $feeRange) {
+                if (!key_exists(self::COUNTRY, $feeRange)) {
+                    $feeRange[self::COUNTRY] = "other";
+                }
+
                 if (
                     $feeRange[self::COUNTRY] === $customerCountry &&
                     $feeRange[self::INDEX_WORKFLOW_TYPE] == $this->workflowHelper->getOptionKey($workflowType) &&
