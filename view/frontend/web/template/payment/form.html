@@ -165,20 +165,9 @@
                     </div>
                 <!--/ko-->
 
-                <div class="checkbox required"
-                     data-bind="attr: {id: getCode() + '_of_age'}">
-                    <div class="control">
-                        <label class="label">
-                            <input type="checkbox"
-                                   data-validate="{'required':true}"
-                                   data-bind="value: inputFields[getCode() + '_of_age'], attr: {id: getCode() + '_of_age'}"
-                                   maxlength="100" name="payment[of_age]"/>
-                            <span>
-                                <!-- ko i18n: 'You must be at least 18+ to use this service. If you pay on time, you will avoid additional costs and ensure that you can use Billink\'s services again in the future.'--><!-- /ko -->
-                            </span>
-                        </label>
-                    </div>
-                </div>
+                <span>
+                    <!-- ko i18n: 'You must be at least 18+ to use this service. If you pay on time, you will avoid additional costs and ensure that you can use Billink\'s services again in the future.'--><!-- /ko -->
+                </span>
 
                 <div class="checkbox required"
                      data-bind="attr: {id: getCode() + '_terms_agreement'}">
