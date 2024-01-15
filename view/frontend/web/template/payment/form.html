@@ -105,42 +105,14 @@
                     <!--/ko-->
 
                     <!-- ko if: isSelectedType('P') -->
-                    <div class="field radio required">
-                        <span class="label"><!-- ko i18n: 'Sex'--><!-- /ko --></span>
-                        <div class="control">
-                            <input type="radio" name="payment[customer_sex]" class="input-text" value="M"
-                                   data-bind="value: 'M', checked: inputFields[getCode() + '_customer_sex'], attr: {
-                                        autocomplete: 'off',
-                                        id: getCode() + '_customer_sex_man',
-                                        title: $t('Customer Sex man')}"
-                                   data-validate="{'validate-one-required-by-name':true}"
-                            />
-                            <label data-bind="attr: {for: getCode() + '_customer_sex_man'}" class="label">
-                                <span><!-- ko i18n: 'Man'--><!-- /ko --></span>
-                            </label>
-
-                            <br/>
-
-                            <input type="radio" name="payment[customer_sex]" class="input-text" value="W"
-                                   data-bind="value: 'W', checked: inputFields[getCode() + '_customer_sex'], attr: {
-                                        autocomplete: 'off',
-                                        id: getCode() + '_customer_sex_woman',
-                                        title: $t('Customer Sex Woman')}"
-                                   data-validate="{'validate-one-required-by-name':true}"/>
-                            <label data-bind="attr: {for: getCode() + '_customer_sex_woman'}" class="label">
-                                <span><!-- ko i18n: 'Woman'--><!-- /ko --></span>
-                            </label>
-                        </div>
-                    </div>
-
                     <div class="field required" data-bind="attr: {id: getCode() + '_customer_birthday_div'}">
                         <label data-bind="attr: {for: getCode() + '_customer_birthdate'}" class="label">
                             <span><!-- ko i18n: 'Birthday'--><!-- /ko --></span>
                         </label>
                         <div class="control">
-                            <input type="text"
+                            <input type="date"
                                    style="width: 100%"
-                                   data-bind="value: inputFields[getCode() + '_customer_birthdate'], afterRender: initDatetime"
+                                   data-bind="value: inputFields[getCode() + '_customer_birthdate']"
                                    data-validate="{required:true}"
                                    name="payment[customer_birthday]" class="datepicker" id="calendar_inputField"/>
                         </div>
@@ -192,6 +164,10 @@
                         </div>
                     </div>
                 <!--/ko-->
+
+                <span>
+                    <!-- ko i18n: 'You must be at least 18+ to use this service. If you pay on time, you will avoid additional costs and ensure that you can use Billink\'s services again in the future.'--><!-- /ko -->
+                </span>
 
                 <div class="checkbox required"
                      data-bind="attr: {id: getCode() + '_terms_agreement'}">

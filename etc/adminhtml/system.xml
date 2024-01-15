@@ -107,7 +107,7 @@
                 <field id="fee_range" translate="label" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Billink Fee Ranges</label>
                     <frontend_model>\Billink\Billink\Block\Adminhtml\System\Config\Form\Field\FeeRange</frontend_model>
-                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                    <backend_model>\Billink\Billink\Model\Config\Backend\Serialized\FeeSerialized</backend_model>
                 </field>
             </group>
         </section>
