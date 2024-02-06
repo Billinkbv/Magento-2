@@ -2,7 +2,7 @@
 
 namespace Billink\Billink\Gateway\Helper;
 
-use Billink\Billink\Gateway\Config\Config;
+use Billink\Billink\Gateway\Config\BasePaymentConfig;
 
 /**
  * Class Gateway
@@ -20,17 +20,14 @@ class Gateway
     const SERVICE_START_WORKFLOW = 'start-workflow';
     const SERVICE_CREDIT = 'credit';
 
-    /**
-     * @var Config
-     */
-    private $config;
+    private BasePaymentConfig $config;
 
     /**
      * Gateway constructor.
-     * @param Config $config
+     * @param BasePaymentConfig $config
      */
     public function __construct(
-        Config $config
+        BasePaymentConfig $config
     ) {
         $this->config = $config;
     }

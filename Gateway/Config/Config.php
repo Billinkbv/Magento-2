@@ -3,7 +3,6 @@
 namespace Billink\Billink\Gateway\Config;
 
 use Billink\Billink\Model\Config\Source\UsedWorkflow;
-use Billink\Billink\Observer\DataAssignObserver;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Asset\Repository;
@@ -14,16 +13,12 @@ use Magento\Store\Model\Store\Interceptor;
  * Class Config
  * @package Billink\Billink\Gateway\Config
  */
-class Config extends \Magento\Payment\Gateway\Config\Config
+class Config extends BasePaymentConfig
 {
     const MEDIA_FOLDER = 'billink';
 
     const FIELD_API_VERSION = 'api_version';
-    const FIELD_ACTIVE = 'is_active';
     const FIELD_LOGO = 'logo';
-    const FIELD_ACCOUNT_NAME = 'account_name';
-    const FIELD_ACCOUNT_ID = 'account_id';
-    const FIELD_DEBUG = 'debug';
     const FIELD_BACKDOOR = 'debug_backdoor';
     const FIELD_WORKFLOW = 'workflow';
     const FIELD_ORDER_STATUS = 'order_status';
@@ -63,14 +58,6 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
-     * @return bool
-     */
-    public function isActive()
-    {
-        return (bool)$this->getValue(self::FIELD_ACTIVE);
-    }
-
-    /**
      * @param Interceptor|null $store
      * @return string
      */
@@ -89,30 +76,6 @@ class Config extends \Magento\Payment\Gateway\Config\Config
         }
 
         return $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountName()
-    {
-        return $this->getValue(self::FIELD_ACCOUNT_NAME);
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountId()
-    {
-        return $this->getValue(self::FIELD_ACCOUNT_ID);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDebugMode()
-    {
-        return (bool)$this->getValue(self::FIELD_DEBUG);
     }
 
     /**
