@@ -21,6 +21,7 @@ class ConfigProvider implements ConfigProviderInterface
      * Payment method code used in the system
      */
     const CODE = 'billink';
+    const CODE_MIDPAGE = 'billink_midpage';
 
     /**
      * @var Config

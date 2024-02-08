@@ -2,32 +2,27 @@
 
 namespace Billink\Billink\Gateway\Helper;
 
-use Billink\Billink\Gateway\Config\Config;
+use Billink\Billink\Gateway\Config\MidpageConfig;
 
 /**
  * Class Gateway
  * @package Billink\Billink\Gateway\Helper
  */
-class Gateway
+class SessionGateway
 {
-    const GATEWAY_URL = 'https://client.billink.nl/api/';
-    const GATEWAY_URL_DEBUG = 'https://test.billink.nl/api/';
+    const GATEWAY_URL = 'https://session.billink.nl/api/';
+    const GATEWAY_URL_DEBUG = 'https://session-staging.billink.nl/api/';
 
-    const CHECKUUID = 'billink_checkuuid';
+    const SERVICE_CREATE = 'v1/create';
 
-    const SERVICE_CHECK = 'check';
-    const SERVICE_ORDER = 'order';
-    const SERVICE_START_WORKFLOW = 'start-workflow';
-    const SERVICE_CREDIT = 'credit';
-
-    private Config $config;
+    private MidpageConfig $config;
 
     /**
      * Gateway constructor.
-     * @param Config $config
+     * @param MidpageConfig $config
      */
     public function __construct(
-        Config $config
+        MidpageConfig $config
     ) {
         $this->config = $config;
     }

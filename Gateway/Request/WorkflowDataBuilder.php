@@ -2,7 +2,6 @@
 
 namespace Billink\Billink\Gateway\Request;
 
-use Billink\Billink\Gateway\Config\Config;
 use Billink\Billink\Gateway\Helper\SubjectReader;
 use Billink\Billink\Gateway\Helper\Workflow as WorkflowHelper;
 use Magento\Payment\Gateway\Request\BuilderInterface;
