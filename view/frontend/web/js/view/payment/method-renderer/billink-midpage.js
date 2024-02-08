@@ -46,7 +46,7 @@ define([
                     ).done(
                     function (data) {
                         customerData.invalidate(['cart']);
-                        redirectOnSuccessAction.execute(data.url);
+                        redirectOnSuccessAction.execute(data.redirect_url);
                     }
                 );
 
