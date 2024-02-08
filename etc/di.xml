@@ -304,10 +304,11 @@
         <arguments>
             <argument name="commands" xsi:type="array">
                 <item name="initialize" xsi:type="string">BillinkMidpageSessionCreate</item>
-                <item name="authorize" xsi:type="string">BillinkMidpageAuthorize</item>
-                <item name="order" xsi:type="string">BillinkMidpagePaymentOrderCommand</item>
+<!--                <item name="authorize" xsi:type="string">BillinkMidpageAuthorize</item>-->
+<!--                <item name="order" xsi:type="string">BillinkMidpagePaymentOrderCommand</item>-->
 <!--                <item name="capture" xsi:type="string">BillinkMidpageSessionCreate</item>-->
-                <item name="refund" xsi:type="string">BillinkPaymentRefundCommand</item>
+<!--                <item name="refund" xsi:type="string">BillinkPaymentRefundCommand</item>-->
+                <item name="order_cancel" xsi:type="string">BillinkMidpageOrderCancel</item>
             </argument>
         </arguments>
     </virtualType>
@@ -391,4 +392,27 @@
     </virtualType>
 
     <!-- Midpage AUTHORIZATION END-->
+
+    <!-- Midpage ORDER CANCEL  -->
+
+    <virtualType name="BillinkMidpageOrderCancel" type="Billink\Billink\Gateway\Command\MidpageCancelCommand">
+        <arguments>
+            <argument name="session" xsi:type="object">Magento\Checkout\Model\Session\Proxy</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Billink\Billink\Model\Payment\MidpageCancelService">
+        <arguments>
+            <argument name="session" xsi:type="object">Magento\Checkout\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="Billink\Billink\Controller\Midpage\Cancel">
+        <arguments>
+            <argument name="checkoutSession" xsi:type="object">Magento\Checkout\Model\Session\Proxy</argument>
+            <argument name="commandPool" xsi:type="object">BillinkMidpagePaymentCommandPool</argument>
+        </arguments>
+    </type>
+
+    <!-- Midpage ORDER CANCEL END  -->
+
 </config>
