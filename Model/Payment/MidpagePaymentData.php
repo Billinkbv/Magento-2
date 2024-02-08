@@ -11,54 +11,27 @@ use Magento\Checkout\Api\PaymentInformationManagementInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Psr\Log\LoggerInterface;
 
 class MidpagePaymentData implements MidpagePaymentDataInterface
 {
-    /**
-     * @var PaymentInformationManagementInterface
-     */
-    protected $paymentInformationManagement;
-
-    /**
-     * @var OrderRepositoryInterface
-     */
-    protected $orderRepository;
-
-    /**
-     * @var MidpageResultDataInterfaceFactory
-     */
-    protected $resultObjectFactory;
-
-    /**
-     * @var Session
-     */
-    protected $session;
-
-    /**
-     * @var GuestPaymentInformationManagementInterface
-     */
-    private $guestPaymentInformationManagement;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private PaymentInformationManagementInterface $paymentInformationManagement;
+    private GuestPaymentInformationManagementInterface $guestPaymentInformationManagement;
+    private OrderRepositoryInterface $orderRepository;
+    private MidpageResultDataInterfaceFactory $resultObjectFactory;
+    private Session $session;
 
     public function __construct(
         PaymentInformationManagementInterface $informationManagement,
         GuestPaymentInformationManagementInterface $guestPaymentInformationManagement,
         OrderRepositoryInterface $orderRepository,
         MidpageResultDataInterfaceFactory $resultObjectFactory,
-        Session $session,
-        LoggerInterface $logger,
+        Session $session
     ) {
-        $this->session = $session;
-        $this->resultObjectFactory = $resultObjectFactory;
-        $this->orderRepository = $orderRepository;
         $this->paymentInformationManagement = $informationManagement;
         $this->guestPaymentInformationManagement = $guestPaymentInformationManagement;
-        $this->logger = $logger;
+        $this->orderRepository = $orderRepository;
+        $this->resultObjectFactory = $resultObjectFactory;
+        $this->session = $session;
     }
 
     /**

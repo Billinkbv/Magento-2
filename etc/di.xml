@@ -354,7 +354,6 @@
             <argument name="handler" xsi:type="object">Billink\Billink\Gateway\Response\Midpage\SessionCreateHandler</argument>
             <argument name="validator" xsi:type="object">Billink\Billink\Gateway\Validator\Midpage\SessionCreate</argument>
             <argument name="logger" xsi:type="object">BillinkPaymentLogger</argument>
-            <argument name="command" xsi:type="string">BillinkMidpageSessionCreate</argument>
         </arguments>
     </virtualType>
 
@@ -365,13 +364,11 @@
     <virtualType name="BillinkMidpageAuthorize" type="Billink\Billink\Gateway\Command\MidpageGatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">BillinkMidpageAuthorizeBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">Billink\Billink\Gateway\Http\TransferFactory</argument>
-<!--            <argument name="transferFactory" xsi:type="object">AuthorizeTransport</argument>-->
+            <argument name="transferFactory" xsi:type="object">Billink\Billink\Gateway\Http\JsonTransferFactory</argument>
             <argument name="client" xsi:type="object">Billink\Billink\Gateway\Http\Client\Laminas</argument>
             <argument name="handler" xsi:type="object">GetResultHandlerChain</argument>
             <argument name="validator" xsi:type="object">Billink\Billink\Gateway\Validator\Midpage\GetResultValidator</argument>
             <argument name="logger" xsi:type="object">BillinkPaymentLogger</argument>
-            <argument name="command" xsi:type="string">BillinkMidpageAuthorize</argument>
         </arguments>
     </virtualType>
 

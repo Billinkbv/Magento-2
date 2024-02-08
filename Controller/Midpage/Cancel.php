@@ -67,10 +67,6 @@ class Cancel implements HttpGetActionInterface
             ];
             $command = $this->commandPool->get('order_cancel');
             $command->execute($paymentDO);
-
-            // Move order to hidden cancelled status
-            //$order->setStatus('canceled');
-            //$this->orderRepository->save($order);
         } catch (LocalizedException $e) {
             $this->messageManager->addExceptionMessage($e);
         } catch (\Exception $e) {

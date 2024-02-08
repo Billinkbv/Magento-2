@@ -26,7 +26,6 @@ class MidpageGatewayCommand implements CommandInterface
     private Logger $logger;
     private OrderHistory $orderHistory;
     private LoggerInterface $errorLogger;
-    private string $command;
 
     public function __construct(
         BuilderInterface $requestBuilder,
@@ -36,8 +35,7 @@ class MidpageGatewayCommand implements CommandInterface
         ValidatorInterface $validator,
         Logger $logger,
         OrderHistory $orderHistory,
-        LoggerInterface $errorLogger,
-        string $command = ''
+        LoggerInterface $errorLogger
     ) {
         $this->requestBuilder = $requestBuilder;
         $this->transferFactory = $transferFactory;
@@ -47,7 +45,6 @@ class MidpageGatewayCommand implements CommandInterface
         $this->logger = $logger;
         $this->orderHistory = $orderHistory;
         $this->errorLogger = $errorLogger;
-        $this->command = $command;
     }
 
     public function execute(array $commandSubject)
