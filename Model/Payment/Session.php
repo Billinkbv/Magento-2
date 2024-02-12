@@ -41,4 +41,15 @@ class Session extends SessionManager
     {
         return $this->getSessionOrderId();
     }
+
+    /**
+     * Deactivate only in case session order id is equal to the provided order id
+     */
+    public function deactivatePaymentSessionById(int $entityId): void
+    {
+        $currentSessionId = (int)$this->getPaymentSessionOrderId();
+        if ($currentSessionId === $entityId) {
+            $this->deactivatePaymentSession();
+        }
+    }
 }

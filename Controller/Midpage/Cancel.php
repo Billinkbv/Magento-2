@@ -10,7 +10,6 @@ use Magento\Framework\Message\ManagerInterface;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
 class Cancel implements HttpGetActionInterface
@@ -18,7 +17,6 @@ class Cancel implements HttpGetActionInterface
     private CheckoutSession $checkoutSession;
     private RedirectFactory $redirectFactory;
     private Session $paymentSession;
-    private OrderRepositoryInterface $orderRepository;
     private ManagerInterface $messageManager;
     private LoggerInterface $logger;
     private PaymentDataObjectFactory $paymentDataObjectFactory;
@@ -28,7 +26,6 @@ class Cancel implements HttpGetActionInterface
         CheckoutSession $checkoutSession,
         RedirectFactory $redirectFactory,
         Session $paymentSession,
-        OrderRepositoryInterface $orderRepository,
         CommandPoolInterface $commandPool,
         PaymentDataObjectFactory $paymentDataObjectFactory,
         ManagerInterface $messageManager,
@@ -37,7 +34,6 @@ class Cancel implements HttpGetActionInterface
         $this->checkoutSession = $checkoutSession;
         $this->redirectFactory = $redirectFactory;
         $this->paymentSession = $paymentSession;
-        $this->orderRepository = $orderRepository;
         $this->messageManager = $messageManager;
         $this->logger = $logger;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;

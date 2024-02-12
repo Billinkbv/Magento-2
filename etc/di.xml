@@ -263,6 +263,7 @@
     </type>
 
     <!-- Midpage configurations -->
+
     <type name="Billink\Billink\Gateway\Config\MidpageConfig">
         <arguments>
             <argument name="methodCode" xsi:type="const">Billink\Billink\Model\Ui\ConfigProvider::CODE_MIDPAGE</argument>
@@ -304,11 +305,9 @@
         <arguments>
             <argument name="commands" xsi:type="array">
                 <item name="initialize" xsi:type="string">BillinkMidpageSessionCreate</item>
-<!--                <item name="authorize" xsi:type="string">BillinkMidpageAuthorize</item>-->
-<!--                <item name="order" xsi:type="string">BillinkMidpagePaymentOrderCommand</item>-->
-<!--                <item name="capture" xsi:type="string">BillinkMidpageSessionCreate</item>-->
-<!--                <item name="refund" xsi:type="string">BillinkPaymentRefundCommand</item>-->
+                <item name="capture" xsi:type="string">BillinkMidpageCapture</item>
                 <item name="order_cancel" xsi:type="string">BillinkMidpageOrderCancel</item>
+                <item name="order_update" xsi:type="string">BillinkMidpageOrderUpdate</item>
             </argument>
         </arguments>
     </virtualType>
@@ -325,7 +324,7 @@
         </arguments>
     </virtualType>
 
-    <!-- Midpage SESSION CREATE END-->
+    <!-- Midpage SESSION CREATE -->
 
     <virtualType name="BillinkMidpageSessionCreateBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
@@ -359,37 +358,6 @@
 
     <!-- Midpage SESSION CREATE END-->
 
-    <!-- Midpage AUTHORIZATION -->
-
-    <virtualType name="BillinkMidpageAuthorize" type="Billink\Billink\Gateway\Command\MidpageGatewayCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">BillinkMidpageAuthorizeBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">Billink\Billink\Gateway\Http\JsonTransferFactory</argument>
-            <argument name="client" xsi:type="object">Billink\Billink\Gateway\Http\Client\Laminas</argument>
-            <argument name="handler" xsi:type="object">GetResultHandlerChain</argument>
-            <argument name="validator" xsi:type="object">Billink\Billink\Gateway\Validator\Midpage\GetResultValidator</argument>
-            <argument name="logger" xsi:type="object">BillinkPaymentLogger</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="GetResultHandlerChain" type="Magento\Payment\Gateway\Response\HandlerChain">
-        <arguments>
-            <argument name="handlers" xsi:type="array">
-                <item name="status" xsi:type="string">Billink\Billink\Gateway\Response\GetResult\Handler</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="BillinkMidpageAuthorizeBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
-        <arguments>
-            <argument name="builders" xsi:type="array">
-                <item name="order" xsi:type="string">Billink\Billink\Gateway\Request\Midpage\Transaction</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Midpage AUTHORIZATION END-->
-
     <!-- Midpage ORDER CANCEL  -->
 
     <virtualType name="BillinkMidpageOrderCancel" type="Billink\Billink\Gateway\Command\MidpageCancelCommand">
@@ -412,4 +380,23 @@
 
     <!-- Midpage ORDER CANCEL END  -->
 
+    <!-- Midpage ORDER UPDATE  -->
+    <virtualType name="BillinkMidpageOrderUpdate" type="Billink\Billink\Gateway\Command\MidpageUpdateCommand">
+        <arguments>
+            <argument name="config" xsi:type="object">NclConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Billink\Billink\Controller\Midpage\Place">
+        <arguments>
+            <argument name="checkoutSession" xsi:type="object">Magento\Checkout\Model\Session\Proxy</argument>
+            <argument name="commandPool" xsi:type="object">BillinkMidpagePaymentCommandPool</argument>
+        </arguments>
+    </type>
+    <!-- Midpage ORDER UPDATE  -->
+
+    <!-- Midpage CAPTURE  -->
+    <virtualType name="BillinkMidpageCapture" type="Billink\Billink\Gateway\Command\MidpageCaptureCommand">
+    </virtualType>
+    <!-- Ncl CAPTURE END -->
 </config>
