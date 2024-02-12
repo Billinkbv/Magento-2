@@ -1,14 +1,12 @@
 <?php
 namespace Billink\Billink\Gateway\Command;
 
-use Billink\Billink\Model\Payment\MidpageCancelService;
 use Billink\Billink\Model\Payment\OrderHistory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Gateway\Helper\ContextHelper;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order\Payment;
 use Psr\Log\LoggerInterface;
 
@@ -28,9 +26,6 @@ class MidpageCaptureCommand implements CommandInterface
         $this->orderHistory = $orderHistory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function execute(array $commandSubject)
     {
         $paymentDO = SubjectReader::readPayment($commandSubject);
@@ -38,8 +33,10 @@ class MidpageCaptureCommand implements CommandInterface
         $payment = $paymentDO->getPayment();
         ContextHelper::assertOrderPayment($payment);
         try {
-        } catch (LocalizedException $e) {
-            // Probably send invoice email here?
+            $order = $payment->getOrder();
+            $invoiceCollection = $order->getInvoiceCollection();
+            $invoice = $invoiceCollection->getFirstItem();
+            // Well, basically we make sure that invoice exists here and that's all.
         } catch (\Exception $e) {
             throw new LocalizedException(__("There was an error during your request."));
         }

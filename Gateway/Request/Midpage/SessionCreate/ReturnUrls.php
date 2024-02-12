@@ -36,7 +36,6 @@ class ReturnUrls implements BuilderInterface
             'backURL' => $cancelUrl,
             'cancelURL' => $cancelUrl
         ];
-        file_put_contents('/var/www/m2.test/m2/logs/keys.txt', print_r($data, 1). "\n\n", FILE_APPEND);
 
         return ['client' => ['returnURL' => $data]];
     }

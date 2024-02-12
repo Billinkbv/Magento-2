@@ -5,8 +5,6 @@ namespace Billink\Billink\Gateway\Helper;
 use Billink\Billink\Gateway\Config\MidpageConfig;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
-use Magento\Payment\Gateway\Helper\SubjectReader;
 
 class TransactionManager
 {
