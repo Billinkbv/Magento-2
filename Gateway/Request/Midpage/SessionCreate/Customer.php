@@ -43,23 +43,28 @@ class Customer implements BuilderInterface
     private function getAddressData(?\Magento\Payment\Gateway\Data\AddressAdapterInterface $address)
     {
         $street = $address->getStreetLine1();
-        $houseNumber = $address->getStreetLine2();
-        if (!$houseNumber) {
-            // Extract last part of the street line
-            $street = explode(' ', trim($street));
-            if (!isset($street[1])) {
-                throw new LocalizedException(__('billink_order_error_code_414'));
-            }
-            $houseNumber = array_pop($street);
-            $street = implode(' ', $street);
+        $parts = $this->getParts($street);
+        if (!$parts['housenumber']) {
+            // Use the street line-2 as a number
+            $parts['housenumber'] = $address->getStreetLine2();
+        }
+        if (!$parts['housenumber']) {
+            $parts['housenumber'] = '-';
         }
         return [
-            'street' => $street,
-            'houseNumber' => $houseNumber,
-            'houseExtension' => '',
+            'street' => $parts['street'],
+            'houseNumber' => $parts['housenumber'],
+            'houseExtension' => $parts['ext'] ?? '-',
             'postalCode' => $address->getPostcode(),
             'city' => $address->getCity(),
             'countryCode' => $address->getCountryId()
         ];
+    }
+
+    private function getParts(string $street): array
+    {
+        $regexp = '/^(?<street>\d*[\p{L}\d \'\/\-\.]+)[,\s]+(?<housenumber>\d+)\s*(?<ext>[\p{L} \d\-\/\'"\(\)]*)$/';
+        preg_match($regexp, $street, $matches);
+        return $matches;
     }
 }
