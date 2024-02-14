@@ -10,10 +10,10 @@ interface MidpagePaymentDataInterface
      * @return \Billink\Billink\Api\MidpageResultDataInterface $object
      */
     public function savePaymentInformationAndPlaceOrder(
-        $cartId,
+        int $cartId,
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
-    );
+    ): MidpageResultDataInterface;
 
     /**
      * @param string $cartId
@@ -24,9 +24,9 @@ interface MidpagePaymentDataInterface
      * @return \Billink\Billink\Api\MidpageResultDataInterface $object
      */
     public function saveGuestPaymentInformationAndPlaceOrder(
-        $cartId,
-        $email,
+        string $cartId,
+        string $email,
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
-    );
+    ): MidpageResultDataInterface;
 }

@@ -90,17 +90,17 @@ class MidpageGatewayCommand implements CommandInterface
     {
         $payment = SubjectReader::readPayment($commandSubject);
         $messages = [];
-        $originMessages = [];
+        $originMessageErrors = [];
         foreach ($result->getFailsDescription() as $failPhrase) {
             $message = (string)$failPhrase;
-            $originMessages[] = $message;
+            $originMessageErrors[] = $message;
         }
         $messages = array_unique($messages);
         $order = $payment->getPayment()->getOrder();
         $messageLog = sprintf(
             'Payment Gateway Error: Order # %s - %s',
             $order->getIncrementId(),
-            implode(PHP_EOL, $originMessages)
+            implode(PHP_EOL, $originMessageErrors)
         );
         $this->orderHistory->setOrderMessage($order, $messageLog);
         $this->errorLogger->critical($messageLog);

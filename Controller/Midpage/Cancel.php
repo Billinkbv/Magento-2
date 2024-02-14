@@ -13,8 +13,8 @@ class Cancel extends AbstractAction
     {
         $resultRedirect = $this->redirectFactory->create();
 
-        $transactionOrder = (string)$this->getOrderFromTransaction();
-        if (!$transactionOrder) {
+        $transactionOrderId = $this->getOrderIdFromTransaction();
+        if ($transactionOrderId === null) {
             $resultRedirect->setPath('checkout/cart');
             return $resultRedirect;
         }
@@ -22,8 +22,8 @@ class Cancel extends AbstractAction
         $params = ['_secure' => true];
         try {
             $order = $this->checkoutSession->getLastRealOrder();
-            if ((string)$order->getIncrementId() !== $transactionOrder) {
-                $order = $this->loadOrderByIncrementId($transactionOrder);
+            if ((string)$order->getIncrementId() !== $transactionOrderId) {
+                $order = $this->loadOrderByIncrementId($transactionOrderId);
             }
             $this->paymentSession->deactivatePaymentSessionById($order->getEntityId());
             /** @var PaymentDataObjectInterface $paymentDO */
@@ -33,10 +33,11 @@ class Cancel extends AbstractAction
             $command = $this->commandPool->get('order_cancel');
             $command->execute($paymentDO);
         } catch (LocalizedException $e) {
+            $this->logger->notice($e->getMessage());
             $this->messageManager->addExceptionMessage($e);
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage(__('There was an error during your request.'));
-            $this->logger->critical($e);
+            $this->logger->critical($e->getMessage(), ['trace' => $e->getTraceAsString()]);
         }
         return $resultRedirect->setPath('checkout/cart', $params);
     }

@@ -13,8 +13,8 @@ class Place extends AbstractAction
     {
         $resultRedirect = $this->redirectFactory->create();
 
-        $transactionOrder = $this->getOrderFromTransaction();
-        if (!$transactionOrder) {
+        $transactionOrderId = $this->getOrderIdFromTransaction();
+        if ($transactionOrderId === null) {
             $resultRedirect->setPath('checkout/cart');
             return $resultRedirect;
         }
@@ -22,14 +22,14 @@ class Place extends AbstractAction
         $params = ['_secure' => true];
         $order = $this->checkoutSession->getLastRealOrder();
         try {
-            if ($order->getIncrementId() === $transactionOrder) {
+            if ($order->getIncrementId() === $transactionOrderId) {
                 // Normal flow - customer returns on alive session
                 $this->paymentSession->deactivatePaymentSession();
                 $this->executeOrderUpdate($order);
             } else {
                 // Updated flow - session is dead, but the order transaction id is correct one.
                 // As transaction is correct - we should confirm order and redirect customer to the correct page.
-                $order = $this->loadOrderByIncrementId($transactionOrder);
+                $order = $this->loadOrderByIncrementId($transactionOrderId);
                 $this->paymentSession->deactivatePaymentSessionById($order->getEntityId());
                 $this->executeOrderUpdate($order);
                 $this->checkoutSession
@@ -41,12 +41,13 @@ class Place extends AbstractAction
                     ->setLastRealOrderId($order->getIncrementId());
             }
         } catch (LocalizedException $e) {
+            $this->logger->notice($e->getMessage());
             $this->messageManager->addExceptionMessage($e);
             $resultRedirect->setPath('checkout/cart', $params);
             return $resultRedirect;
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage(__('There was an error during your request.'));
-            $this->logger->critical($e);
+            $this->logger->critical($e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $resultRedirect->setPath('checkout/cart', $params);
             return $resultRedirect;
         }

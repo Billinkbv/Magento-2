@@ -67,33 +67,13 @@ class Transaction implements BuilderInterface
                 'code' => (string)$item->getSku(),
                 'name' => (string)$item->getName(),
                 'description' => (string)$item->getDescription(),
-                //'productIdentifiers' => [],
+                //'productIdentifiers' => [], // @todo add identifiers
                 'totalProductAmount' => (string)$item->getRowTotalInclTax(),
                 'productAmount' => (string)$item->getBasePriceInclTax(),
                 'productTaxAmount' => (string)$item->getTaxAmount(),
                 'taxRate' => (string)$item->getTaxPercent(),
                 'quantity' => (string)$item->getQtyOrdered(),
             ];
-/*
-            "productIdentifiers": {
-                "brand": "shoe-brand",
-						"category": "Shoes",
-						"globalTradeItemNumber": "4912345678904",
-						"manufacturerPartNumber": "AD6654412-334.22",
-						"color": "white",
-						"size": "small",
-						"productImageURL": "https://static-test.billink.nl/c45b0d82b08d80523a74.png"
-					},
-					"productIdentifiers": {
-                        "brand": "shoe-brand",
-						"category": "Shoes",
-						"globalTradeItemNumber": "4912345678904",
-						"manufacturerPartNumber": "AD6654412-334.22",
-						"color": "white",
-						"size": "small",
-						"productImageURL": "https://static-test.billink.nl/c45b0d82b08d80523a74.png"
-					},
-*/
         }
         return $data;
     }

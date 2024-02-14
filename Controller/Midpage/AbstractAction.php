@@ -12,6 +12,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
@@ -55,21 +56,17 @@ abstract class AbstractAction implements HttpGetActionInterface
         $this->logger = $logger;
     }
 
-    protected function getOrderFromTransaction(): ?string
+    protected function getOrderIdFromTransaction(): ?string
     {
         // Check if transaction id is provided.
         $transactionId = $this->request->getParam('txn');
         if (!$transactionId) {
             return null;
         }
-        $orderId = $this->transactionManager->validateTransaction($transactionId);
-        if (!$orderId) {
-            return null;
-        }
-        return $orderId;
+        return $this->transactionManager->validateTransaction($transactionId);
     }
 
-    protected function loadOrderByIncrementId(string $transactionOrder)
+    protected function loadOrderByIncrementId(string $transactionOrder): OrderInterface
     {
         $searchCriteria = $this->searchCriteriaBuilder
             ->addFilter('increment_id', $transactionOrder)
@@ -77,7 +74,7 @@ abstract class AbstractAction implements HttpGetActionInterface
         $orders = $this->orderRepository->getList($searchCriteria)->getItems();
         $order = array_shift($orders);
         if (!$order) {
-            throw new LocalizedException(__('Incorrect order number provided: %1. Please reach for the support.', $transactionOrder));
+            throw new LocalizedException(__('Incorrect order number provided: %1. Please reach to support.', $transactionOrder));
         }
         return $order;
     }

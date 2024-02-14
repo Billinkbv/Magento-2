@@ -43,10 +43,10 @@ class MidpagePaymentData implements MidpagePaymentDataInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function savePaymentInformationAndPlaceOrder(
-        $cartId,
+        int $cartId,
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
-    ) {
+    ): MidpageResultDataInterface {
         $orderId = $this->paymentInformationManagement
             ->savePaymentInformationAndPlaceOrder($cartId, $paymentMethod, $billingAddress);
         $order = $this->orderRepository->get($orderId);
@@ -67,11 +67,11 @@ class MidpagePaymentData implements MidpagePaymentDataInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function saveGuestPaymentInformationAndPlaceOrder(
-        $cartId,
-        $email,
+        string $cartId,
+        string $email,
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
-    ) {
+    ): MidpageResultDataInterface {
         $orderId = $this->guestPaymentInformationManagement
             ->savePaymentInformationAndPlaceOrder($cartId, $email, $paymentMethod, $billingAddress);
         $order = $this->orderRepository->get($orderId);

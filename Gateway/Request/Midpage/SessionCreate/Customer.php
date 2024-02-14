@@ -44,7 +44,10 @@ class Customer implements BuilderInterface
     {
         $street = $address->getStreetLine1();
         $parts = $this->getParts($street);
-        if (!$parts['housenumber']) {
+        if (!isset($parts['street'])) {
+            $parts['street'] = $street;
+        }
+        if (!isset($parts['housenumber']) || !$parts['housenumber']) {
             // Use the street line-2 as a number
             $parts['housenumber'] = $address->getStreetLine2();
         }
