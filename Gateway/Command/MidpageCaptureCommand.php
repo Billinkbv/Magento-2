@@ -10,12 +10,9 @@ use Psr\Log\LoggerInterface;
 
 class MidpageCaptureCommand implements CommandInterface
 {
-    private LoggerInterface $logger;
-
     public function __construct(
-        LoggerInterface $logger
+        protected readonly LoggerInterface $logger
     ) {
-        $this->logger = $logger;
     }
 
     public function execute(array $commandSubject)

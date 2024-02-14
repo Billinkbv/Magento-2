@@ -10,22 +10,14 @@ use Magento\Checkout\Model\Session as CheckoutSession;
 
 class MidpageCancelService
 {
-    private OrderRepositoryInterfaceFactory $orderRepositoryFactory;
-    private LoggerInterface $logger;
-    private CheckoutSession $session;
-
     public function __construct(
-        OrderRepositoryInterfaceFactory $orderRepositoryFactory,
-        LoggerInterface $logger,
-        CheckoutSession $session
+        protected readonly OrderRepositoryInterfaceFactory $orderRepositoryFactory,
+        protected readonly LoggerInterface $logger,
+        protected readonly CheckoutSession $session
     ) {
-        $this->orderRepositoryFactory= $orderRepositoryFactory;
-        $this->logger = $logger;
-        $this->session = $session;
     }
 
     /**
-     * @param OrderInterface $order
      * @throws LocalizedException
      */
     public function cancelOrder(OrderInterface $order): void
@@ -50,7 +42,6 @@ class MidpageCancelService
 
     /**
      * restore checkout quote
-     * @return void
      */
     public function restoreQuote(): void
     {

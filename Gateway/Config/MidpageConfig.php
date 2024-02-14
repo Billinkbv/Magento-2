@@ -6,6 +6,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Asset\Repository;
 use Magento\Store\Api\Data\StoreInterface;
+use Magento\Store\Model\Store;
 
 /**
  * Class Config
@@ -17,19 +18,13 @@ class MidpageConfig extends BasePaymentConfig
 
     const FIELD_LOGO = 'logo';
 
-    /**
-     * @var Repository
-     */
-    private $assetRepository;
-
     public function __construct(
         ScopeConfigInterface $scopeConfig,
-        Repository $assetRepository,
+        private readonly Repository $assetRepository,
         $methodCode = null,
         $pathPattern = \Magento\Payment\Gateway\Config\Config::DEFAULT_PATH_PATTERN
     ) {
         \Magento\Payment\Gateway\Config\Config::__construct($scopeConfig, $methodCode, $pathPattern);
-        $this->assetRepository = $assetRepository;
     }
 
     /**

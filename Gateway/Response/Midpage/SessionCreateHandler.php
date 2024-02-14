@@ -9,19 +9,12 @@ use Magento\Sales\Model\Order\Payment\Transaction;
 
 class SessionCreateHandler implements \Magento\Payment\Gateway\Response\HandlerInterface
 {
-    private SessionReader $sessionReader;
-
     public function __construct(
-        SessionReader $sessionReader
+        protected readonly SessionReader $sessionReader
     ) {
-        $this->sessionReader = $sessionReader;
     }
 
-    /**
-     * @param array $handlingSubject
-     * @param array $response
-     */
-    public function handle(array $handlingSubject, array $response)
+    public function handle(array $handlingSubject, array $response): void
     {
         $response = $this->sessionReader->getResponse($response);
         $paymentDO = SubjectReader::readPayment($handlingSubject);

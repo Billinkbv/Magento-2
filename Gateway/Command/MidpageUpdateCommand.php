@@ -14,21 +14,12 @@ use Psr\Log\LoggerInterface;
 
 class MidpageUpdateCommand implements CommandInterface
 {
-    private OrderRepositoryInterface $orderRepository;
-    private LoggerInterface $logger;
-    private OrderHistory $orderHistory;
-    private MidpageCancelService $cancelService;
-
     public function __construct(
-        OrderRepositoryInterface $orderRepository,
-        LoggerInterface $logger,
-        OrderHistory $orderHistory,
-        MidpageCancelService $cancelService
+        protected readonly OrderRepositoryInterface $orderRepository,
+        protected readonly LoggerInterface $logger,
+        protected readonly OrderHistory $orderHistory,
+        protected readonly         MidpageCancelService $cancelService
     ) {
-        $this->orderRepository = $orderRepository;
-        $this->logger = $logger;
-        $this->orderHistory = $orderHistory;
-        $this->cancelService = $cancelService;
     }
 
     /**

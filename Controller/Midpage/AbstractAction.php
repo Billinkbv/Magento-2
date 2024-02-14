@@ -18,42 +18,19 @@ use Psr\Log\LoggerInterface;
 
 abstract class AbstractAction implements HttpGetActionInterface
 {
-    protected RequestInterface $request;
-    protected CheckoutSession $checkoutSession;
-    protected RedirectFactory $redirectFactory;
-    protected Session $paymentSession;
-    protected TransactionManager $transactionManager;
-    protected CommandPoolInterface $commandPool;
-    protected PaymentDataObjectFactory $paymentDataObjectFactory;
-    protected ManagerInterface $messageManager;
-    protected OrderRepositoryInterface $orderRepository;
-    protected SearchCriteriaBuilder $searchCriteriaBuilder;
-    protected LoggerInterface $logger;
-
     public function __construct(
-        RequestInterface $request,
-        CheckoutSession $checkoutSession,
-        RedirectFactory $redirectFactory,
-        Session $paymentSession,
-        TransactionManager $transactionManager,
-        CommandPoolInterface $commandPool,
-        PaymentDataObjectFactory $paymentDataObjectFactory,
-        ManagerInterface $messageManager,
-        OrderRepositoryInterface $orderRepository,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
-        LoggerInterface $logger,
+        protected readonly RequestInterface $request,
+        protected readonly CheckoutSession $checkoutSession,
+        protected readonly RedirectFactory $redirectFactory,
+        protected readonly Session $paymentSession,
+        protected readonly TransactionManager $transactionManager,
+        protected readonly CommandPoolInterface $commandPool,
+        protected readonly PaymentDataObjectFactory $paymentDataObjectFactory,
+        protected readonly ManagerInterface $messageManager,
+        protected readonly OrderRepositoryInterface $orderRepository,
+        protected readonly SearchCriteriaBuilder $searchCriteriaBuilder,
+        protected readonly LoggerInterface $logger,
     ) {
-        $this->request = $request;
-        $this->checkoutSession = $checkoutSession;
-        $this->redirectFactory = $redirectFactory;
-        $this->paymentSession = $paymentSession;
-        $this->transactionManager = $transactionManager;
-        $this->commandPool = $commandPool;
-        $this->paymentDataObjectFactory = $paymentDataObjectFactory;
-        $this->messageManager = $messageManager;
-        $this->orderRepository = $orderRepository;
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->logger = $logger;
     }
 
     protected function getOrderIdFromTransaction(): ?string

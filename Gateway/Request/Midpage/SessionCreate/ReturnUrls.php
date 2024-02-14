@@ -8,21 +8,16 @@ use Magento\Framework\UrlInterface;
 
 class ReturnUrls implements BuilderInterface
 {
-    private TransactionManager $transactionManager;
-    private UrlInterface $urlBuilder;
-
     public function __construct(
-        TransactionManager $transactionManager,
-        UrlInterface $urlBuilder
+        protected readonly TransactionManager $transactionManager,
+        protected readonly UrlInterface $urlBuilder
     ) {
-        $this->transactionManager = $transactionManager;
-        $this->urlBuilder = $urlBuilder;
     }
 
     /**
      * @inheritdoc
      */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
         $paymentDO = SubjectReader::readPayment($buildSubject);
         $paymentOrder = $paymentDO->getOrder();

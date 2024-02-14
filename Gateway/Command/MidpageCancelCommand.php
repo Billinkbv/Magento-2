@@ -13,21 +13,12 @@ use Psr\Log\LoggerInterface;
 
 class MidpageCancelCommand implements CommandInterface
 {
-    private CheckoutSession $session;
-    private LoggerInterface $logger;
-    private OrderHistory $orderHistory;
-    private MidpageCancelService $cancelService;
-
     public function __construct(
-        CheckoutSession $session,
-        LoggerInterface $logger,
-        OrderHistory $orderHistory,
-        MidpageCancelService $cancelService
+        protected readonly CheckoutSession $session,
+        protected readonly LoggerInterface $logger,
+        protected readonly OrderHistory $orderHistory,
+        protected readonly MidpageCancelService $cancelService
     ) {
-        $this->session = $session;
-        $this->logger = $logger;
-        $this->orderHistory = $orderHistory;
-        $this->cancelService = $cancelService;
     }
 
     /**

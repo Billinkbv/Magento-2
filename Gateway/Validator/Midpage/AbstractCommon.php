@@ -2,29 +2,23 @@
 namespace Billink\Billink\Gateway\Validator\Midpage;
 
 use Billink\Billink\Gateway\Helper\SessionReader;
+use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ValidatorInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 
 abstract class AbstractCommon implements ValidatorInterface
 {
-    protected ResultInterfaceFactory $validationResult;
-    private SessionReader $sessionReader;
-
     protected array $desiredKeys = [];
 
     public function __construct(
-        ResultInterfaceFactory $resultInterfaceFactory,
-        SessionReader $sessionReader
+        protected readonly ResultInterfaceFactory $resultInterfaceFactory,
+        protected readonly SessionReader $sessionReader
     ) {
-        $this->validationResult = $resultInterfaceFactory;
-        $this->sessionReader = $sessionReader;
     }
 
     /**
      * get error from request
-     * @param array $response
-     * @return string
      */
     protected function getError(array $response): string
     {
@@ -36,10 +30,8 @@ abstract class AbstractCommon implements ValidatorInterface
 
     /**
      * get error from request
-     * @param array $response
-     * @return string
      */
-    protected function getErrorMessage(array $response)
+    protected function getErrorMessage(array $response): string
     {
         if(isset($response['error']['message'])) {
             return $response['error']['message'];
@@ -47,11 +39,7 @@ abstract class AbstractCommon implements ValidatorInterface
         return '';
     }
 
-    /**
-     * @param array $validationSubject
-     * @return bool|\Magento\Payment\Gateway\Validator\ResultInterface
-     */
-    public function validate(array $validationSubject)
+    public function validate(array $validationSubject): ResultInterface
     {
         $result = [
             'isValid' => true,
@@ -66,7 +54,7 @@ abstract class AbstractCommon implements ValidatorInterface
                     $errorMessage
                 ]
             ];
-            return $this->validationResult->create($result);
+            return $this->resultInterfaceFactory->create($result);
         }
         $differences = array_diff_key($response,array_flip($this->desiredKeys));
         if($differences){
@@ -75,11 +63,8 @@ abstract class AbstractCommon implements ValidatorInterface
                 'failsDescription' => ['Response does not match to desired schema.']
             ];
         }
-        return $this->validationResult->create($result);
+        return $this->resultInterfaceFactory->create($result);
     }
 
-    /**
-     * @return array
-     */
     abstract protected function getDesiredKeys(): array;
 }

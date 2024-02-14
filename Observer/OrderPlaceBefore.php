@@ -8,12 +8,9 @@ use Magento\Framework\Event\ObserverInterface;
 
 class OrderPlaceBefore implements ObserverInterface
 {
-    private LocalStorage $localStorage;
-
     public function __construct(
-        LocalStorage $localStorage
+        protected readonly LocalStorage $localStorage
     ) {
-        $this->localStorage = $localStorage;
     }
 
     public function execute(Observer $observer): void

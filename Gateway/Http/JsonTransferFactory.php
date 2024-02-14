@@ -11,24 +11,16 @@ use Magento\Payment\Gateway\Http\TransferInterface;
 
 class JsonTransferFactory implements TransferFactoryInterface
 {
-    private TransferBuilder $transferBuilder;
-    private GatewayHelper $gatewayHelper;
-
     public function __construct(
-        TransferBuilder $transferBuilder,
-        GatewayHelper $gatewayHelper
+        protected readonly TransferBuilder $transferBuilder,
+        protected readonly GatewayHelper $gatewayHelper
     ) {
-        $this->transferBuilder = $transferBuilder;
-        $this->gatewayHelper = $gatewayHelper;
     }
 
     /**
      * Builds gateway transfer object
-     *
-     * @param array $request
-     * @return TransferInterface
      */
-    public function create(array $request)
+    public function create(array $request): TransferInterface
     {
         $service = $request[ActionDataBuilder::SERVICE];
         unset($request[ActionDataBuilder::SERVICE]);

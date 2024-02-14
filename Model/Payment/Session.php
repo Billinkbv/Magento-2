@@ -6,9 +6,6 @@ use Magento\Sales\Api\Data\OrderInterface;
 
 class Session extends SessionManager
 {
-    /**
-     * @return $this
-     */
     public function activatePaymentSession(OrderInterface $order): self
     {
         $this->setMidpageSessionActive(true);
@@ -16,9 +13,6 @@ class Session extends SessionManager
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function deactivatePaymentSession(): self
     {
         $this->setMidpageSessionActive(false);
@@ -26,17 +20,11 @@ class Session extends SessionManager
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getIsActivePaymentSession(): ?bool
     {
         return $this->getMidpageSessionActive();
     }
 
-    /**
-     * @return string|null
-     */
     public function getPaymentSessionOrderId(): ?string
     {
         return $this->getSessionOrderId();

@@ -15,23 +15,12 @@ class SessionGateway
 
     const SERVICE_CREATE = 'v1/create';
 
-    private MidpageConfig $config;
-
-    /**
-     * Gateway constructor.
-     * @param MidpageConfig $config
-     */
     public function __construct(
-        MidpageConfig $config
+        protected readonly MidpageConfig $config
     ) {
-        $this->config = $config;
     }
 
-    /**
-     * @param string $service
-     * @return string
-     */
-    public function getUrl($service = '')
+    public function getUrl(string $service = ''): string
     {
         if ($this->config->isDebugMode()) {
             return self::GATEWAY_URL_DEBUG . $service;

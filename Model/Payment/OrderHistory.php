@@ -10,39 +10,27 @@ use Psr\Log\LoggerInterface;
 
 class OrderHistory
 {
-    protected OrderStatusHistoryRepositoryInterface $historyRepository;
-
-    protected OrderStatusHistoryInterfaceFactory $historyObjectFactory;
-
-    protected LoggerInterface $logger;
-
     protected array $orderMessages = [];
 
-    protected DataObjectFactory $dataObjectFactory;
-
     public function __construct(
-        OrderStatusHistoryRepositoryInterface $historyRepository,
-        OrderStatusHistoryInterfaceFactory $historyInterfaceFactory,
-        DataObjectFactory $dataObjectFactory,
-        LoggerInterface $logger
+        protected readonly OrderStatusHistoryRepositoryInterface $historyObjectFactory,
+        protected readonly OrderStatusHistoryInterfaceFactory $historyInterfaceFactory,
+        protected readonly DataObjectFactory $dataObjectFactory,
+        protected readonly LoggerInterface $logger
     ) {
-        $this->historyRepository = $historyRepository;
-        $this->historyObjectFactory = $historyInterfaceFactory;
-        $this->dataObjectFactory = $dataObjectFactory;
-        $this->logger = $logger;
     }
 
     public function addOrderComment(OrderInterface $order, string $message = ''): void
     {
         try {
-            $historyItem = $this->historyObjectFactory->create(['data' => [
+            $historyItem = $this->historyInterfaceFactory->create(['data' => [
                 OrderStatusHistoryInterface::COMMENT => $message,
                 OrderStatusHistoryInterface::STATUS => $order->getStatus(),
                 OrderStatusHistoryInterface::PARENT_ID => $order->getId(),
                 OrderStatusHistoryInterface::ENTITY_NAME => 'order',
                 OrderStatusHistoryInterface::IS_CUSTOMER_NOTIFIED => false,
             ]]);
-            $this->historyRepository->save($historyItem);
+            $this->historyObjectFactory->save($historyItem);
         } catch (\Exception $exception) {
             $this->logger->critical($exception);
         }

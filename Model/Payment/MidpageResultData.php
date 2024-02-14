@@ -6,12 +6,9 @@ use Billink\Billink\Api\MidpageResultDataInterface;
 
 class MidpageResultData implements MidpageResultDataInterface
 {
-    private string $url;
-
     public function __construct(
-        string $url
+        private readonly string $url
     ) {
-        $this->url = $url;
     }
 
     public function getRedirectUrl(): string

@@ -11,19 +11,16 @@ use Magento\Sales\Api\Data\OrderItemInterface;
 
 class Transaction implements BuilderInterface
 {
-    private LocalStorage $localStorage;
-
     public function __construct(
-        LocalStorage $localStorage
+        protected readonly LocalStorage $localStorage
     ) {
-        $this->localStorage = $localStorage;
     }
 
     /**
      * Fields converted to string so it will be sent as sting in the json.
      * @inheritdoc
      */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
         $paymentDO = SubjectReader::readPayment($buildSubject);
         $paymentOrder = $paymentDO->getOrder();

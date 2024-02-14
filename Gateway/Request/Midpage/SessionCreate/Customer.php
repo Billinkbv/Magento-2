@@ -12,7 +12,7 @@ class Customer implements BuilderInterface
     /**
      * @inheritdoc
      */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
         $paymentDO = SubjectReader::readPayment($buildSubject);
         /** @var OrderAdapter $order */
@@ -40,7 +40,7 @@ class Customer implements BuilderInterface
         ];
     }
 
-    private function getAddressData(?\Magento\Payment\Gateway\Data\AddressAdapterInterface $address)
+    private function getAddressData(?\Magento\Payment\Gateway\Data\AddressAdapterInterface $address): array
     {
         $street = $address->getStreetLine1();
         $parts = $this->getParts($street);

@@ -14,44 +14,17 @@ class TransferFactory implements TransferFactoryInterface
 {
     const XML_ROOT = 'API';
 
-    /**
-     * @var TransferBuilder
-     */
-    private $transferBuilder;
-
-    /**
-     * @var XmlHelper
-     */
-    private $xmlHelper;
-
-    /**
-     * @var GatewayHelper
-     */
-    private $gatewayHelper;
-
-    /**
-     * TransferFactory constructor.
-     * @param TransferBuilder $transferBuilder
-     * @param XmlHelper $xmlHelper
-     * @param GatewayHelper $gatewayHelper
-     */
     public function __construct(
-        TransferBuilder $transferBuilder,
-        XmlHelper $xmlHelper,
-        GatewayHelper $gatewayHelper
+        protected readonly TransferBuilder $transferBuilder,
+        protected readonly XmlHelper $xmlHelper,
+        protected readonly GatewayHelper $gatewayHelper
     ) {
-        $this->transferBuilder = $transferBuilder;
-        $this->xmlHelper = $xmlHelper;
-        $this->gatewayHelper = $gatewayHelper;
     }
 
     /**
      * Builds gateway transfer object
-     *
-     * @param array $request
-     * @return TransferInterface
      */
-    public function create(array $request)
+    public function create(array $request): TransferInterface
     {
         $service = $request[ActionDataBuilder::SERVICE];
         unset($request[ActionDataBuilder::SERVICE]);

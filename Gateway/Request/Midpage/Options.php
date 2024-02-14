@@ -7,21 +7,16 @@ use Magento\Store\Model\StoreManagerInterface;
 
 class Options implements BuilderInterface
 {
-    private MidpageConfig $midpageConfig;
-    private StoreManagerInterface $storeManager;
-
     public function __construct(
-        MidpageConfig $midpageConfig,
-        StoreManagerInterface $storeManager
+        protected readonly MidpageConfig $midpageConfig,
+        protected readonly StoreManagerInterface $storeManager
     ) {
-        $this->midpageConfig = $midpageConfig;
-        $this->storeManager = $storeManager;
     }
 
     /**
      * @inheritdoc
      */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
         $data = ['options' => [
             'logoURL' => $this->midpageConfig->getLogo($this->storeManager->getStore())

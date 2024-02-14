@@ -18,33 +18,16 @@ use Psr\Log\LoggerInterface;
 
 class MidpageGatewayCommand implements CommandInterface
 {
-    private BuilderInterface $requestBuilder;
-    private TransferFactoryInterface $transferFactory;
-    private ClientInterface $client;
-    private HandlerInterface $handler;
-    private ValidatorInterface $validator;
-    private Logger $logger;
-    private OrderHistory $orderHistory;
-    private LoggerInterface $errorLogger;
-
     public function __construct(
-        BuilderInterface $requestBuilder,
-        TransferFactoryInterface $transferFactory,
-        ClientInterface $client,
-        HandlerInterface $handler,
-        ValidatorInterface $validator,
-        Logger $logger,
-        OrderHistory $orderHistory,
-        LoggerInterface $errorLogger
+        protected readonly BuilderInterface $requestBuilder,
+        protected readonly TransferFactoryInterface $transferFactory,
+        protected readonly ClientInterface $client,
+        protected readonly HandlerInterface $handler,
+        protected readonly ValidatorInterface $validator,
+        protected readonly Logger $logger,
+        protected readonly OrderHistory $orderHistory,
+        protected readonly LoggerInterface $errorLogger
     ) {
-        $this->requestBuilder = $requestBuilder;
-        $this->transferFactory = $transferFactory;
-        $this->client = $client;
-        $this->handler = $handler;
-        $this->validator = $validator;
-        $this->logger = $logger;
-        $this->orderHistory = $orderHistory;
-        $this->errorLogger = $errorLogger;
     }
 
     public function execute(array $commandSubject)
@@ -85,6 +68,7 @@ class MidpageGatewayCommand implements CommandInterface
      * Throws an exception with mapped message or default error.
      * @param array $commandSubject
      * @param ResultInterface $result
+     * @throws \Exception
      */
     private function processErrors(array $commandSubject, ResultInterface $result)
     {

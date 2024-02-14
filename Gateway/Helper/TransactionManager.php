@@ -10,7 +10,13 @@ class TransactionManager
 {
     public const HASH_ID = 'hash';
     public const TRANSACTION_ID = 'id';
-    private SerializerInterface $serializer;
+
+    public function __construct(
+        protected readonly MidpageConfig $midpageConfig,
+        protected readonly EncryptorInterface $encryptor,
+        protected readonly SerializerInterface $serializer
+    ) {
+    }
 
     /**
      * @return MidpageConfig
@@ -18,19 +24,6 @@ class TransactionManager
     public function getMidpageConfig(): MidpageConfig
     {
         return $this->midpageConfig;
-    }
-
-    private MidpageConfig $midpageConfig;
-    private EncryptorInterface $encryptor;
-
-    public function __construct(
-        MidpageConfig $midpageConfig,
-        EncryptorInterface $encryptor,
-        SerializerInterface $serializer
-    ) {
-        $this->midpageConfig = $midpageConfig;
-        $this->encryptor = $encryptor;
-        $this->serializer = $serializer;
     }
 
     public function createTransactionId(string $incrementId): string

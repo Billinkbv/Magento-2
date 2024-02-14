@@ -11,18 +11,15 @@ class Authorize implements BuilderInterface
     public const USER_ID = 'billinkID';
     public const WORKFLOW = 'workflowNumber';
 
-    private MidpageConfig $midpageConfig;
-
     public function __construct(
-        MidpageConfig $midpageConfig
+        protected readonly MidpageConfig $midpageConfig
     ) {
-        $this->midpageConfig = $midpageConfig;
     }
 
     /**
      * @inheritdoc
      */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
         $data = [];
         $data[self::USER_NAME] = $this->midpageConfig->getAccountName();

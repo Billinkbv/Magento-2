@@ -14,33 +14,17 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 
 class MidpagePaymentData implements MidpagePaymentDataInterface
 {
-    private PaymentInformationManagementInterface $paymentInformationManagement;
-    private GuestPaymentInformationManagementInterface $guestPaymentInformationManagement;
-    private OrderRepositoryInterface $orderRepository;
-    private MidpageResultDataInterfaceFactory $resultObjectFactory;
-    private Session $session;
-
     public function __construct(
-        PaymentInformationManagementInterface $informationManagement,
-        GuestPaymentInformationManagementInterface $guestPaymentInformationManagement,
-        OrderRepositoryInterface $orderRepository,
-        MidpageResultDataInterfaceFactory $resultObjectFactory,
-        Session $session
+        protected readonly PaymentInformationManagementInterface $informationManagement,
+        protected readonly GuestPaymentInformationManagementInterface $guestPaymentInformationManagement,
+        protected readonly OrderRepositoryInterface $orderRepository,
+        protected readonly MidpageResultDataInterfaceFactory $resultObjectFactory,
+        protected readonly Session $session
     ) {
-        $this->paymentInformationManagement = $informationManagement;
-        $this->guestPaymentInformationManagement = $guestPaymentInformationManagement;
-        $this->orderRepository = $orderRepository;
-        $this->resultObjectFactory = $resultObjectFactory;
-        $this->session = $session;
     }
 
     /**
-     * @param string $cartId
-     * @param \Magento\Quote\Api\Data\PaymentInterface $paymentMethod
-     * @param \Magento\Quote\Api\Data\AddressInterface|null $billingAddress
-     * @return MidpageResultDataInterface
-     * @throws \Magento\Framework\Exception\CouldNotSaveException
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function savePaymentInformationAndPlaceOrder(
         int $cartId,
@@ -58,13 +42,7 @@ class MidpagePaymentData implements MidpagePaymentDataInterface
     }
 
     /**
-     * @param string $cartId
-     * @param string $email
-     * @param \Magento\Quote\Api\Data\PaymentInterface $paymentMethod
-     * @param \Magento\Quote\Api\Data\AddressInterface|null $billingAddress
-     * @return MidpageResultDataInterface
-     * @throws \Magento\Framework\Exception\CouldNotSaveException
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function saveGuestPaymentInformationAndPlaceOrder(
         string $cartId,
@@ -82,6 +60,9 @@ class MidpagePaymentData implements MidpagePaymentDataInterface
         ]);
     }
 
+    /**
+     * @throws LocalizedException
+     */
     private function getRedirectUrl(OrderInterface $order): string
     {
         $payment = $order->getPayment();
