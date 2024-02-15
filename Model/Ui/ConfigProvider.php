@@ -9,6 +9,8 @@ use Billink\Billink\Model\Config\Source\UsedWorkflow;
 use Billink\Billink\Observer\DataAssignObserver;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Checkout\Model\Session;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
@@ -21,52 +23,22 @@ class ConfigProvider implements ConfigProviderInterface
      * Payment method code used in the system
      */
     const CODE = 'billink';
+    const CODE_MIDPAGE = 'billink_midpage';
 
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * @var Session
-     */
-    private $checkoutSession;
-
-    /**
-     * @var SubjectReader
-     */
-    private $subjectReader;
-    /**
-     * @var StoreManagerInterface
-     */
-    private $storeManager;
-
-    /**
-     * ConfigProvider constructor.
-     * @param Config $config
-     * @param Session $checkoutSession
-     * @param SubjectReader $subjectReader
-     * @param StoreManagerInterface $storeManager
-     */
     public function __construct(
-        Config $config,
-        Session $checkoutSession,
-        SubjectReader $subjectReader,
-        StoreManagerInterface $storeManager
+        protected readonly Config $config,
+        protected readonly Session $checkoutSession,
+        protected readonly SubjectReader $subjectReader,
+        protected readonly StoreManagerInterface $storeManager
     ) {
-        $this->config = $config;
-        $this->checkoutSession = $checkoutSession;
-        $this->subjectReader = $subjectReader;
-        $this->storeManager = $storeManager;
     }
 
     /**
      * Retrieve assoc array of checkout configuration
      *
-     * @return array
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws NoSuchEntityException
      */
-    public function getConfig()
+    public function getConfig(): array
     {
         return array_merge([
             'payment' => $this->preparePaymentConfig(),
@@ -75,10 +47,9 @@ class ConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * @return array
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    private function preparePaymentConfig()
+    private function preparePaymentConfig(): array
     {
         return [
             self::CODE => [
@@ -94,9 +65,9 @@ class ConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * @return array
+     * @throws LocalizedException|NoSuchEntityException
      */
-    private function prepareQuoteData()
+    private function prepareQuoteData(): array
     {
         $quote = $this->checkoutSession->getQuote();
 
