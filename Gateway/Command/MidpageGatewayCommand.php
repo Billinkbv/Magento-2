@@ -57,6 +57,8 @@ class MidpageGatewayCommand implements CommandInterface
                 $commandSubject,
                 $response
             );
+        } catch (LocalizedException $e) {
+            throw $e;
         } catch (\Exception $e) {
             $this->errorLogger->error('Failed to generate redirect url: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             throw $e;
@@ -74,17 +76,15 @@ class MidpageGatewayCommand implements CommandInterface
     {
         $payment = SubjectReader::readPayment($commandSubject);
         $messages = [];
-        $originMessageErrors = [];
         foreach ($result->getFailsDescription() as $failPhrase) {
-            $message = (string)$failPhrase;
-            $originMessageErrors[] = $message;
+            $messages[] = (string)$failPhrase;
         }
         $messages = array_unique($messages);
         $order = $payment->getPayment()->getOrder();
         $messageLog = sprintf(
             'Payment Gateway Error: Order # %s - %s',
             $order->getIncrementId(),
-            implode(PHP_EOL, $originMessageErrors)
+            implode(PHP_EOL, $messages)
         );
         $this->orderHistory->setOrderMessage($order, $messageLog);
         $this->errorLogger->critical($messageLog);
@@ -93,6 +93,6 @@ class MidpageGatewayCommand implements CommandInterface
             ? __(implode(PHP_EOL, $messages))
             : __('Transaction has been declined. Please try again later.');
 
-        throw new \Exception($message);
+        throw new LocalizedException($message);
     }
 }
