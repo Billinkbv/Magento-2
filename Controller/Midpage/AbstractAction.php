@@ -51,7 +51,7 @@ abstract class AbstractAction implements HttpGetActionInterface
         $orders = $this->orderRepository->getList($searchCriteria)->getItems();
         $order = array_shift($orders);
         if (!$order) {
-            throw new LocalizedException(__('Incorrect order number provided: %1. Please reach to support.', $transactionOrder));
+            throw new LocalizedException(__('Incorrect order number provided: %1. Please reach out to support.', $transactionOrder));
         }
         return $order;
     }
