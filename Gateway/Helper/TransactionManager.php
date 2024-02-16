@@ -18,14 +18,6 @@ class TransactionManager
     ) {
     }
 
-    /**
-     * @return MidpageConfig
-     */
-    public function getMidpageConfig(): MidpageConfig
-    {
-        return $this->midpageConfig;
-    }
-
     public function createTransactionId(string $incrementId): string
     {
         $hash = $this->createHash($incrementId);
@@ -33,7 +25,8 @@ class TransactionManager
             self::HASH_ID => $hash,
             self::TRANSACTION_ID => $incrementId
         ];
-        return $this->encryptor->encrypt($this->serializer->serialize($data));
+        $txn = $this->encryptor->encrypt($this->serializer->serialize($data));
+        return urlencode($txn);
     }
 
     public function createHash(string $incrementId): string
@@ -47,7 +40,8 @@ class TransactionManager
     {
         try {
             // Decrypt data
-            $data = $this->encryptor->decrypt($transactionId);
+            $data = urldecode($transactionId);
+            $data = $this->encryptor->decrypt($data);
             $data = $this->serializer->unserialize($data);
             if (!isset($data[self::HASH_ID]) || !isset($data[self::TRANSACTION_ID])) {
                 return null;
