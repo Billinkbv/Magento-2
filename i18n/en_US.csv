@@ -12,7 +12,7 @@
 "billink_check_error_code_416","Verkeerde postcode formaat"
 "billink_check_error_code_417","Telefoonummer ontbreekt, pas dit aan in uw account (rechts boven)"
 "billink_check_error_code_418","Ongeldige geboortedatum"
-"billink_check_error_code_422","Minimale leeftijd voor bestellingen via Billink is 16 jaarm"
+"billink_check_error_code_422","Minimale leeftijd voor bestellingen via Billink is 18 jaarm"
 "billink_check_error_code_607","Opdrachtgever of klant niet gevonden"
 #  Order service error translations
 "billink_order_error_code_406","Maak een keuze tussen particulier en bedrijf"
