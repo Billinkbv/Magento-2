@@ -14,9 +14,9 @@ use Magento\Store\Model\Store;
  */
 class MidpageConfig extends BasePaymentConfig
 {
-    const MEDIA_FOLDER = 'billink';
+    public const MEDIA_FOLDER = 'billink';
 
-    const FIELD_LOGO = 'logo';
+    public const FIELD_LOGO = 'logo';
 
     public function __construct(
         ScopeConfigInterface $scopeConfig,

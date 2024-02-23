@@ -56,6 +56,10 @@ define([
             return false;
         },
 
+        getLogo: function() {
+            return window.checkoutConfig.payment.billink_midpage.logo;
+        },
+
         /**
          * @return {*}
          */

@@ -3,6 +3,7 @@
 namespace Billink\Billink\Model\Ui;
 
 use Billink\Billink\Gateway\Config\Config;
+use Billink\Billink\Gateway\Config\MidpageConfig;
 use Billink\Billink\Gateway\Helper\SubjectReader;
 use Billink\Billink\Gateway\Helper\Workflow as WorkflowHelper;
 use Billink\Billink\Model\Config\Source\UsedWorkflow;
@@ -29,7 +30,8 @@ class ConfigProvider implements ConfigProviderInterface
         protected readonly Config $config,
         protected readonly Session $checkoutSession,
         protected readonly SubjectReader $subjectReader,
-        protected readonly StoreManagerInterface $storeManager
+        protected readonly StoreManagerInterface $storeManager,
+        protected readonly MidpageConfig $midpageConfig
     ) {
     }
 
@@ -60,6 +62,10 @@ class ConfigProvider implements ConfigProviderInterface
                 'workflowTypePrefix' => WorkflowHelper::WORKFLOW_TYPE_PREFIX,
                 'feeActive' => $this->config->getIsFeeActive(),
                 'feeLabel' => $this->config->getFeeLabel()
+            ],
+            self::CODE_MIDPAGE => [
+                'logo' => $this->midpageConfig->getLogo($this->storeManager->getStore()),
+                'isActive' => $this->midpageConfig->isActive(),
             ]
         ];
     }
