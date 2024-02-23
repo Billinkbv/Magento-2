@@ -40,10 +40,15 @@ class TransactionManager
     {
         try {
             // Decrypt data
-            $data = urldecode($transactionId);
-            $data = $this->encryptor->decrypt($data);
+            // Urls by default are encoded, so this value should be correct
+            $data = $this->encryptor->decrypt($transactionId);
+            // In case it's not - try to decode and validate again
+            if ($data === '') {
+                $data = urldecode($transactionId);
+                $data = $this->encryptor->decrypt($data);
+            }
             $data = $this->serializer->unserialize($data);
-            if (!isset($data[self::HASH_ID]) || !isset($data[self::TRANSACTION_ID])) {
+            if (!isset($data[self::HASH_ID], $data[self::TRANSACTION_ID])) {
                 return null;
             }
             $orderId = $data[self::TRANSACTION_ID];
