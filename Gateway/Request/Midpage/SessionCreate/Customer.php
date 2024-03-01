@@ -18,6 +18,14 @@ class Customer implements BuilderInterface
         /** @var OrderAdapter $order */
         $order = $paymentDO->getOrder();
         $address = $order->getBillingAddress();
+        $shippingAddress = $order->getShippingAddress();
+        // In case of downloadable products shipping is not applied.
+        if (!$shippingAddress) {
+            $shippingAddress = $address;
+        }
+        if (!$address || !$shippingAddress) {
+            throw new LocalizedException(__('The customer address is not valid.'));
+        }
 
         $customer = [
             'firstName' => $address->getFirstname(),
@@ -29,18 +37,18 @@ class Customer implements BuilderInterface
             'initials' => '',
             'gender' => '',
             'birthdate' => '',
-            'company' => '',
+            'company' => $address->getCompany(),
             'companyNumber' => ''
 		];
 
         return [
             'customer' => $customer,
             'billingAddress' => $this->getAddressData($address),
-            'shippingAddress' => $this->getAddressData($order->getShippingAddress()),
+            'shippingAddress' => $this->getAddressData($shippingAddress),
         ];
     }
 
-    private function getAddressData(?\Magento\Payment\Gateway\Data\AddressAdapterInterface $address): array
+    private function getAddressData(\Magento\Payment\Gateway\Data\AddressAdapterInterface $address): array
     {
         $street = $address->getStreetLine1();
         $parts = $this->getParts($street);
