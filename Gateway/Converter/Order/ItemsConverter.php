@@ -92,6 +92,8 @@ class ItemsConverter implements ConverterInterface
             $this->addBillinkFeeAmountItem($order);
         }
 
+        $this->addFoomanSurcharge($order);
+
         return $this->items;
     }
 
@@ -233,6 +235,59 @@ class ItemsConverter implements ConverterInterface
             $billinkFeeItem->setPrice($baseAmount);
 
             $this->items[] = $billinkFeeItem;
+        }
+    }
+
+    /**
+     * If the Fooman Surcharge plugin is installed, try to fetch the surcharge
+     *
+     * @param \Magento\Sales\Model\Order|\Magento\Quote\Model\Quote $orderData
+     * @return void
+     */
+    private function addFoomanSurcharge($orderData)
+    {
+        if ($orderData instanceof \Magento\Quote\Model\Quote) {
+            //As seen in Fooman\SurchargePayment\Plugin\SurchargePreview
+            if ($orderData->isVirtual()) {
+                $address = $orderData->getBillingAddress();
+            } else {
+                $address = $orderData->getShippingAddress();
+            }
+
+            $extensionAttributes = $address->getExtensionAttributes();
+        } elseif ($orderData instanceof \Magento\Sales\Model\Order) {
+            $extensionAttributes = $orderData->getExtensionAttributes();
+        } else {
+            return;
+        }
+
+        if ($extensionAttributes) {
+            //If Fooman Surcharges is installed, this function should be part of the Order-/Address- ExtensionInterface
+            if (method_exists($extensionAttributes, 'getFoomanTotalGroup')) {
+                if ($foomanTotalGroup = $extensionAttributes->getFoomanTotalGroup()) {
+                    foreach ($foomanTotalGroup->getItems() as $item) {
+                        if ($item->getAmount() > 0) {
+                            $billinkFeeItem = $this->orderItemFactory->create();
+
+                            $taxRate = 0;
+                            if ($item->getTaxAmount()) {
+                                $taxRate = round(($item->getBaseTaxAmount() + $item->getBaseAmount()) / $item->getBaseAmount(), 2);
+                            }
+
+                            $priceType = $item->getBasePrice() ? OrderItemsDataBuilder::PRICEINCL : OrderItemsDataBuilder::PRICEEXCL;
+
+                            $billinkFeeItem->setCode('fooman_surcharge');
+                            $billinkFeeItem->setDescription($item->getLabel());
+                            $billinkFeeItem->setQuantity(1);
+                            $billinkFeeItem->setTaxPercent($taxRate);
+                            $billinkFeeItem->setPriceType($priceType);
+                            $billinkFeeItem->setPrice($item->getBaseAmount());
+
+                            $this->items[] = $billinkFeeItem;
+                        }
+                    }
+                }
+            }
         }
     }
 }
