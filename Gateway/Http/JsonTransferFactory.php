@@ -2,21 +2,17 @@
 
 namespace Billink\Billink\Gateway\Http;
 
-use Billink\Billink\Gateway\Helper\Gateway as GatewayHelper;
-use Billink\Billink\Gateway\Helper\Xml as XmlHelper;
+use Billink\Billink\Gateway\Helper\SessionGateway as GatewayHelper;
 use Billink\Billink\Gateway\Request\ActionDataBuilder;
 use Laminas\Http\Request;
 use Magento\Payment\Gateway\Http\TransferBuilder;
 use Magento\Payment\Gateway\Http\TransferFactoryInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
 
-class TransferFactory implements TransferFactoryInterface
+class JsonTransferFactory implements TransferFactoryInterface
 {
-    const XML_ROOT = 'API';
-
     public function __construct(
         protected readonly TransferBuilder $transferBuilder,
-        protected readonly XmlHelper $xmlHelper,
         protected readonly GatewayHelper $gatewayHelper
     ) {
     }
@@ -28,11 +24,12 @@ class TransferFactory implements TransferFactoryInterface
     {
         $service = $request[ActionDataBuilder::SERVICE];
         unset($request[ActionDataBuilder::SERVICE]);
+        unset($request[ActionDataBuilder::ACTION]);
 
-        $body = $this->xmlHelper->convert($request, self::XML_ROOT);
+        $body = json_encode($request);
 
         return $this->transferBuilder
-            ->setHeaders(['Content-Type' => 'text/xml'])
+            ->setHeaders(['Content-Type' => 'application/json'])
             ->setBody($body)
             ->setUri($this->gatewayHelper->getUrl($service))
             ->setMethod(Request::METHOD_POST)
