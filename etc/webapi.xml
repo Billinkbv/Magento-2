@@ -24,4 +24,23 @@
             <parameter name="cartId" force="true">%cart_id%</parameter>
         </data>
     </route>
+
+    <route url="/V1/billink/payment-data" method="POST">
+        <service class="Billink\Billink\Api\MidpagePaymentDataInterface" method="savePaymentInformationAndPlaceOrder"/>
+        <resources>
+            <resource ref="self" />
+        </resources>
+        <data>
+            <parameter name="cartId" force="true">%cart_id%</parameter>
+        </data>
+    </route>
+
+    <route url="/V1/billink/guest-payment-data/:cartId" method="POST">
+        <service class="Billink\Billink\Api\MidpagePaymentDataInterface" method="saveGuestPaymentInformationAndPlaceOrder"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+
 </routes>

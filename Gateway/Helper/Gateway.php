@@ -21,25 +21,19 @@ class Gateway
     const SERVICE_CREDIT = 'credit';
 
     /**
-     * @var Config
-     */
-    private $config;
-
-    /**
      * Gateway constructor.
      * @param Config $config
      */
     public function __construct(
-        Config $config
+        protected readonly Config $config
     ) {
-        $this->config = $config;
     }
 
     /**
      * @param string $service
      * @return string
      */
-    public function getUrl($service = '')
+    public function getUrl(string $service = ''): string
     {
         if ($this->config->isDebugMode()) {
             return self::GATEWAY_URL_DEBUG . $service;

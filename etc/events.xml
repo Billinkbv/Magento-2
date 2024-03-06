@@ -11,4 +11,9 @@
     <event name="sales_order_shipment_save_after">
         <observer name="billink_sales_order_shipment_after" instance="BillinkShipmentObserver"/>
     </event>
+
+    <event name="sales_order_place_before">
+        <observer name="billing_store_current_order_object"
+                  instance="Billink\Billink\Observer\OrderPlaceBefore"/>
+    </event>
 </config>

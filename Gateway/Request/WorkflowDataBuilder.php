@@ -17,45 +17,17 @@ class WorkflowDataBuilder implements BuilderInterface
     const WORKFLOWNUMBER = 'WORKFLOWNUMBER';
     const BACKDOOR = 'BACKDOOR';
 
-    /**
-     * @var SubjectReader
-     */
-    private $subjectReader;
-
-    /**
-     * @var Workflow
-     */
-    private $workflowHelper;
-
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * WorkflowDataBuilder constructor.
-     * @param Config $config
-     * @param SubjectReader $subjectReader
-     * @param WorkflowHelper $workflowHelper
-     */
     public function __construct(
-        Config $config,
-        SubjectReader $subjectReader,
-        WorkflowHelper $workflowHelper
+        protected readonly Config $config,
+        protected readonly SubjectReader $subjectReader,
+        protected readonly WorkflowHelper $workflowHelper
     ) {
-
-        $this->subjectReader = $subjectReader;
-        $this->workflowHelper = $workflowHelper;
-        $this->config = $config;
     }
 
     /**
      * Builds ENV request
-     *
-     * @param array $buildSubject
-     * @return array
      */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
         $type = $this->subjectReader->readPaymentWorkflowType($buildSubject);
 
