@@ -5,8 +5,10 @@ namespace Billink\Billink\Gateway\Request\Midpage\SessionCreate;
 use Billink\Billink\Model\LocalStorage;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderItemInterface;
 
 class Transaction implements BuilderInterface
@@ -41,16 +43,15 @@ class Transaction implements BuilderInterface
             'purchaseCountry' => $purchaseCountry,
             'purchaseCurrency' => $order->getOrderCurrencyCode(),
             'orderNumber' => $order->getIncrementId(),
-            'orderItems' => $this->prepareItems($paymentOrder->getItems())
+            'orderItems' => $this->prepareItems($order)
         ];
         return ['transaction' => $data];
     }
 
-    private function prepareItems(array $items): array
+    private function prepareItems(OrderInterface $order): array
     {
         $data = [];
-        /** @var OrderItemInterface $item */
-        foreach ($items as $item) {
+        foreach ($order->getItems() as $item) {
             // Do not send simple products from configurable, but send simples from bundle
             if ($item->getProductType() === \Magento\Bundle\Model\Product\Type::TYPE_CODE ||
                 (
@@ -70,6 +71,31 @@ class Transaction implements BuilderInterface
                 'productTaxAmount' => (string)$item->getTaxAmount(),
                 'taxRate' => (string)$item->getTaxPercent(),
                 'quantity' => (string)$item->getQtyOrdered(),
+            ];
+        }
+        if ($order->getShippingAmount() > 0) {
+            $data[] = [
+                'code' => 'shipping',
+                'name' => (string)$order->getShippingDescription(),
+                'description' => '',
+                'totalProductAmount' => (string)$order->getShippingInclTax(),
+                'productAmount' => (string)$order->getShippingAmount(),
+                'productTaxAmount' => (string)$order->getShippingTaxAmount(),
+                'taxRate' => (string)(round($order->getShippingTaxAmount() * 100 / $order->getShippingInclTax(), 2)),
+                'quantity' => '1',
+            ];
+        }
+        if ($order->getDiscountAmount() < 0) {
+            $value = ($order->getDiscountAmount() + $order->getDiscountTaxCompensationAmount());
+            $data[] = [
+                'code' => 'shipping',
+                'name' => (string)$order->getDiscountDescription(),
+                'description' => '',
+                'totalProductAmount' => (string)$value,
+                'productAmount' => (string)$value,
+                'productTaxAmount' => '0',
+                'taxRate' => '0',
+                'quantity' => '1',
             ];
         }
         return $data;
