@@ -22,7 +22,7 @@ class SessionGateway
 
     public function getUrl(string $service = ''): string
     {
-        if ($this->config->isDebugMode()) {
+        if ($this->config->isTestMode()) {
             return self::GATEWAY_URL_DEBUG . $service;
         }
 

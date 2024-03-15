@@ -18,7 +18,7 @@ class MidpageUpdateCommand implements CommandInterface
         protected readonly OrderRepositoryInterface $orderRepository,
         protected readonly LoggerInterface $logger,
         protected readonly OrderHistory $orderHistory,
-        protected readonly         MidpageCancelService $cancelService
+        protected readonly MidpageCancelService $cancelService
     ) {
     }
 

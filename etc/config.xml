@@ -28,6 +28,7 @@
                 <is_invoice_email_enabled>1</is_invoice_email_enabled>
             </billink>
             <billink_midpage>
+                <api_version>BILLINK2.0</api_version>
                 <active>0</active>
                 <title>Achteraf betalen</title>
                 <debug>0</debug>
@@ -39,7 +40,8 @@
                 <is_gateway>1</is_gateway>
                 <can_order>1</can_order>
                 <can_capture>1</can_capture>
-                <can_refund>0</can_refund>
+                <can_refund>1</can_refund>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
                 <can_void>1</can_void>
                 <can_cancel>1</can_cancel>
                 <can_initialize>1</can_initialize>

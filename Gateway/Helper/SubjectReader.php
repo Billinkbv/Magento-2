@@ -12,9 +12,11 @@ use Magento\Framework\Exception\LocalizedException;
  */
 class SubjectReader
 {
-    const INDEX_PAYMENT = 'payment';
-    const INDEX_ADDITIONAL_INFO = 'additional_information';
-    const INDEX_REFUND_AMOUNT = 'amount';
+    public const INDEX_PAYMENT = 'payment';
+    public const INDEX_ADDITIONAL_INFO = 'additional_information';
+    public const INDEX_REFUND_AMOUNT = 'amount';
+
+    public const INDEX_INVOICE_ID = 'invoice_id';
 
     /**
      * @param array $subject

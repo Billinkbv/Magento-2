@@ -22,7 +22,7 @@ class MidpageCaptureCommand implements CommandInterface
         $payment = $paymentDO->getPayment();
         ContextHelper::assertOrderPayment($payment);
         try {
-            // It's not like we need to validate or do anything at this points, but this command is needed to complete
+            // It's not like we need to validate or do anything at this point, but this command is needed to complete
             // magento flow of creating all linked data.
             $order = $payment->getOrder();
             // Order status update could go here.

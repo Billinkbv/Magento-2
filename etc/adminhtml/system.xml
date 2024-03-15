@@ -126,21 +126,28 @@
                     <frontend_class>validate-number</frontend_class>
                 </field>
 
-                <field id="debug" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1"
+                <field id="test_mode" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1"
                        showInStore="0">
                     <label>Is test mode</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>When enabled - will use sandbox payment method.</comment>
                 </field>
 
-                <field id="account_name" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="debug" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1"
+                       showInStore="0">
+                    <label>Debug</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enables logs in var/log</comment>
+                </field>
+
+                <field id="account_name" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Billink Username</label>
                 </field>
-                <field id="account_id" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="account_id" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Billink Account ID</label>
                 </field>
 
-                <field id="logo" translate="label" type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="logo" translate="label" type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Logo</label>
                     <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>
                     <upload_dir config="system" scope_info="1">billink</upload_dir>
