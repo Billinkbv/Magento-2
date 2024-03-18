@@ -24,6 +24,9 @@ class SessionCreateHandler implements \Magento\Payment\Gateway\Response\HandlerI
             SessionReader::REDIRECT_URL,
             $response[SessionReader::REDIRECT_URL]
         );
+        $payment->setLastTransId(
+            $response['invoice']
+        );
         $payment->addTransaction(Transaction::TYPE_ORDER);
     }
 }
