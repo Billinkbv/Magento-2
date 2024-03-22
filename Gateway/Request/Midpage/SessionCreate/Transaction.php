@@ -75,7 +75,7 @@ class Transaction implements BuilderInterface
         }
         if ($order->getShippingAmount() > 0) {
             $data[] = [
-                'code' => 'shipping',
+                'code' => '0001',
                 'name' => (string)$order->getShippingDescription(),
                 'description' => '',
                 'totalProductAmount' => (string)$order->getShippingInclTax(),
@@ -87,9 +87,13 @@ class Transaction implements BuilderInterface
         }
         if ($order->getDiscountAmount() < 0) {
             $value = ($order->getDiscountAmount() + $order->getDiscountTaxCompensationAmount());
+            $name = (string)$order->getDiscountDescription();
+            if (!$name) {
+                $name = 'Discount';
+            }
             $data[] = [
-                'code' => 'shipping',
-                'name' => (string)$order->getDiscountDescription(),
+                'code' => '0002',
+                'name' => $name,
                 'description' => '',
                 'totalProductAmount' => (string)$value,
                 'productAmount' => (string)$value,
