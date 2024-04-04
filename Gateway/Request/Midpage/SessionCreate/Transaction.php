@@ -61,21 +61,34 @@ class Transaction implements BuilderInterface
             ) {
                 continue;
             }
+            $rowTotalInclTax = $item->getRowTotalInclTax();
+            $rowTotal = $item->getRowTotal();
+            $baseItemPrice = $item->getBasePriceInclTax();
+            $taxAmount = $item->getTaxAmount();
+            if ($item->getDiscountAmount() > 0) {
+                // Check for tax difference
+                $baseTax = $rowTotalInclTax - $rowTotal;
+                // Check if tax amount has been re-calculated after discount is applied
+                if ($baseTax > $taxAmount) {
+                    $diff = ($baseTax - $taxAmount) / $item->getQtyOrdered();
+                    $baseItemPrice -= $diff;
+                }
+            }
             $data[] = [
                 'code' => (string)$item->getSku(),
                 'name' => (string)$item->getName(),
                 'description' => (string)$item->getDescription(),
                 //'productIdentifiers' => [], // @todo add identifiers
-                'totalProductAmount' => (string)$item->getRowTotalInclTax(),
-                'productAmount' => (string)$item->getBasePriceInclTax(),
-                'productTaxAmount' => (string)$item->getTaxAmount(),
+                'totalProductAmount' => (string)$rowTotalInclTax,
+                'productAmount' => (string)$baseItemPrice,
+                'productTaxAmount' => (string)$taxAmount,
                 'taxRate' => (string)$item->getTaxPercent(),
                 'quantity' => (string)$item->getQtyOrdered(),
             ];
         }
         if ($order->getShippingAmount() > 0) {
             $data[] = [
-                'code' => 'shipping',
+                'code' => '0001',
                 'name' => (string)$order->getShippingDescription(),
                 'description' => '',
                 'totalProductAmount' => (string)$order->getShippingInclTax(),
@@ -87,9 +100,13 @@ class Transaction implements BuilderInterface
         }
         if ($order->getDiscountAmount() < 0) {
             $value = ($order->getDiscountAmount() + $order->getDiscountTaxCompensationAmount());
+            $name = (string)$order->getDiscountDescription();
+            if (!$name) {
+                $name = 'Discount';
+            }
             $data[] = [
-                'code' => 'shipping',
-                'name' => (string)$order->getDiscountDescription(),
+                'code' => '0002',
+                'name' => $name,
                 'description' => '',
                 'totalProductAmount' => (string)$value,
                 'productAmount' => (string)$value,
