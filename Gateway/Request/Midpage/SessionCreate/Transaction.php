@@ -61,14 +61,27 @@ class Transaction implements BuilderInterface
             ) {
                 continue;
             }
+            $rowTotalInclTax = $item->getRowTotalInclTax();
+            $rowTotal = $item->getRowTotal();
+            $baseItemPrice = $item->getBasePriceInclTax();
+            $taxAmount = $item->getTaxAmount();
+            if ($item->getDiscountAmount() > 0) {
+                // Check for tax difference
+                $baseTax = $rowTotalInclTax - $rowTotal;
+                // Check if tax amount has been re-calculated after discount is applied
+                if ($baseTax > $taxAmount) {
+                    $diff = ($baseTax - $taxAmount) / $item->getQtyOrdered();
+                    $baseItemPrice -= $diff;
+                }
+            }
             $data[] = [
                 'code' => (string)$item->getSku(),
                 'name' => (string)$item->getName(),
                 'description' => (string)$item->getDescription(),
                 //'productIdentifiers' => [], // @todo add identifiers
-                'totalProductAmount' => (string)$item->getRowTotalInclTax(),
-                'productAmount' => (string)$item->getBasePriceInclTax(),
-                'productTaxAmount' => (string)$item->getTaxAmount(),
+                'totalProductAmount' => (string)$rowTotalInclTax,
+                'productAmount' => (string)$baseItemPrice,
+                'productTaxAmount' => (string)$taxAmount,
                 'taxRate' => (string)$item->getTaxPercent(),
                 'quantity' => (string)$item->getQtyOrdered(),
             ];
