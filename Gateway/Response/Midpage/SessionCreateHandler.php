@@ -3,6 +3,7 @@
 namespace Billink\Billink\Gateway\Response\Midpage;
 
 use Billink\Billink\Gateway\Helper\SessionReader;
+use Billink\Billink\Gateway\Validator\Midpage\SessionCreate;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Helper\ContextHelper;
 use Magento\Sales\Model\Order\Payment\Transaction;
@@ -25,7 +26,7 @@ class SessionCreateHandler implements \Magento\Payment\Gateway\Response\HandlerI
             $response[SessionReader::REDIRECT_URL]
         );
         $payment->setLastTransId(
-            $response['invoice']
+            $response[SessionCreate::INVOICE]
         );
         $payment->addTransaction(Transaction::TYPE_ORDER);
     }
