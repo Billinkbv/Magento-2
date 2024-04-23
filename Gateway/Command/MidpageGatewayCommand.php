@@ -72,7 +72,7 @@ class MidpageGatewayCommand implements CommandInterface
      * @param ResultInterface $result
      * @throws \Exception
      */
-    private function processErrors(array $commandSubject, ResultInterface $result)
+    protected function processErrors(array $commandSubject, ResultInterface $result): void
     {
         $payment = SubjectReader::readPayment($commandSubject);
         $messages = [];

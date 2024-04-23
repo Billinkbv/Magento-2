@@ -24,15 +24,11 @@ class MidpageCancelService
     {
         $repository = $this->getRepository();
         $order = $repository->get($order->getId());
-        $exception = null;
         try {
             if ($order->canCancel()) {
                 $order->cancel();
                 $repository->save($order);
                 $this->restoreQuote();
-                if ($exception !== null) {
-                    throw $exception;
-                }
             }
         } catch (\Exception $exception) {
             $this->logger->critical($exception);

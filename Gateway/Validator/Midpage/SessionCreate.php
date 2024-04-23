@@ -6,9 +6,12 @@ use Billink\Billink\Gateway\Helper\SessionReader;
 
 class SessionCreate extends AbstractCommon
 {
+    public const INVOICE = 'invoice';
+
     protected array $desiredKeys = [
-        'status',
+        self::STATUS,
         SessionReader::REDIRECT_URL,
+        self::INVOICE,
     ];
 
     protected function getDesiredKeys(): array
