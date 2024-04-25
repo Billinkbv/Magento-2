@@ -5,8 +5,6 @@ namespace Billink\Billink\Gateway\Http\Client;
 use Laminas\Http\Request;
 use Laminas\Http\Exception\RuntimeException as LaminasRuntimeException;
 use Laminas\Http\Client\Exception\RuntimeException;
-use Magento\Framework\HTTP\LaminasClientFactory;
-use Magento\Framework\HTTP\LaminasClient;
 use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\ConverterException;
