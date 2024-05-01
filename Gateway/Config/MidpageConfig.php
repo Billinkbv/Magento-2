@@ -18,6 +18,9 @@ class MidpageConfig extends BasePaymentConfig
 
     public const FIELD_LOGO = 'logo';
 
+    public const TEST_MODE = 'test_mode';
+    public const FIELD_API_VERSION = 'api_version';
+
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         private readonly Repository $assetRepository,
@@ -25,6 +28,11 @@ class MidpageConfig extends BasePaymentConfig
         $pathPattern = \Magento\Payment\Gateway\Config\Config::DEFAULT_PATH_PATTERN
     ) {
         \Magento\Payment\Gateway\Config\Config::__construct($scopeConfig, $methodCode, $pathPattern);
+    }
+
+    public function getApiVersion(): string
+    {
+        return (string)$this->getValue(self::FIELD_API_VERSION);
     }
 
     /**
@@ -46,5 +54,10 @@ class MidpageConfig extends BasePaymentConfig
         }
 
         return $value;
+    }
+
+    public function isTestMode(): bool
+    {
+        return (bool)$this->getValue(static::TEST_MODE);
     }
 }

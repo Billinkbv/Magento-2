@@ -5,12 +5,17 @@ namespace Billink\Billink\Gateway\Request\Midpage\SessionCreate;
 use Billink\Billink\Model\LocalStorage;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderItemInterface;
+use Magento\Tax\Helper\Data as TaxHelper;
 
 class Transaction implements BuilderInterface
 {
+    private array $items = [];
+
     public function __construct(
         protected readonly LocalStorage $localStorage
     ) {
@@ -41,16 +46,15 @@ class Transaction implements BuilderInterface
             'purchaseCountry' => $purchaseCountry,
             'purchaseCurrency' => $order->getOrderCurrencyCode(),
             'orderNumber' => $order->getIncrementId(),
-            'orderItems' => $this->prepareItems($paymentOrder->getItems())
+            'orderItems' => $this->prepareItems($order)
         ];
         return ['transaction' => $data];
     }
 
-    private function prepareItems(array $items): array
+    private function prepareItems(OrderInterface $order): array
     {
-        $data = [];
-        /** @var OrderItemInterface $item */
-        foreach ($items as $item) {
+        $this->items = [];
+        foreach ($order->getItems() as $item) {
             // Do not send simple products from configurable, but send simples from bundle
             if ($item->getProductType() === \Magento\Bundle\Model\Product\Type::TYPE_CODE ||
                 (
@@ -60,18 +64,82 @@ class Transaction implements BuilderInterface
             ) {
                 continue;
             }
-            $data[] = [
-                'code' => (string)$item->getSku(),
-                'name' => (string)$item->getName(),
-                'description' => (string)$item->getDescription(),
-                //'productIdentifiers' => [], // @todo add identifiers
-                'totalProductAmount' => (string)$item->getRowTotalInclTax(),
-                'productAmount' => (string)$item->getBasePriceInclTax(),
-                'productTaxAmount' => (string)$item->getTaxAmount(),
-                'taxRate' => (string)$item->getTaxPercent(),
-                'quantity' => (string)$item->getQtyOrdered(),
+            $this->addItem($item);
+            if ($item->getDiscountAmount() > 0) {
+                $this->addItemDiscount($item, $order);
+            }
+        }
+        if ($order->getShippingAmount() > 0) {
+            $this->items[] = [
+                'code' => '0001',
+                'name' => (string)$order->getShippingDescription(),
+                'description' => '',
+                'totalProductAmount' => (string)$order->getShippingInclTax(),
+                'productAmount' => (string)$order->getShippingAmount(),
+                'productTaxAmount' => (string)$order->getShippingTaxAmount(),
+                'taxRate' => (string)(round($order->getShippingTaxAmount() * 100 / $order->getShippingInclTax(), 2)),
+                'quantity' => '1',
             ];
         }
-        return $data;
+        return $this->items;
+    }
+
+    protected function addItem(OrderItemInterface $orderItem): void
+    {
+        $price = $orderItem->getPriceInclTax();
+        $rowTotal = $orderItem->getRowTotalInclTax();
+        $taxAmount = ($orderItem->getRowTotalInclTax() - $orderItem->getRowTotal()) / $orderItem->getQtyOrdered();
+
+        $this->items[] = [
+            'code' => (string)$orderItem->getSku(),
+            'name' => (string)$orderItem->getName(),
+            'description' => (string)$orderItem->getDescription(),
+            //'productIdentifiers' => [], // @todo add identifiers
+            'totalProductAmount' => (string)$rowTotal,
+            'productAmount' => (string)$price,
+            'productTaxAmount' => (string)$taxAmount,
+            'taxRate' => (string)($orderItem->getTaxPercent() ?: 0),
+            'quantity' => (string)$orderItem->getQtyOrdered(),
+        ];
+    }
+
+    private function addItemDiscount(OrderItemInterface $item, OrderInterface $order): void
+    {
+        $name = $order->getDiscountDescription() ?: $order->getData('coupon_rule_name');
+        if (!$name && $order->getCouponCode()) {
+            $name = 'Discount code: ' . $order->getCouponCode();
+        }
+        if (!$name) {
+            $name = 'Discount';
+        }
+
+        $price = $item->getDiscountAmount();
+
+        $rowTotalInclTax = $item->getRowTotalInclTax();
+        $rowTotal = $item->getRowTotal();
+        $taxAmount = $item->getTaxAmount();
+        $diff = 0;
+        if ($item->getDiscountAmount() > 0) {
+            // Check for tax difference
+            $baseTax = $rowTotalInclTax - $rowTotal;
+            // Check if tax amount has been re-calculated after discount is applied
+            if ($baseTax > $taxAmount) {
+                $diff = $baseTax - $taxAmount;
+                $price += $diff;
+            }
+        }
+        $price *= -1;
+        $diff *= -1;
+
+        $this->items[] = [
+            'code' => '0002',
+            'name' => $name,
+            'description' => '',
+            'totalProductAmount' => (string)$price,
+            'productAmount' => (string)$price,
+            'productTaxAmount' => (string)$diff,
+            'taxRate' => (string)($item->getTaxPercent() ?: 0),
+            'quantity' => '1',
+        ];
     }
 }

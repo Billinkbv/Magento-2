@@ -10,10 +10,11 @@ use Billink\Billink\Gateway\Config\MidpageConfig;
  */
 class SessionGateway
 {
-    const GATEWAY_URL = 'https://session.billink.nl/api/';
-    const GATEWAY_URL_DEBUG = 'https://session-staging.billink.nl/api/';
+    public const GATEWAY_URL = 'https://api.billink.nl/';
+    public const GATEWAY_URL_DEBUG = 'https://api-staging.billink.nl/';
 
-    const SERVICE_CREATE = 'v1/create';
+    public const SERVICE_CREATE = 'v2/session/create';
+    public const SERVICE_STATUS = 'v2/session/status';
 
     public function __construct(
         protected readonly MidpageConfig $config
@@ -22,7 +23,7 @@ class SessionGateway
 
     public function getUrl(string $service = ''): string
     {
-        if ($this->config->isDebugMode()) {
+        if ($this->config->isTestMode()) {
             return self::GATEWAY_URL_DEBUG . $service;
         }
 

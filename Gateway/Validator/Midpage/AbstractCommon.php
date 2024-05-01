@@ -9,6 +9,9 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 
 abstract class AbstractCommon implements ValidatorInterface
 {
+    public const STATUS = 'status';
+    public const STATUS_SUCCESS = 'success';
+
     protected array $desiredKeys = [];
 
     public function __construct(
@@ -22,7 +25,7 @@ abstract class AbstractCommon implements ValidatorInterface
      */
     protected function getError(array $response): string
     {
-        if(isset($response['status'], $response['message']) && $response['status'] === 'error') {
+        if (isset($response['status'], $response['message']) && $response['status'] === 'error') {
             return $response['message'];
         }
         return '';
@@ -33,7 +36,7 @@ abstract class AbstractCommon implements ValidatorInterface
      */
     protected function getErrorMessage(array $response): string
     {
-        if(isset($response['error']['message'])) {
+        if (isset($response['error']['message'])) {
             return $response['error']['message'];
         }
         return '';
@@ -56,10 +59,11 @@ abstract class AbstractCommon implements ValidatorInterface
             ];
             return $this->resultInterfaceFactory->create($result);
         }
-        $differences = array_diff_key($response,array_flip($this->desiredKeys));
-        if($differences){
+        // Validate that all keys exists in response.
+        $differences = array_diff_key(array_flip($this->desiredKeys), $response);
+        if ($differences) {
             $result = [
-                'isValid' => true,
+                'isValid' => false,
                 'failsDescription' => ['Response does not match to desired schema.']
             ];
         }
