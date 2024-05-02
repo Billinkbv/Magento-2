@@ -13,29 +13,26 @@ use Magento\Quote\Api\Data\PaymentInterface;
  */
 class DataAssignObserver extends AbstractDataAssignObserver
 {
-    const WORKFLOW_NUMBER = 'billink_workflow_number';
+    public const WORKFLOW_NUMBER = 'billink_workflow_number';
 
-    const CUSTOMER_TYPE = 'billink_customer_type';
-    const COMPANY_NAME = 'billink_company';
-    const CHAMBER_OF_COMMERCE = 'billink_chamber_of_commerce';
-    const HOUSE_NUMBER = 'billink_house_number';
-    const HOUSE_EXTENSION = 'billink_house_extension';
-    const STREET = 'billink_street';
-    const BIRTHDATE = 'billink_customer_birthdate';
-    const INVOICE_EMAIL = 'billink_email2';
-    const REFERENCE = 'billink_reference';
+    public const CUSTOMER_TYPE = 'billink_customer_type';
+    public const COMPANY_NAME = 'billink_company';
+    public const CHAMBER_OF_COMMERCE = 'billink_chamber_of_commerce';
+    public const HOUSE_NUMBER = 'billink_house_number';
+    public const HOUSE_EXTENSION = 'billink_house_extension';
+    public const STREET = 'billink_street';
+    public const BIRTHDATE = 'billink_customer_birthdate';
+    public const INVOICE_EMAIL = 'billink_email2';
+    public const REFERENCE = 'billink_reference';
 
     // Delivery Address
-    const DELIVERY_ADDRESS_STREET = 'billink_delivery_address_street';
-    const DELIVERY_ADDRESS_HOUSENUMBER = 'billink_delivery_address_housenumber';
-    const DELIVERY_ADDRESS_HOUSEEXTENSION = 'billink_delivery_address_housenumber_extension';
+    public const DELIVERY_ADDRESS_STREET = 'billink_delivery_address_street';
+    public const DELIVERY_ADDRESS_HOUSENUMBER = 'billink_delivery_address_housenumber';
+    public const DELIVERY_ADDRESS_HOUSEEXTENSION = 'billink_delivery_address_housenumber_extension';
 
-    const VALIDATE_ORDER_FLAG = 'billink_validate_order';
+    public const VALIDATE_ORDER_FLAG = 'billink_validate_order';
 
-    /**
-     * @var array
-     */
-    protected $additionalInformationList = [
+    protected array $additionalInformationList = [
         self::CUSTOMER_TYPE,
         self::COMPANY_NAME,
         self::CHAMBER_OF_COMMERCE,
@@ -51,19 +48,9 @@ class DataAssignObserver extends AbstractDataAssignObserver
         self::REFERENCE
     ];
 
-    /**
-     * @var Workflow
-     */
-    private $workflowHelper;
-
-    /**
-     * DataAssignObserver constructor.
-     * @param Workflow $workflowHelper
-     */
     public function __construct(
-        Workflow $workflowHelper
+        private readonly Workflow $workflowHelper
     ) {
-        $this->workflowHelper = $workflowHelper;
     }
 
     /**
@@ -71,7 +58,7 @@ class DataAssignObserver extends AbstractDataAssignObserver
      *
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function execute(Observer $observer)
+    public function execute(Observer $observer): void
     {
         $data = $this->readDataArgument($observer);
 

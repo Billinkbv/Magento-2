@@ -2,6 +2,7 @@
 
 namespace Billink\Billink\Observer;
 
+use Billink\Billink\Model\Ui\ConfigProvider;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Payment\Gateway\Command\GatewayCommand;
@@ -14,49 +15,25 @@ use Psr\Log\LoggerInterface;
  */
 class ShipmentObserver implements ObserverInterface
 {
-    /**
-     * @var GatewayCommand
-     */
-    private $startWorkflowCommand;
+    public const METHOD_CODE = ConfigProvider::CODE;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var StoreManagerInterface
-     */
-    private $storeManager;
-
-    /**
-     * ShipmentObserver constructor.
-     * @param GatewayCommand $startWorkflowCommand
-     * @param LoggerInterface $logger
-     * @param StoreManagerInterface $storeManager
-     */
     public function __construct(
-        GatewayCommand $startWorkflowCommand,
-        LoggerInterface $logger,
-        StoreManagerInterface $storeManager
+        private readonly GatewayCommand $startWorkflowCommand,
+        private readonly LoggerInterface $logger,
+        private readonly StoreManagerInterface $storeManager
     ) {
-        $this->startWorkflowCommand = $startWorkflowCommand;
-        $this->logger = $logger;
-        $this->storeManager = $storeManager;
     }
 
     /**
-     * @param Observer $observer
-     * @return void
      * @throws \Exception
      */
-    public function execute(Observer $observer)
+    public function execute(Observer $observer): void
     {
         $payment = $this->getPayment($observer->getData('shipment'));
 
         $method = $payment->getMethodInstance();
 
-        if ($method->getCode() != "billink") {
+        if ($method->getCode() !== static::METHOD_CODE) {
             return;
         }
 

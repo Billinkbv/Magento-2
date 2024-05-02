@@ -4,11 +4,20 @@
     <event name="payment_method_assign_data_billink">
         <observer name="billink_payment_data_assign" instance="Billink\Billink\Observer\DataAssignObserver" />
     </event>
+    <event name="payment_method_assign_data_billink_midpage">
+        <observer name="billink_payment_data_assign" instance="Billink\Billink\Observer\DataAssignMidpageObserver" />
+    </event>
     <event name="sales_model_service_quote_submit_before">
         <observer name="billink_payment_quote_submit_before"
                   instance="Billink\Billink\Observer\SalesModelServiceQuoteSubmitObserver"/>
     </event>
     <event name="sales_order_shipment_save_after">
         <observer name="billink_sales_order_shipment_after" instance="BillinkShipmentObserver"/>
+        <observer name="billink_sales_order_shipment_midpage_after" instance="BillinkShipmentMidpageObserver"/>
+    </event>
+
+    <event name="sales_order_place_before">
+        <observer name="billing_store_current_order_object"
+                  instance="Billink\Billink\Observer\OrderPlaceBefore"/>
     </event>
 </config>
