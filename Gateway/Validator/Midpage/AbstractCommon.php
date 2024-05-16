@@ -28,6 +28,22 @@ abstract class AbstractCommon implements ValidatorInterface
         if (isset($response['status'], $response['message']) && $response['status'] === 'error') {
             return $response['message'];
         }
+        if (isset($response['error_backend'], $response['error_backend']['http_body']) ) {
+            if (is_array($response['error_backend']['http_body'])) {
+                return 'Billink error: ' . $response['error_backend']['http_body']['message'];
+            }
+            try {
+                // Try unpacking error
+                if (is_string($response['error_backend']['http_body'])) {
+                    $error = \json_decode($response['error_backend']['http_body'], true);
+                    return 'Billink error: ' . $error['message'];
+                }
+            } catch (\Exception $e) {
+                // Incorrect format, return full string.
+                return $response['error_backend']['http_body'];
+            }
+            return $response['error_backend'];
+        }
         return '';
     }
 
@@ -64,7 +80,7 @@ abstract class AbstractCommon implements ValidatorInterface
         if ($differences) {
             $result = [
                 'isValid' => false,
-                'failsDescription' => ['Response does not match to desired schema.']
+                'failsDescription' => [__('Something went wrong with creating session. Please contact customer support of Billink.')]
             ];
         }
         return $this->resultInterfaceFactory->create($result);
