@@ -374,6 +374,17 @@
             </argument>
         </arguments>
     </virtualType>
+    <virtualType name="NlAddressAdapterFactory" type="Magento\Payment\Gateway\Data\Quote\AddressAdapterFactory">
+        <arguments>
+            <argument name="instanceName" xsi:type="string">\Billink\Billink\Gateway\Data\Quote\NlAddressAdapter</argument>
+        </arguments>
+    </virtualType>
+    <type name="Billink\Billink\Gateway\Request\Midpage\SessionCreate\Customer">
+        <arguments>
+            <argument name="session" xsi:type="object">Magento\Checkout\Model\Session\Proxy</argument>
+            <argument name="addressAdapterFactory" xsi:type="object">NlAddressAdapterFactory</argument>
+        </arguments>
+    </type>
     <virtualType name="BillinkPaymentCreateActionBuilder" type="Billink\Billink\Gateway\Request\ActionDataBuilder">
         <arguments>
             <argument name="action" xsi:type="string">Create</argument>
