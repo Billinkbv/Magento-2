@@ -96,7 +96,7 @@ class Customer implements BuilderInterface
         return $matches;
     }
 
-    private function getShippingAddress(PaymentDataObjectInterface $paymentDO): AddressAdapterInterface
+    private function getShippingAddress(PaymentDataObjectInterface $paymentDO): ?AddressAdapterInterface
     {
         $order = false;
         // Try to extract order from the payment
@@ -120,6 +120,6 @@ class Customer implements BuilderInterface
             }
         }
         // Use the default one
-        return $order->getShippingAddress();
+        return $paymentDO->getOrder()->getShippingAddress();
     }
 }
