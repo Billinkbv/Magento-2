@@ -2,6 +2,7 @@
 
 namespace Billink\Billink\Gateway\Request\Midpage;
 
+use Billink\Billink\Gateway\Validator\Midpage\SessionCreate;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 
 class Status extends Authorize
@@ -20,7 +21,13 @@ class Status extends Authorize
         $data[self::USER_ID] = $this->midpageConfig->getAccountId();
         $paymentDO = SubjectReader::readPayment($buildSubject);
         $payment = $paymentDO->getPayment();
-        $data[self::BILLINK_INVOICE_FIELD] = $payment->getLastTransId();
+        $sessionId = $payment->getAdditionalInformation(SessionCreate::SESSION_ID);
+        if ($sessionId) {
+            $data[self::SESSION_FIELD] = $sessionId;
+        } else {
+            // Fall back and compatibility with old orders
+            $data[self::BILLINK_INVOICE_FIELD] = $payment->getLastTransId();
+        }
         return $data;
     }
 }
