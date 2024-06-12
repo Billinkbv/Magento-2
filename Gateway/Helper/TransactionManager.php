@@ -40,15 +40,12 @@ class TransactionManager
     {
         try {
             // Decrypt data
-            // Urls by default are encoded, so this value should be correct
-            $data = $this->encryptor->decrypt($transactionId);
-            // In case it's not - try to decode and validate again
-            if ($data === '') {
-                $data = urldecode($transactionId);
-                $data = $this->encryptor->decrypt($data);
+            $data = $this->decryptTxn(urldecode($transactionId));
+            if (!$data) {
+                // Try plain transaction, just in case it wasn't converted
+                $data = $this->decryptTxn($transactionId);
             }
-            $data = $this->serializer->unserialize($data);
-            if (!isset($data[self::HASH_ID], $data[self::TRANSACTION_ID])) {
+            if (!$data || !is_array($data) || !isset($data[self::HASH_ID], $data[self::TRANSACTION_ID])) {
                 return null;
             }
             $orderId = $data[self::TRANSACTION_ID];
@@ -61,5 +58,15 @@ class TransactionManager
         } catch (\Exception $e) {
         }
         return null;
+    }
+
+    private function decryptTxn(string $transactionId): ?array
+    {
+        $data = $this->encryptor->decrypt($transactionId);
+        try {
+            return $this->serializer->unserialize($data);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }
