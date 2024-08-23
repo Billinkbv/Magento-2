@@ -1,0 +1,19 @@
+<?php
+/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
+?>
+<?php $source  = $block->getSource() ?>
+<?php if ($source && $block->isBillink()): ?>
+    <tr>
+        <td class="label">
+            <?= $block->escapeHtml(__('Billink Return Cost')) ?>
+            <div id="adjustments.phtml"></div>
+        </td>
+        <td>
+            <input type="text"
+                   name="creditmemo[billink_fee_amount]"
+                   value="<?= /* @noEscape */ $block->formatValue($source->getData('billink_fee_amount')) ?>"
+                   class="input-text admin__control-text not-negative-amount"
+                   id="adjustment_negative"/>
+        </td>
+    </tr>
+<?php endif; ?>
