@@ -2,6 +2,7 @@
 
 namespace Billink\Billink\Gateway\Request\Midpage\SessionCreate;
 
+use Billink\Billink\Gateway\Config\MidpageConfig;
 use Billink\Billink\Gateway\Data\Quote\NlAddressAdapter;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\Exception\LocalizedException;
@@ -17,7 +18,8 @@ class Customer implements BuilderInterface
 {
     public function __construct(
         private readonly Session $session,
-        private readonly AddressAdapterFactory $addressAdapterFactory
+        private readonly AddressAdapterFactory $addressAdapterFactory,
+        private readonly MidpageConfig $config
     ) {
     }
 
@@ -51,7 +53,8 @@ class Customer implements BuilderInterface
             'gender' => '',
             'birthdate' => '',
             'company' => $company,
-            'companyNumber' => ''
+            'companyNumber' => '',
+            'payTrustScore' => (int)$this->config->getValue('trust_score')
 		];
 
         return [

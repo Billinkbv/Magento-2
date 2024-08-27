@@ -12,7 +12,9 @@ abstract class AbstractCommon implements ValidatorInterface
     public const STATUS = 'status';
     public const STATUS_SUCCESS = 'success';
 
-    protected array $desiredKeys = [];
+    protected array $desiredKeys = [
+        self::STATUS
+    ];
 
     public function __construct(
         protected readonly ResultInterfaceFactory $resultInterfaceFactory,
@@ -86,5 +88,8 @@ abstract class AbstractCommon implements ValidatorInterface
         return $this->resultInterfaceFactory->create($result);
     }
 
-    abstract protected function getDesiredKeys(): array;
+    protected function getDesiredKeys(): array
+    {
+        return $this->desiredKeys;
+    }
 }

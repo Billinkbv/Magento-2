@@ -152,6 +152,10 @@
                     <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>
                     <upload_dir config="system" scope_info="1">billink</upload_dir>
                 </field>
+
+                <field id="sync_settings" translate="label" type="button" sortOrder="100" showInDefault="1">
+                    <frontend_model>Billink\Billink\Block\Adminhtml\System\Config\Validate\SyncSettings</frontend_model>
+                </field>
             </group>
         </section>
     </system>

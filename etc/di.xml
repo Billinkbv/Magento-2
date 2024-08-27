@@ -488,6 +488,7 @@
     <virtualType name="BillinkMidpageStatusCreateBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
+                <item name="auth_params" xsi:type="string">Billink\Billink\Gateway\Request\Midpage\AuthorizePlain</item>
                 <item name="options" xsi:type="string">Billink\Billink\Gateway\Request\Midpage\Status</item>
                 <item name="action" xsi:type="string">BillinkPaymentCreateStatusActionBuilder</item>
             </argument>
@@ -511,4 +512,44 @@
         </arguments>
     </virtualType>
     <!-- Midpage STATUS END-->
+
+    <!-- Midpage - Sync Config request - no payment required -->
+    <type name="Billink\Billink\Cron\WhitelistStatus">
+        <arguments>
+            <argument name="command" xsi:type="object">BillinkMidpageSyncConfig</argument>
+        </arguments>
+    </type>
+
+    <type name="Billink\Billink\Controller\Adminhtml\Config\Sync">
+        <arguments>
+            <argument name="command" xsi:type="object">BillinkMidpageSyncConfig</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="BillinkSyncConfigBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="auth_params" xsi:type="string">Billink\Billink\Gateway\Request\Midpage\AuthorizePlain</item>
+                <item name="action" xsi:type="string">BillinkSyncConfigActionBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="BillinkSyncConfigActionBuilder" type="Billink\Billink\Gateway\Request\ActionDataBuilder">
+        <arguments>
+            <argument name="action" xsi:type="string">Status</argument>
+            <argument name="service" xsi:type="const">\Billink\Billink\Gateway\Helper\SessionGateway::SERVICE_WEBSHOP_SETTINGS</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillinkMidpageSyncConfig" type="Billink\Billink\Gateway\Command\MidpageGatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">BillinkSyncConfigBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">Billink\Billink\Gateway\Http\JsonTransferFactory</argument>
+            <argument name="client" xsi:type="object">BillinkMidpageRequestClient</argument>
+            <argument name="handler" xsi:type="object">Billink\Billink\Gateway\Response\Midpage\SyncConfigHandler</argument>
+            <argument name="validator" xsi:type="object">Billink\Billink\Gateway\Validator\Midpage\SyncConfig</argument>
+            <argument name="logger" xsi:type="object">BillinkMidpagePaymentLogger</argument>
+        </arguments>
+    </virtualType>
+    <!-- Midpage - Sync Config END-->
 </config>

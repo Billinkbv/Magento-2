@@ -15,9 +15,4 @@ class SessionCreate extends AbstractCommon
         self::INVOICE,
         self::SESSION_ID,
     ];
-
-    protected function getDesiredKeys(): array
-    {
-        return $this->desiredKeys;
-    }
 }

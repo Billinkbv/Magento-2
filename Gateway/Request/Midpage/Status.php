@@ -17,8 +17,6 @@ class Status extends Authorize
     public function build(array $buildSubject): array
     {
         $data = [];
-        $data[self::USER_NAME] = $this->midpageConfig->getAccountName();
-        $data[self::USER_ID] = $this->midpageConfig->getAccountId();
         $paymentDO = SubjectReader::readPayment($buildSubject);
         $payment = $paymentDO->getPayment();
         $sessionId = $payment->getAdditionalInformation(SessionCreate::SESSION_ID);
