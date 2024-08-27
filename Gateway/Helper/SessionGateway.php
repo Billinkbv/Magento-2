@@ -16,6 +16,7 @@ class SessionGateway
     public const SERVICE_CREATE = 'v2/session/create';
     public const SERVICE_STATUS = 'v2/session/status';
     public const SERVICE_WEBSHOP_SETTINGS = 'v2/client/webshop-settings';
+    public const SERVICE_INVOICE_CREDIT = 'v2/client/invoice/credit';
 
     public function __construct(
         protected readonly MidpageConfig $config
