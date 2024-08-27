@@ -23,10 +23,9 @@ class JsonTransferFactory implements TransferFactoryInterface
     public function create(array $request): TransferInterface
     {
         $service = $request[ActionDataBuilder::SERVICE];
-        unset($request[ActionDataBuilder::SERVICE]);
-        unset($request[ActionDataBuilder::ACTION]);
+        unset($request[ActionDataBuilder::SERVICE], $request[ActionDataBuilder::ACTION]);
 
-        $body = json_encode($request);
+        $body = \json_encode($request);
 
         return $this->transferBuilder
             ->setHeaders(['Content-Type' => 'application/json'])
