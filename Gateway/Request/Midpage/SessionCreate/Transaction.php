@@ -77,7 +77,7 @@ class Transaction implements BuilderInterface
                 'totalProductAmount' => (string)$order->getShippingInclTax(),
                 'productAmount' => (string)$order->getShippingAmount(),
                 'productTaxAmount' => (string)$order->getShippingTaxAmount(),
-                'taxRate' => (string)(round($order->getShippingTaxAmount() * 100 / $order->getShippingInclTax(), 2)),
+                'taxRate' => (string)(round($order->getShippingTaxAmount() * 100 / $order->getShippingInclTax())),
                 'quantity' => '1',
             ];
         }
