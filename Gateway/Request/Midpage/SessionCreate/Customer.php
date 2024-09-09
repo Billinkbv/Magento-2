@@ -40,7 +40,7 @@ class Customer implements BuilderInterface
         if (!$address || !$shippingAddress) {
             throw new LocalizedException(__('The customer address is not valid.'));
         }
-        $company = trim($address->getCompany());
+        $company = trim((string)$address->getCompany());
 
         $customer = [
             'firstName' => $address->getFirstname(),
