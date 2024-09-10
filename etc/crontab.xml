@@ -4,5 +4,8 @@
         <job name="billink_order_status" instance="Billink\Billink\Cron\OrderStatus" method="execute">
             <schedule>*/15 * * * *</schedule>
         </job>
+        <job name="billink_customer_whitelist" instance="Billink\Billink\Cron\WhitelistStatus" method="execute">
+            <schedule>0 15 * * 3</schedule>
+        </job>
     </group>
 </config>
