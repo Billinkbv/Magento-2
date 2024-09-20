@@ -11,13 +11,16 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Tax\Helper\Data as TaxHelper;
+use Magento\Tax\Model\CalculationFactory;
 
 class Transaction implements BuilderInterface
 {
     private array $items = [];
 
     public function __construct(
-        protected readonly LocalStorage $localStorage
+        protected readonly LocalStorage $localStorage,
+        private readonly TaxHelper $taxData,
+        private readonly CalculationFactory $calculationFactory,
     ) {
     }
 
@@ -70,6 +73,15 @@ class Transaction implements BuilderInterface
             }
         }
         if ($order->getShippingAmount() > 0) {
+            $taxCalculation = $this->calculationFactory->create();
+
+            $shippingTaxClass = $this->taxData->getShippingTaxClass($order->getStore());
+            $taxRequest = $taxCalculation
+                ->getRateRequest($order->getShippingAddress(), null, null, $order->getStore())
+                ->setProductClassId($shippingTaxClass);
+
+            $taxRate = $taxRequest ? $taxCalculation->getRate($taxRequest) : 0;
+
             $this->items[] = [
                 'code' => '0001',
                 'name' => (string)$order->getShippingDescription(),
@@ -77,7 +89,7 @@ class Transaction implements BuilderInterface
                 'totalProductAmount' => (string)$order->getShippingInclTax(),
                 'productAmount' => (string)$order->getShippingAmount(),
                 'productTaxAmount' => (string)$order->getShippingTaxAmount(),
-                'taxRate' => (string)(round($order->getShippingTaxAmount() * 100 / $order->getShippingInclTax())),
+                'taxRate' => (string)($taxRate),
                 'quantity' => '1',
             ];
         }
