@@ -66,6 +66,8 @@ class ConfigProvider implements ConfigProviderInterface
             self::CODE_MIDPAGE => [
                 'logo' => $this->midpageConfig->getLogo($this->storeManager->getStore()),
                 'isActive' => $this->midpageConfig->isActive(),
+                'feeActive' => $this->midpageConfig->getIsFeeActive(),
+                'feeLabel' => $this->midpageConfig->getFeeLabel()
             ]
         ];
     }

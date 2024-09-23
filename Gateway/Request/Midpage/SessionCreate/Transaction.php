@@ -2,10 +2,10 @@
 
 namespace Billink\Billink\Gateway\Request\Midpage\SessionCreate;
 
+use Billink\Billink\Model\Fee\BillinkFee;
 use Billink\Billink\Model\LocalStorage;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Sales\Api\Data\OrderInterface;
@@ -21,6 +21,7 @@ class Transaction implements BuilderInterface
         protected readonly LocalStorage $localStorage,
         private readonly TaxHelper $taxData,
         private readonly CalculationFactory $calculationFactory,
+        private readonly BillinkFee $billinkFee
     ) {
     }
 
@@ -87,12 +88,13 @@ class Transaction implements BuilderInterface
                 'name' => (string)$order->getShippingDescription(),
                 'description' => '',
                 'totalProductAmount' => (string)$order->getShippingInclTax(),
-                'productAmount' => (string)$order->getShippingAmount(),
+                'productAmount' => (string)$order->getShippingInclTax(),
                 'productTaxAmount' => (string)$order->getShippingTaxAmount(),
                 'taxRate' => (string)($taxRate),
                 'quantity' => '1',
             ];
         }
+        $this->prepareFeeItem($order);
         return $this->items;
     }
 
@@ -153,5 +155,32 @@ class Transaction implements BuilderInterface
             'taxRate' => (string)($item->getTaxPercent() ?: 0),
             'quantity' => '1',
         ];
+    }
+
+    private function prepareFeeItem(OrderInterface $order): void
+    {
+        if (!$this->billinkFee->isActive()) {
+            return ;
+        }
+        $orderAmount = $order->getData('billink_fee_amount');
+        $configAmount = $this->billinkFee->getBaseAmount($order);
+        if (!$this->billinkFee->getFeeIncludesTax()) {
+            // Add taxes to the total field
+            $configAmount += $order->getData('billink_fee_amount_tax');
+        }
+
+        if ($configAmount > 0 && $orderAmount > 0) {
+            $taxRate = $this->billinkFee->getTaxRate($order) ?: 0;
+            $this->items[] = [
+                'code' => 'billink_fee',
+                'name' => $this->billinkFee->getFeeLabel(),
+                'description' => '',
+                'totalProductAmount' => (string)$configAmount,
+                'productAmount' => (string)$configAmount,
+                'productTaxAmount' => (string)$order->getData('billink_fee_amount_tax'),
+                'taxRate' => (string)$taxRate,
+                'quantity' => '1',
+            ];
+        }
     }
 }

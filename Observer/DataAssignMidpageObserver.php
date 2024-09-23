@@ -40,6 +40,8 @@ class DataAssignMidpageObserver extends AbstractDataAssignObserver
         $company = trim((string)$address->getCompany());
         $customerType = $company ? 'B' : 'P';
 
+        $oldValue = $paymentInfo->getAdditionalInformation(DataAssignObserver::CUSTOMER_TYPE);
+
         $paymentInfo->setAdditionalInformation(
             DataAssignObserver::CUSTOMER_TYPE,
             $customerType
@@ -49,5 +51,10 @@ class DataAssignMidpageObserver extends AbstractDataAssignObserver
             DataAssignObserver::WORKFLOW_NUMBER,
             $this->workflowHelper->getNumber($customerType)
         );
+
+        //if customer type changed we need to recalculate totals to apply proper billink fee
+        if ($oldValue !== $customerType) {
+            $paymentInfo->getQuote()->setTotalsCollectedFlag(false)->collectTotals();
+        }
     }
 }

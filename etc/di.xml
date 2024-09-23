@@ -552,4 +552,41 @@
         </arguments>
     </virtualType>
     <!-- Midpage - Sync Config END-->
+
+    <!-- Midpage Fee classes rewrites -->
+
+    <!-- Pass original config for helper class, as right now it contains base class as argument -->
+    <type name="Billink\Billink\Helper\Fee">
+        <arguments>
+            <argument name="config" xsi:type="object">Billink\Billink\Gateway\Config\Config</argument>
+        </arguments>
+    </type>
+    <!-- And replace helper argument for midpage one with midpage config-->
+    <virtualType name="MidpageFeeHelper" type="Billink\Billink\Helper\Fee">
+        <arguments>
+            <argument name="config" xsi:type="object">Billink\Billink\Gateway\Config\MidpageConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MidpageFeeModel" type="Billink\Billink\Model\Fee\BillinkFee">
+        <arguments>
+            <argument name="feeHelper" xsi:type="object">MidpageFeeHelper</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- For trasnactions of midpage - replace class with updated virtual one -->
+    <type name="Billink\Billink\Gateway\Request\Midpage\SessionCreate\Transaction">
+        <arguments>
+            <argument name="billinkFee" xsi:type="object">MidpageFeeModel</argument>
+        </arguments>
+    </type>
+
+    <!-- Replace fee model with virtual class -->
+    <type name="Billink\Billink\Model\Total\Quote\BillinkMidpageFee">
+        <arguments>
+            <argument name="fee" xsi:type="object">MidpageFeeModel</argument>
+        </arguments>
+    </type>
+
+    <!-- Midpage Fee classes rewrites end -->
 </config>
