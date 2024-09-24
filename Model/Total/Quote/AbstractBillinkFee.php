@@ -94,7 +94,7 @@ class AbstractBillinkFee extends AbstractTotal
         if ($this->isApplicable($quote)) {
             return [
                 'code' => $this->_code,
-                'title' => $this->config->getFeeLabel(),
+                'title' => __($this->config->getFeeLabel()),
                 'value' => $total->getBillinkFeeAmount()
             ];
         }

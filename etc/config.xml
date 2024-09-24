@@ -55,5 +55,10 @@
                 <fee_label>Betaalkosten</fee_label>
             </billink_midpage>
         </payment>
+        <sales>
+            <totals_sort>
+                <billink_midpage_fee>39</billink_midpage_fee>
+            </totals_sort>
+        </sales>
     </default>
 </config>
