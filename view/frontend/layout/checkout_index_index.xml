@@ -75,6 +75,13 @@
                                                                 <item name="template" xsi:type="string">Billink_Billink/checkout/cart/totals/billink_fee</item>
                                                             </item>
                                                         </item>
+                                                        <item name="midpageFeeAmount" xsi:type="array">
+                                                            <item name="component"  xsi:type="string">Billink_Billink/js/view/checkout/cart/totals/billink_midpage_fee</item>
+                                                            <item name="sortOrder" xsi:type="string">20</item>
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="template" xsi:type="string">Billink_Billink/checkout/cart/totals/billink_fee</item>
+                                                            </item>
+                                                        </item>
                                                     </item>
                                                 </item>
                                             </item>

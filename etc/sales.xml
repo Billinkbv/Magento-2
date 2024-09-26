@@ -4,11 +4,13 @@
     <section name="quote">
         <group name="totals">
             <item name="billink_fee" instance="Billink\Billink\Model\Total\Quote\BillinkFee" sort_order="900"/>
+            <item name="billink_midpage_fee" instance="Billink\Billink\Model\Total\Quote\BillinkMidpageFee" sort_order="901"/>
         </group>
     </section>
     <section name="order_invoice">
         <group name="totals">
             <item name="billink_fee" instance="Billink\Billink\Model\Total\Invoice\BillinkFee" sort_order="900"/>
+            <item name="billink_midpage_fee" instance="Billink\Billink\Model\Total\Invoice\BillinkMidpageFee" sort_order="901"/>
         </group>
     </section>
 </config>

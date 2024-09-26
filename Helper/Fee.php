@@ -2,7 +2,7 @@
 
 namespace Billink\Billink\Helper;
 
-use Billink\Billink\Gateway\Config\Config;
+use Billink\Billink\Gateway\Config\BasePaymentConfig as Config;
 use Billink\Billink\Gateway\Helper\Workflow as WorkflowHelper;
 
 /**
@@ -73,7 +73,7 @@ class Fee
 
         foreach ([$country, "other"] as $customerCountry) {
             foreach ($feeRanges as $feeRange) {
-                if (!key_exists(self::COUNTRY, $feeRange)) {
+                if (!array_key_exists(self::COUNTRY, $feeRange)) {
                     $feeRange[self::COUNTRY] = "other";
                 }
 

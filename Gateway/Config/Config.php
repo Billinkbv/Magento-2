@@ -26,11 +26,6 @@ class Config extends BasePaymentConfig
     const FIELD_ALLOW_SPECIFIC = 'allowspecific';
     const FIELD_SPECIFIC_COUNTRY = 'specificcountry';
     const FIELD_IS_TOTALCHECK_ACTIVE = 'is_totalcheck_active';
-    const FIELD_IS_FEE_ACTIVE = 'is_fee_active';
-    const FIELD_FEE_LABEL = 'fee_label';
-    const FIELD_FEE_TYPE = 'fee_type';
-    const FIELD_FEE_TAX_CLASS = 'fee_tax_class';
-    const FIELD_FEE_RANGE = 'fee_range';
     const FIELD_IS_INVOICE_EMAIL_ENABLED = 'is_invoice_email_enabled';
     const FIELD_USED_WORKFLOW = 'use_workflow';
 
@@ -155,46 +150,6 @@ class Config extends BasePaymentConfig
     public function getIsTotalcheckActive()
     {
         return (bool)$this->getValue(self::FIELD_IS_TOTALCHECK_ACTIVE);
-    }
-
-    /**
-     * @return string
-     */
-    public function getIsFeeActive()
-    {
-        return (bool)$this->getValue(self::FIELD_IS_FEE_ACTIVE);
-    }
-
-    /**
-     * @return string|\Magento\Framework\Phrase
-     */
-    public function getFeeLabel()
-    {
-        return $this->getValue(self::FIELD_FEE_LABEL) ?: __('Billink Service Fee');
-    }
-
-    /**
-     * @return string
-     */
-    public function getFeeType()
-    {
-        return $this->getValue(self::FIELD_FEE_TYPE);
-    }
-
-    /**
-     * @return string
-     */
-    public function getFeeTaxClass()
-    {
-        return $this->getValue(self::FIELD_FEE_TAX_CLASS);
-    }
-
-    /**
-     * @return array
-     */
-    public function getFeeRange()
-    {
-        return json_decode($this->getValue(self::FIELD_FEE_RANGE), true);
     }
 
     /**

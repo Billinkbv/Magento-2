@@ -17,7 +17,9 @@ trait AvailabilityTrait
         if (!$this->config->getIsFeeActive()) {
             return false;
         }
+        $code = $this->getCode();
 
-        return ($subject->getPayment()->getMethod() == \Billink\Billink\Model\Ui\ConfigProvider::CODE);
+        return ($code === 'billink_fee' && $subject->getPayment()->getMethod() === \Billink\Billink\Model\Ui\ConfigProvider::CODE) ||
+            ($code === 'billink_midpage_fee' && $subject->getPayment()->getMethod() === \Billink\Billink\Model\Ui\ConfigProvider::CODE_MIDPAGE);
     }
 }
