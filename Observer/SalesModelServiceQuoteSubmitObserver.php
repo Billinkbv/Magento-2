@@ -23,7 +23,8 @@ class SalesModelServiceQuoteSubmitObserver implements ObserverInterface
         $order = $observer->getEvent()->getOrder();
         $quote = $observer->getEvent()->getQuote();
 
-        if (ConfigProvider::CODE == $order->getPayment()->getMethod()) {
+        if (ConfigProvider::CODE === $order->getPayment()?->getMethod() ||
+            ConfigProvider::CODE_MIDPAGE === $order->getPayment()?->getMethod()) {
             $order->setBaseBillinkFeeAmount($quote->getBaseBillinkFeeAmount());
             $order->setBillinkFeeAmount($quote->getBillinkFeeAmount());
             $order->setBaseBillinkFeeAmountTax($quote->getBaseBillinkFeeAmountTax());

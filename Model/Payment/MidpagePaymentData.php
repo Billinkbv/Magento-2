@@ -15,7 +15,7 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 class MidpagePaymentData implements MidpagePaymentDataInterface
 {
     public function __construct(
-        protected readonly PaymentInformationManagementInterface $informationManagement,
+        protected readonly PaymentInformationManagementInterface $paymentInformationManagement,
         protected readonly GuestPaymentInformationManagementInterface $guestPaymentInformationManagement,
         protected readonly OrderRepositoryInterface $orderRepository,
         protected readonly MidpageResultDataInterfaceFactory $resultObjectFactory,

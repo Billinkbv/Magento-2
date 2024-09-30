@@ -2,16 +2,16 @@
 
 namespace Billink\Billink\Model\Total\Invoice;
 
-use Billink\Billink\Gateway\Config\Config;
+use Billink\Billink\Gateway\Config\MidpageConfig;
 
 /**
- * Class BillinkFee
+ * Class BillinkMidpageFee
  * @package Billink\Billink\Model\Total\Invoice
  */
-class BillinkFee extends AbstractBillinkFee
+class BillinkMidpageFee extends AbstractBillinkFee
 {
     public function __construct(
-        Config $config
+        MidpageConfig $config
     ) {
         parent::__construct($config);
     }

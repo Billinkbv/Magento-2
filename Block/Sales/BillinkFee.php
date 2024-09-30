@@ -3,6 +3,7 @@
 namespace Billink\Billink\Block\Sales;
 
 use Billink\Billink\Gateway\Config\Config;
+use Billink\Billink\Gateway\Config\MidpageConfig;
 use Billink\Billink\Model\Ui\ConfigProvider;
 use Magento\Framework\DataObject;
 use Magento\Framework\View\Element\Template;
@@ -14,29 +15,17 @@ use Magento\Framework\View\Element\Template;
 class BillinkFee extends Template
 {
     /**
-     * @var Config
-     */
-    private $config;
-
-    /**
      * @var \Magento\Sales\Model\Order
      */
     private $source;
 
-    /**
-     * BillinkFee constructor.
-     * @param Template\Context $context
-     * @param Config $config
-     * @param array $data
-     */
     public function __construct(
         Template\Context $context,
-        Config $config,
+        private readonly Config $config,
+        private readonly MidpageConfig $midpageConfig,
         array $data = []
     ) {
         parent::__construct($context, $data);
-
-        $this->config = $config;
     }
 
     /**
@@ -60,12 +49,17 @@ class BillinkFee extends Template
             $amount = $this->source->getBaseBillinkFeeAmount() - $this->source->getBaseBillinkFeeTaxAmount();
 
             if ($amount > 0) {
+                if ($this->getMethodCode() === ConfigProvider::CODE_MIDPAGE) {
+                    $label = $this->midpageConfig->getFeeLabel();
+                } else {
+                    $label = $this->config->getFeeLabel();
+                }
                 $fee = new DataObject(
                     [
                         'code' => ConfigProvider::CODE,
                         'strong' => false,
                         'value' => $amount,
-                        'label' => $this->config->getFeeLabel(),
+                        'label' => $label,
                     ]
                 );
 
@@ -76,15 +70,19 @@ class BillinkFee extends Template
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    private function isApplicable()
+    private function isApplicable(): bool
     {
-        if (!$payment = $this->source->getPayment()) {
+        return ConfigProvider::CODE === $this->getMethodCode()
+            || ConfigProvider::CODE_MIDPAGE === $this->getMethodCode();
+    }
+
+    private function getMethodCode(): string
+    {
+        $payment = $this->source->getPayment();
+        if (!$payment) {
             $payment = $this->source->getOrder()->getPayment();
         }
-
-        return ConfigProvider::CODE == $payment->getMethod();
+        return (string)$payment->getMethod();
     }
+
 }
