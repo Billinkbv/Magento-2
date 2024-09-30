@@ -7,7 +7,8 @@ define([
     'Magento_Checkout/js/model/step-navigator',
     'Billink_Billink/js/action/place-order',
     'Billink_Billink/js/action/redirect-on-success',
-    'Magento_Customer/js/customer-data'
+    'Magento_Customer/js/customer-data',
+    'Billink_Billink/js/view/checkout/billink_midpage_fee'
 ], function (
     $,
     Component,
@@ -15,12 +16,14 @@ define([
     stepNavigator,
     placeOrderAction,
     redirectOnSuccessAction,
-    customerData
+    customerData,
+    billinkFee
 ) {
     'use strict';
 
     return Component.extend({
 
+        isFeeActive: window.checkoutConfig.payment.billink_midpage.feeActive,
         defaults: {
             template: 'Billink_Billink/payment/midpage-form'
         },
