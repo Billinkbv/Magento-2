@@ -62,10 +62,6 @@ class BillinkFee
         $baseAmount = $this->getBaseAmount($quote);
         $baseAmountTax = $this->getBaseAmountTax($baseAmount, $quote);
 
-        if ($this->getFeeIncludesTax()) {
-            $baseAmount -= $baseAmountTax;
-        }
-
         $fee->setBaseAmount($baseAmount);
         $fee->setBaseAmountTax($baseAmountTax);
 
