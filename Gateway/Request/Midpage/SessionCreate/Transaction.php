@@ -95,6 +95,7 @@ class Transaction implements BuilderInterface
             ];
         }
         $this->prepareFeeItem($order);
+        $this->addFoomanSurcharge($order);
         return $this->items;
     }
 
@@ -181,6 +182,38 @@ class Transaction implements BuilderInterface
                 'taxRate' => (string)$taxRate,
                 'quantity' => '1',
             ];
+        }
+    }
+
+    /**
+     * If the Fooman Surcharge plugin is installed, try to fetch the surcharge
+     */
+    private function addFoomanSurcharge(OrderInterface $order): void
+    {
+        $extensionAttributes = $order->getExtensionAttributes();
+
+        //If Fooman Surcharges is installed, this function should be part of the Order-/Address- ExtensionInterface
+        if ($extensionAttributes && method_exists($extensionAttributes, 'getFoomanTotalGroup')) {
+                if ($foomanTotalGroup = $extensionAttributes->getFoomanTotalGroup()) {
+                    foreach ($foomanTotalGroup->getItems() as $item) {
+                        if ($item->getAmount() > 0) {
+                            $price = $item->getPriceInclTax();
+                            $rowTotal = $item->getRowTotalInclTax();
+                            $taxAmount = $item->getRowTotalInclTax() - $item->getRowTotal();
+
+                            $this->items[] = [
+                                'code' => 'fooman_surcharge',
+                                'name' => $item->getLabel(),
+                                'description' => '',
+                                'totalProductAmount' => (string)($item->getBaseAmount() + $item->getBaseTaxAmount()),
+                                'productAmount' => (string)$item->getBaseAmount(),
+                                'productTaxAmount' => (string)$item->getTaxAmount(),
+                                'taxRate' => (string)$item->getTaxPercent(),
+                                'quantity' => '1',
+                            ];
+                        }
+                    }
+                }
         }
     }
 }
