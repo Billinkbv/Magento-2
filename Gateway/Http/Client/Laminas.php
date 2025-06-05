@@ -92,7 +92,6 @@ class Laminas implements ClientInterface
         }
 
         $client->setHeaders($transferObject->getHeaders());
-        $client->setUrlEncodeBody($transferObject->shouldEncode());
         $client->setUri($transferObject->getUri());
 
         try {
