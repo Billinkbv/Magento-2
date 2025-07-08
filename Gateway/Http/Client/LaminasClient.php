@@ -2,8 +2,25 @@
 
 namespace Billink\Billink\Gateway\Http\Client;
 
-class LaminasClient extends \Magento\Framework\HTTP\LaminasClient
+use Laminas\Http\Client;
+use Laminas\Http\Client\Adapter\Curl;
+
+class LaminasClient extends Client
 {
+    /**
+     * @param null|string $uri
+     * @param null|array|\Traversable $options
+     */
+    public function __construct($uri = null, $options = null)
+    {
+        $this->setOptions([
+            'useragent' => Client::class,
+            'adapter' => Curl::class,
+        ]);
+
+        parent::__construct($uri, $options);
+    }
+
     protected function prepareHeaders($body, $uri)
     {
         $headers = parent::prepareHeaders($body, $uri);
