@@ -30,7 +30,6 @@ class JsonTransferFactory implements TransferFactoryInterface
         return $this->transferBuilder
             ->setHeaders(['Content-Type' => 'application/json'])
             ->setBody($body)
-            ->shouldEncode(true)
             ->setUri($this->gatewayHelper->getUrl($service))
             ->setMethod(Request::METHOD_POST)
             ->build();
