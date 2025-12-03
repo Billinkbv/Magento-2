@@ -140,7 +140,6 @@ class Transaction implements BuilderInterface
             // Check if tax amount has been re-calculated after discount is applied
             if ($baseTax > $taxAmount) {
                 $diff = $baseTax - $taxAmount;
-                $price += $diff;
             }
         }
         $price *= -1;
