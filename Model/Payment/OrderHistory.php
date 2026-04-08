@@ -1,37 +1,43 @@
 <?php
+
 namespace Billink\Billink\Model\Payment;
 
+use Exception;
 use Magento\Framework\DataObjectFactory;
 use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Api\OrderStatusHistoryRepositoryInterface;
-use Magento\Sales\Api\Data\OrderStatusHistoryInterfaceFactory;
 use Magento\Sales\Api\Data\OrderStatusHistoryInterface;
+use Magento\Sales\Api\Data\OrderStatusHistoryInterfaceFactory;
+use Magento\Sales\Api\OrderStatusHistoryRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
 class OrderHistory
 {
-    protected array $orderMessages = [];
+    private array $orderMessages = [];
 
     public function __construct(
-        protected readonly OrderStatusHistoryRepositoryInterface $historyObjectFactory,
-        protected readonly OrderStatusHistoryInterfaceFactory $historyInterfaceFactory,
-        protected readonly DataObjectFactory $dataObjectFactory,
-        protected readonly LoggerInterface $logger
+        private readonly OrderStatusHistoryRepositoryInterface $historyObjectFactory,
+        private readonly OrderStatusHistoryInterfaceFactory $historyInterfaceFactory,
+        private readonly DataObjectFactory $dataObjectFactory,
+        private readonly LoggerInterface $logger
     ) {
     }
 
     public function addOrderComment(OrderInterface $order, string $message = ''): void
     {
         try {
-            $historyItem = $this->historyInterfaceFactory->create(['data' => [
-                OrderStatusHistoryInterface::COMMENT => $message,
-                OrderStatusHistoryInterface::STATUS => $order->getStatus(),
-                OrderStatusHistoryInterface::PARENT_ID => $order->getId(),
-                OrderStatusHistoryInterface::ENTITY_NAME => 'order',
-                OrderStatusHistoryInterface::IS_CUSTOMER_NOTIFIED => false,
-            ]]);
+            $historyItem = $this->historyInterfaceFactory->create(
+                [
+                    'data' => [
+                        OrderStatusHistoryInterface::COMMENT => $message,
+                        OrderStatusHistoryInterface::STATUS => $order->getStatus(),
+                        OrderStatusHistoryInterface::PARENT_ID => $order->getId(),
+                        OrderStatusHistoryInterface::ENTITY_NAME => 'order',
+                        OrderStatusHistoryInterface::IS_CUSTOMER_NOTIFIED => false,
+                    ]
+                ]
+            );
             $this->historyObjectFactory->save($historyItem);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->logger->critical($exception);
         }
     }
@@ -39,18 +45,19 @@ class OrderHistory
     public function setOrderMessage(OrderInterface $order, string $message): void
     {
         if ($order->getId()) {
-            $data = $this->dataObjectFactory->create([
-                'data' => [
-                    'order' => $order,
-                    'message' => $message
+            $this->orderMessages[$order->getId()][] = $this->dataObjectFactory->create(
+                [
+                    'data' => [
+                        'order' => $order,
+                        'message' => $message
+                    ]
                 ]
-            ]);
-            $this->orderMessages[$order->getId()][] = $data;
+            );
         }
     }
 
     /**
-     * Check all order messages to update, process them and flush log
+     * Check all order messages to update, process them, and flush log
      */
     public function processOrderMessages(): void
     {

@@ -5,44 +5,26 @@ namespace Billink\Billink\Gateway\Request;
 use Billink\Billink\Gateway\Config\Config;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
-/**
- * Class AddressDataBuilder
- */
 class ClientDataBuilder implements BuilderInterface
 {
-    const VERSION = 'VERSION';
-    const CLIENTUSERNAME = 'CLIENTUSERNAME';
-    const CLIENTID = 'CLIENTID';
+    public const VERSION = 'VERSION';
+    public const CLIENTUSERNAME = 'CLIENTUSERNAME';
+    public const CLIENTID = 'CLIENTID';
 
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * ClientDataBuilder constructor.
-     * @param Config $config
-     */
     public function __construct(
-        Config $config
+        private readonly Config $config
     ) {
-        $this->config = $config;
     }
 
     /**
      * Builds ENV request
-     *
-     * @param array $buildSubject
-     * @return array
      */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
-        $result = [
+        return [
             self::VERSION => $this->config->getApiVersion(),
             self::CLIENTUSERNAME => $this->config->getAccountName(),
             self::CLIENTID => $this->config->getAccountId()
         ];
-
-        return $result;
     }
 }

@@ -1,16 +1,20 @@
 <?php
+
 namespace Billink\Billink\Gateway\Response\Midpage;
 
 use Billink\Billink\Gateway\Helper\SessionReader;
 use Billink\Billink\Gateway\Validator\Midpage\SyncConfig;
+use Magento\Framework\App\Cache\Type\Config;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
+use Zend_Db_Expr;
 
-class SyncConfigHandler implements \Magento\Payment\Gateway\Response\HandlerInterface
+class SyncConfigHandler implements HandlerInterface
 {
     public function __construct(
-        protected readonly SessionReader $reader,
+        private readonly SessionReader $reader,
         private readonly CollectionFactory $orderCollectionFactory,
         private readonly WriterInterface $configWriter,
         private readonly TypeListInterface $typeList
@@ -33,7 +37,7 @@ class SyncConfigHandler implements \Magento\Payment\Gateway\Response\HandlerInte
             if ($response[SyncConfig::PERIOD] > 0) {
                 // Filter period
                 $collection->getSelect()
-                    ->where(new \Zend_Db_Expr('DATEDIFF(NOW(), created_at) < ' . $response[SyncConfig::PERIOD]));
+                    ->where(new Zend_Db_Expr('DATEDIFF(NOW(), created_at) < ' . $response[SyncConfig::PERIOD]));
             }
             $totalPaid = 0;
             foreach ($collection as $orderData) {
@@ -41,13 +45,8 @@ class SyncConfigHandler implements \Magento\Payment\Gateway\Response\HandlerInte
             }
 
             $score = $totalPaid > $response[SyncConfig::TOTAL_AMOUNT] ? 10 : 0;
-            $this->configWriter->save(
-                'payment/billink_midpage/trust_score',
-                $score,
-                \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-                0
-            );
-            $this->typeList->invalidate(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
+            $this->configWriter->save('payment/billink_midpage/trust_score', $score);
+            $this->typeList->invalidate(Config::TYPE_IDENTIFIER);
         }
     }
 }

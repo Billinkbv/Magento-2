@@ -20,10 +20,10 @@ class FeeSerialized extends ArraySerialized
         Registry $registry,
         ScopeConfigInterface $config,
         TypeListInterface $cacheTypeList,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         array $data = [],
-        Json $serializer = null
+        ?Json $serializer = null
     ) {
         parent::__construct(
             $context,
@@ -37,7 +37,7 @@ class FeeSerialized extends ArraySerialized
         );
     }
 
-    protected function _getValidationRulesBeforeSave()
+    protected function _getValidationRulesBeforeSave(): FeeValidator
     {
         return $this->feeValidator;
     }

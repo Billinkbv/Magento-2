@@ -2,9 +2,10 @@
 
 namespace Billink\Billink\Gateway\Http\Client;
 
-use Laminas\Http\Request;
-use Laminas\Http\Exception\RuntimeException as LaminasRuntimeException;
 use Laminas\Http\Client\Exception\RuntimeException;
+use Laminas\Http\Exception\RuntimeException as LaminasRuntimeException;
+use Laminas\Http\Request;
+use LogicException;
 use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\ConverterException;
@@ -12,53 +13,23 @@ use Magento\Payment\Gateway\Http\ConverterInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
 use Magento\Payment\Model\Method\Logger;
 
-/**
- * Class Laminas
- * @package Magento\Payment\Gateway\Http\Client
- * @api
- */
+use function __;
+use function sprintf;
+
 class Laminas implements ClientInterface
 {
-    /**
-     * @var LaminasClientFactory
-     */
-    private $clientFactory;
-
-    /**
-     * @var ConverterInterface | null
-     */
-    private $converter;
-
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * @param LaminasClientFactory $clientFactory
-     * @param Logger $logger
-     * @param ConverterInterface | null $converter
-     */
     public function __construct(
-        LaminasClientFactory $clientFactory,
-        Logger $logger,
-        ConverterInterface $converter = null
+        private readonly LaminasClientFactory $clientFactory,
+        private readonly Logger $logger,
+        private readonly ?ConverterInterface $converter = null
     ) {
-        $this->clientFactory = $clientFactory;
-        $this->converter = $converter;
-        $this->logger = $logger;
     }
 
     /**
-     * {inheritdoc}
-     * @param TransferInterface $transferObject
-     *
-     * @return array
-     *
      * @throws ClientException
      * @throws ConverterException
      */
-    public function placeRequest(TransferInterface $transferObject)
+    public function placeRequest(TransferInterface $transferObject): array
     {
         $log = [
             'request' => $transferObject->getBody(),
@@ -66,7 +37,6 @@ class Laminas implements ClientInterface
             'method' => $transferObject->getMethod(),
         ];
         $result = [];
-        /** @var LaminasClient $client */
         $client = $this->clientFactory->create();
 
         $client->setOptions($transferObject->getClientConfig());
@@ -83,7 +53,7 @@ class Laminas implements ClientInterface
                 $client->setRawBody($body);
                 break;
             default:
-                throw new \LogicException(
+                throw new LogicException(
                     sprintf(
                         'Unsupported HTTP method %s',
                         $transferObject->getMethod()
@@ -101,7 +71,7 @@ class Laminas implements ClientInterface
                 ? $this->converter->convert($response->getBody())
                 : [$response->getBody()];
             $log['response'] = $result;
-        } catch (RuntimeException|LaminasRuntimeException $e) {
+        } catch (RuntimeException | LaminasRuntimeException $e) {
             throw new ClientException(
                 __($e->getMessage())
             );

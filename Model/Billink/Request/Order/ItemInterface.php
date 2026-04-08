@@ -2,76 +2,29 @@
 
 namespace Billink\Billink\Model\Billink\Request\Order;
 
-
-/**
- * Class Item
- * @package Billink\Billink\Model\Billink\Request\Order
- */
 interface ItemInterface
 {
-    /**
-     * @return mixed
-     */
-    public function getCode();
+    public function getCode(): string;
 
-    /**
-     * @param mixed $code
-     * @return $this
-     */
-    public function setCode($code);
+    public function setCode(string $code): static;
 
-    /**
-     * @return mixed
-     */
-    public function getDescription();
+    public function getDescription(): string;
 
-    /**
-     * @param mixed $description
-     * @return $this
-     */
-    public function setDescription($description);
+    public function setDescription(string $description): static;
 
-    /**
-     * @return mixed
-     */
-    public function getQuantity();
+    public function getQuantity(): int;
 
-    /**
-     * @param mixed $quantity
-     * @return $this
-     */
-    public function setQuantity($quantity);
+    public function setQuantity(int $quantity): static;
 
-    /**
-     * @return mixed
-     */
-    public function getTaxPercent();
+    public function getTaxPercent(): float;
 
-    /**
-     * @param mixed $taxPercent
-     * @return $this
-     */
-    public function setTaxPercent($taxPercent);
+    public function setTaxPercent(float $taxPercent): static;
 
-    /**
-     * @return mixed
-     */
-    public function getPriceType();
+    public function getPriceType(): string;
 
-    /**
-     * @param mixed $priceType
-     * @return $this
-     */
-    public function setPriceType($priceType);
+    public function setPriceType(string $priceType): static;
 
-    /**
-     * @return mixed
-     */
-    public function getPrice();
+    public function getPrice(): float;
 
-    /**
-     * @param mixed $price
-     * @return $this
-     */
-    public function setPrice($price);
+    public function setPrice(float $price): static;
 }

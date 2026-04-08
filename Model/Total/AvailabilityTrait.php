@@ -2,24 +2,22 @@
 
 namespace Billink\Billink\Model\Total;
 
-/**
- * Trait AvailabilityTrait
- * @package Billink\Billink\Model\Total
- */
+use Billink\Billink\Model\Ui\ConfigProvider;
+use Magento\Quote\Model\Quote;
+use Magento\Sales\Model\Order;
+
 trait AvailabilityTrait
 {
-    /**
-     * @param \Magento\Sales\Model\Order|\Magento\Quote\Model\Quote $subject
-     * @return bool
-     */
-    protected function isApplicable($subject)
+    protected function isApplicable(Quote|Order $subject): bool
     {
         if (!$this->config->getIsFeeActive()) {
             return false;
         }
         $code = $this->getCode();
 
-        return ($code === 'billink_fee' && $subject->getPayment()->getMethod() === \Billink\Billink\Model\Ui\ConfigProvider::CODE) ||
-            ($code === 'billink_midpage_fee' && $subject->getPayment()->getMethod() === \Billink\Billink\Model\Ui\ConfigProvider::CODE_MIDPAGE);
+        return
+            ($code === 'billink_fee' && $subject->getPayment()->getMethod() === ConfigProvider::CODE)
+            || ($code === 'billink_midpage_fee'
+                && $subject->getPayment()->getMethod() === ConfigProvider::CODE_MIDPAGE);
     }
 }

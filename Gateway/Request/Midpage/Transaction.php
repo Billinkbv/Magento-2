@@ -2,23 +2,18 @@
 
 namespace Billink\Billink\Gateway\Request\Midpage;
 
-use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Payment\Gateway\Request\BuilderInterface;
 
 class Transaction implements BuilderInterface
 {
-    /**
-     * @inheritdoc
-     */
     public function build(array $buildSubject): array
     {
-        $paymentDO = SubjectReader::readPayment($buildSubject);
-        $payment = $paymentDO->getPayment();
-        $additionalInformation = $payment->getAdditionalInformation();
+        $additionalInformation = SubjectReader::readPayment($buildSubject)->getPayment()->getAdditionalInformation();
         $orderId = $additionalInformation['id'] ?? '';
-        $data = [
+
+        return [
             'order_id' => $orderId
         ];
-        return $data;
     }
 }

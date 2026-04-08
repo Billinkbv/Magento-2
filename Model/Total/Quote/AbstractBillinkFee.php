@@ -11,20 +11,12 @@ use Magento\Quote\Model\Quote\Address;
 use Magento\Quote\Model\Quote\Address\Total;
 use Magento\Quote\Model\Quote\Address\Total\AbstractTotal;
 
-/**
- * Class AbstractBillinkFee
- * @package Billink\Billink\Model\Total\Quote
- */
+use function __;
+
 class AbstractBillinkFee extends AbstractTotal
 {
     use AvailabilityTrait;
 
-    /**
-     * BillinkFee constructor.
-     * @param Config $config
-     * @param \Billink\Billink\Model\Fee\BillinkFee $fee
-     * @param PriceCurrencyInterface $priceCurrencyInterface
-     */
     public function __construct(
         protected readonly PriceCurrencyInterface $priceCurrencyInterface,
         protected readonly \Billink\Billink\Model\Fee\BillinkFee $fee,
@@ -32,18 +24,13 @@ class AbstractBillinkFee extends AbstractTotal
     ) {
     }
 
-    /**
-     * @param Quote $quote
-     * @param ShippingAssignmentInterface $shippingAssignment
-     * @param Total $total
-     * @return $this
-     */
     public function collect(
         Quote $quote,
         ShippingAssignmentInterface $shippingAssignment,
         Total $total
-    ) {
-        if ($shippingAssignment->getShipping()->getAddress()->getAddressType() != Address::TYPE_SHIPPING
+    ): static {
+        if (
+            $shippingAssignment->getShipping()->getAddress()->getAddressType() !== Address::TYPE_SHIPPING
             || $quote->isVirtual()
             || !$this->isApplicable($quote)
         ) {
@@ -82,15 +69,10 @@ class AbstractBillinkFee extends AbstractTotal
         return $this;
     }
 
-    /**
-     * @param Quote $quote
-     * @param Total $total
-     * @return array|null
-     */
     public function fetch(
         Quote $quote,
         Total $total
-    ) {
+    ): ?array {
         if ($this->isApplicable($quote)) {
             return [
                 'code' => $this->_code,
@@ -98,15 +80,12 @@ class AbstractBillinkFee extends AbstractTotal
                 'value' => $total->getBillinkFeeAmount()
             ];
         }
+
         return null;
     }
 
-    /**
-     * @return \Magento\Framework\Phrase|string
-     */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->config->getFeeLabel();
     }
-
 }

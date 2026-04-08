@@ -4,13 +4,12 @@ namespace Billink\Billink\Observer;
 
 use Billink\Billink\Gateway\Helper\Workflow;
 use Magento\Framework\Event\Observer;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Observer\AbstractDataAssignObserver;
 use Magento\Quote\Api\Data\PaymentInterface;
 
-/**
- * Class DataAssignObserver
- * @package Billink\Billink\Observer
- */
+use function is_array;
+
 class DataAssignObserver extends AbstractDataAssignObserver
 {
     public const WORKFLOW_NUMBER = 'billink_workflow_number';
@@ -54,15 +53,11 @@ class DataAssignObserver extends AbstractDataAssignObserver
     }
 
     /**
-     * @param Observer $observer
-     *
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function execute(Observer $observer): void
     {
-        $data = $this->readDataArgument($observer);
-
-        $additionalData = $data->getData(PaymentInterface::KEY_ADDITIONAL_DATA);
+        $additionalData = $this->readDataArgument($observer)->getData(PaymentInterface::KEY_ADDITIONAL_DATA);
         if (!is_array($additionalData) || empty($additionalData[self::CUSTOMER_TYPE])) {
             return;
         }
@@ -70,8 +65,10 @@ class DataAssignObserver extends AbstractDataAssignObserver
         $paymentInfo = $this->readPaymentModelArgument($observer);
 
         $needRecalculate = false;
-        if (isset($additionalData[self::CUSTOMER_TYPE]) &&
-            $paymentInfo->getAdditionalInformation(self::CUSTOMER_TYPE) != $additionalData[self::CUSTOMER_TYPE]) {
+        if (
+            isset($additionalData[self::CUSTOMER_TYPE])
+            && $paymentInfo->getAdditionalInformation(self::CUSTOMER_TYPE) != $additionalData[self::CUSTOMER_TYPE]
+        ) {
             $needRecalculate = true;
         }
 

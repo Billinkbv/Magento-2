@@ -6,10 +6,8 @@ use Magento\Backend\Block\Template\Context;
 use Magento\Directory\Model\Config\Source\Country as SourceCountry;
 use Magento\Framework\View\Element\Html\Select;
 
-/**
- * Class WorkflowType
- * @package Billink\Billink\Block\Adminhtml\System\Config\Form\Field\FeeRange
- */
+use function __;
+
 class CountryType extends Select
 {
     public function __construct(
@@ -20,30 +18,21 @@ class CountryType extends Select
         parent::__construct($context, $data);
     }
 
-    /**
-     * @return string
-     */
-    protected function _toHtml()
+    public function setInputName(string $value): static
+    {
+        return $this->setName($value);
+    }
+
+    protected function _toHtml(): string
     {
         if (!$this->getOptions()) {
             $types = $this->sourceCountry->toOptionArray();
-            $this->addOption('other', __("Other countries"));
+            $this->addOption('other', __('Other countries'));
             foreach ($types as $type) {
                 $this->addOption($type['value'], $type['label']);
             }
         }
 
         return parent::_toHtml();
-    }
-
-    /**
-     * Sets name for input element
-     *
-     * @param string $value
-     * @return $this
-     */
-    public function setInputName($value): static
-    {
-        return $this->setName($value);
     }
 }

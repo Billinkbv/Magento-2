@@ -4,59 +4,39 @@ namespace Billink\Billink\Gateway\Converter;
 
 use Billink\Billink\Gateway\Helper\Xml;
 use Billink\Billink\Model\Billink\Response\ResponseFactory;
+use Exception;
+use Magento\Payment\Gateway\Http\ConverterInterface;
 use Psr\Log\LoggerInterface;
 
-class ResponseConverter implements \Magento\Payment\Gateway\Http\ConverterInterface
+class ResponseConverter implements ConverterInterface
 {
     /**
-     * @var Xml
-     */
-    private $xmlHelper;
-
-    /**
-     * @var \Billink\Billink\Model\ResponseFactory
-     */
-    private $responseFactory;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * ResponseConverter constructor.
-     * @param Xml $xmlHelper
-     * @param ResponseFactory $responseFactory
-     * @param LoggerInterface $logger
      */
     public function __construct(
-        Xml $xmlHelper,
-        ResponseFactory $responseFactory,
-        LoggerInterface $logger
+        private readonly Xml $xmlHelper,
+        private readonly ResponseFactory $responseFactory,
+        private readonly LoggerInterface $logger
     ) {
-        $this->xmlHelper = $xmlHelper;
-        $this->responseFactory = $responseFactory;
-        $this->logger = $logger;
     }
 
     /**
      * Converts gateway response to ENV structure
      *
      * @param string $data
-     * @return array
-     * @throws \Magento\Payment\Gateway\Http\ConverterException
      */
-    public function convert($data)
+    public function convert($data): array
     {
         $response = $this->responseFactory->create();
 
         try {
             $parsedResponse = $this->xmlHelper->parse($data);
             $result = $response->setData($parsedResponse);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $result = false;
-            $this->logger->error('Could not convert Gateway Response. Error was: ' . $e->getMessage()
-                . ' ; Response was: ' . $data);
+            $this->logger->error(
+                'Could not convert Gateway Response. Error was: ' . $e->getMessage() . ' ; Response was: ' . $data
+            );
         }
 
         return ['result' => $result];

@@ -8,11 +8,11 @@ use Billink\Billink\Gateway\Helper\Workflow as WorkflowHelper;
 use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 use Magento\Framework\DataObject;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\View\Element\BlockInterface;
 
-/**
- * Class Workflow
- * @package Billink\Billink\Block\Adminhtml\System\Config\Form\Field
- */
+use function __;
+
 class Workflow extends AbstractFieldArray
 {
     /**
@@ -20,42 +20,22 @@ class Workflow extends AbstractFieldArray
      */
     protected $_template = 'Billink_Billink::system/config/form/field/array.phtml';
 
-    /**
-     * @var Type
-     */
-    private $typeRenderer;
+    private ?Type $typeRenderer = null;
 
-    /**
-     * @var Yesno
-     */
-    private $checkRenderer;
+    private ?Yesno $checkRenderer = null;
 
-    /**
-     * @var Workflow
-     */
-    private $workflowHelper;
-
-    /**
-     * Workflow constructor.
-     * @param Context $context
-     * @param WorkflowHelper $workflowHelper
-     * @param array $data
-     */
     public function __construct(
         Context $context,
-        WorkflowHelper $workflowHelper,
+        private readonly WorkflowHelper $workflowHelper,
         array $data = []
     ) {
-        $this->workflowHelper = $workflowHelper;
-
         parent::__construct($context, $data);
     }
 
     /**
-     * @return Type|\Magento\Framework\View\Element\BlockInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
-    protected function getTypeRenderer()
+    protected function getTypeRenderer(): Type|BlockInterface|null
     {
         if (!$this->typeRenderer) {
             $this->typeRenderer = $this->getLayout()->createBlock(
@@ -64,14 +44,14 @@ class Workflow extends AbstractFieldArray
                 ['data' => ['is_render_to_js_template' => true]]
             );
         }
+
         return $this->typeRenderer;
     }
 
     /**
-     * @return Yesno|\Magento\Framework\View\Element\BlockInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
-    protected function getCheckRenderer()
+    protected function getCheckRenderer(): Yesno|BlockInterface|null
     {
         if (!$this->checkRenderer) {
             $this->checkRenderer = $this->getLayout()->createBlock(
@@ -80,41 +60,51 @@ class Workflow extends AbstractFieldArray
                 ['data' => ['is_render_to_js_template' => true]]
             );
         }
+
         return $this->checkRenderer;
     }
 
     /**
-     *
+     * @throws LocalizedException
      */
-    protected function _prepareToRender()
+    protected function _prepareToRender(): void
     {
-        $this->addColumn(WorkflowHelper::FIELD_TYPE, [
-            'label' => __('Type'),
-            'renderer' => $this->getTypeRenderer(),
-        ]);
+        $this->addColumn(
+            WorkflowHelper::FIELD_TYPE,
+            [
+                'label' => __('Type'),
+                'renderer' => $this->getTypeRenderer(),
+            ]
+        );
 
-        $this->addColumn(WorkflowHelper::FIELD_NUMBER, [
-            'label' => __('Number'),
-        ]);
+        $this->addColumn(
+            WorkflowHelper::FIELD_NUMBER,
+            [
+                'label' => __('Number'),
+            ]
+        );
 
-        $this->addColumn(WorkflowHelper::FIELD_MAX_AMOUNT, [
-            'label' => __('Max Amount'),
-        ]);
+        $this->addColumn(
+            WorkflowHelper::FIELD_MAX_AMOUNT,
+            [
+                'label' => __('Max Amount'),
+            ]
+        );
 
-        $this->addColumn(WorkflowHelper::FIELD_CHECK, [
-            'label' => __('With Check?'),
-            'renderer' => $this->getCheckRenderer(),
-        ]);
+        $this->addColumn(
+            WorkflowHelper::FIELD_CHECK,
+            [
+                'label' => __('With Check?'),
+                'renderer' => $this->getCheckRenderer(),
+            ]
+        );
 
         $this->getElement()->setValue($this->prepareTypesArray());
 
         $this->_addAfter = false;
     }
 
-    /**
-     * @return array
-     */
-    protected function prepareTypesArray()
+    protected function prepareTypesArray(): array
     {
         $types = $this->workflowHelper->getTypes();
         $values = $this->getElement()->getValue();
@@ -142,18 +132,16 @@ class Workflow extends AbstractFieldArray
     }
 
     /**
-     * @param DataObject $row
-     *
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
-    protected function _prepareArrayRow(DataObject $row)
+    protected function _prepareArrayRow(DataObject $row): void
     {
-        $isWithCheck = (int)$row->getIsWithCheck();
+        $isWithCheck = (int) $row->getIsWithCheck();
 
         $options = [];
 
         if ($isWithCheck === 0) {
-            $optionKey = 'option_' . $this->getCheckRenderer()->calcOptionHash($isWithCheck);
+            $optionKey = 'option_' . $this->getCheckRenderer()?->calcOptionHash($isWithCheck);
             $options[$optionKey] = 'selected="selected"';
         }
 

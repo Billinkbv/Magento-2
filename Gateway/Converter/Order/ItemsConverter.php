@@ -3,66 +3,31 @@
 namespace Billink\Billink\Gateway\Converter\Order;
 
 use Billink\Billink\Gateway\Request\OrderItemsDataBuilder;
+use Billink\Billink\Model\Billink\Request\Order\ItemFactory;
 use Billink\Billink\Model\Billink\Request\Order\ItemInterfaceFactory;
 use Billink\Billink\Model\Fee\BillinkFee;
+use Magento\Quote\Model\Quote;
+use Magento\Sales\Api\Data\OrderItemInterface;
+use Magento\Sales\Model\Order;
 use Magento\Tax\Helper\Data as TaxHelper;
 use Magento\Tax\Model\CalculationFactory;
 
-/**
- * Class ItemsConverter
- * @package Billink\Billink\Gateway\Converter\Order
- */
+use function method_exists;
+use function round;
+
 class ItemsConverter implements ConverterInterface
 {
-    /**
-     * @var \Billink\Billink\Model\Billink\Request\Order\ItemFactory
-     */
-    private $orderItemFactory;
+    private array $items = [];
 
-    /**
-     * @var Data
-     */
-    private $taxData;
-
-    /**
-     * @var array
-     */
-    private $items = [];
-
-    /**
-     * @var CalculationFactory
-     */
-    private $calculationFactory;
-
-    /**
-     * @var BillinkFee
-     */
-    private $billinkFee;
-
-    /**
-     * ItemsConverter constructor.
-     * @param TaxHelper $taxData
-     * @param CalculationFactory $calculationFactory
-     * @param ItemInterfaceFactory $orderItemFactory
-     * @param BillinkFee $billinkFee
-     */
     public function __construct(
-        TaxHelper $taxData,
-        CalculationFactory $calculationFactory,
-        ItemInterfaceFactory $orderItemFactory,
-        BillinkFee $billinkFee
+        private readonly TaxHelper $taxData,
+        private readonly CalculationFactory $calculationFactory,
+        private readonly ItemInterfaceFactory $orderItemFactory,
+        private readonly BillinkFee $billinkFee
     ) {
-        $this->orderItemFactory = $orderItemFactory;
-        $this->taxData = $taxData;
-        $this->calculationFactory = $calculationFactory;
-        $this->billinkFee = $billinkFee;
     }
 
-    /**
-     * @param \Magento\Sales\Model\Order $order
-     * @return array
-     */
-    public function convert($order)
+    public function convert(?Order $order = null): array
     {
         $this->items = [];
 
@@ -97,48 +62,30 @@ class ItemsConverter implements ConverterInterface
         return $this->items;
     }
 
-    /**
-     * @return string
-     */
-    private function getPriceType()
+    private function getPriceType(): string
     {
         return $this->taxData->priceIncludesTax() ?
             OrderItemsDataBuilder::PRICEINCL : OrderItemsDataBuilder::PRICEEXCL;
     }
 
-    /**
-     * @param \Magento\Sales\Model\Order $order
-     * @return string
-     */
-    private function getShippingPriceType($order)
+    private function getShippingPriceType(Order $order): string
     {
         return $this->taxData->shippingPriceIncludesTax($order->getStore()) ?
             OrderItemsDataBuilder::PRICEINCL : OrderItemsDataBuilder::PRICEEXCL;
     }
 
-    /**
-     * @return string
-     */
-    private function getBillinkFeeType()
+    private function getBillinkFeeType(): string
     {
         return $this->billinkFee->getFeeIncludesTax() ?
             OrderItemsDataBuilder::PRICEINCL : OrderItemsDataBuilder::PRICEEXCL;
     }
 
-    /**
-     * @param \Magento\Sales\Model\Order $order
-     * @return string
-     */
-    private function getShippingDescription($order)
+    private function getShippingDescription(Order $order): string
     {
         return $order->getShippingDescription() ?: $order->getShippingAddress()->getShippingDescription();
     }
 
-    /**
-     * @param \Magento\Sales\Model\Order $order
-     * @return string
-     */
-    private function getShippingAmount($order)
+    private function getShippingAmount(Order $order): ?float
     {
         if ($this->taxData->shippingPriceIncludesTax($order->getStore())) {
             return $order->getShippingInclTax() ?: $order->getShippingAddress()->getShippingInclTax();
@@ -147,11 +94,7 @@ class ItemsConverter implements ConverterInterface
         return $order->getShippingAmount() ?: $order->getShippingAddress()->getShippingAmount();
     }
 
-    /**
-     * @param \Magento\Sales\Api\Data\OrderItemInterface $item
-     * @return void
-     */
-    private function addOrderItem($item)
+    private function addOrderItem(OrderItemInterface $item): void
     {
         $price = $this->taxData->priceIncludesTax() ? $item->getPriceInclTax() : $item->getPrice();
 
@@ -166,12 +109,7 @@ class ItemsConverter implements ConverterInterface
         $this->items[] = $orderItem;
     }
 
-    /**
-     * @param \Magento\Sales\Api\Data\OrderItemInterface $item
-     * @param \Magento\Sales\Model\Order $order
-     * @return void
-     */
-    private function addDiscountOrderItem($item, $order)
+    private function addDiscountOrderItem(OrderItemInterface $item, Order $order): void
     {
         $price = 0 - $item->getDiscountAmount();
 
@@ -186,11 +124,7 @@ class ItemsConverter implements ConverterInterface
         $this->items[] = $discountOrderItem;
     }
 
-    /**
-     * @param \Magento\Sales\Model\Order $order
-     * @return void
-     */
-    private function addShippingAmountItem($order)
+    private function addShippingAmountItem(Order $order): void
     {
         $taxCalculation = $this->calculationFactory->create();
 
@@ -212,11 +146,7 @@ class ItemsConverter implements ConverterInterface
         $this->items[] = $discountOrderItem;
     }
 
-    /**
-     * @param \Magento\Sales\Model\Order|\Magento\Quote\Model\Quote $orderData
-     * @return void
-     */
-    private function addBillinkFeeAmountItem($orderData)
+    private function addBillinkFeeAmountItem(Quote|Order $orderData): void
     {
         if (!$this->billinkFee->isActive()) {
             return;
@@ -240,13 +170,10 @@ class ItemsConverter implements ConverterInterface
 
     /**
      * If the Fooman Surcharge plugin is installed, try to fetch the surcharge
-     *
-     * @param \Magento\Sales\Model\Order|\Magento\Quote\Model\Quote $orderData
-     * @return void
      */
-    private function addFoomanSurcharge($orderData)
+    private function addFoomanSurcharge(Quote|Order $orderData): void
     {
-        if ($orderData instanceof \Magento\Quote\Model\Quote) {
+        if ($orderData instanceof Quote) {
             //As seen in Fooman\SurchargePayment\Plugin\SurchargePreview
             if ($orderData->isVirtual()) {
                 $address = $orderData->getBillingAddress();
@@ -255,37 +182,41 @@ class ItemsConverter implements ConverterInterface
             }
 
             $extensionAttributes = $address->getExtensionAttributes();
-        } elseif ($orderData instanceof \Magento\Sales\Model\Order) {
+        } elseif ($orderData instanceof Order) {
             $extensionAttributes = $orderData->getExtensionAttributes();
         } else {
             return;
         }
 
-        if ($extensionAttributes) {
+        if (
+            $extensionAttributes
+            && method_exists($extensionAttributes, 'getFoomanTotalGroup')
+            && $foomanTotalGroup = $extensionAttributes->getFoomanTotalGroup()
+        ) {
             //If Fooman Surcharges is installed, this function should be part of the Order-/Address- ExtensionInterface
-            if (method_exists($extensionAttributes, 'getFoomanTotalGroup')) {
-                if ($foomanTotalGroup = $extensionAttributes->getFoomanTotalGroup()) {
-                    foreach ($foomanTotalGroup->getItems() as $item) {
-                        if ($item->getAmount() > 0) {
-                            $billinkFeeItem = $this->orderItemFactory->create();
+            foreach ($foomanTotalGroup->getItems() as $item) {
+                if ($item->getAmount() > 0) {
+                    $billinkFeeItem = $this->orderItemFactory->create();
 
-                            $taxRate = 0;
-                            if ($item->getTaxAmount()) {
-                                $taxRate = round(($item->getBaseTaxAmount() + $item->getBaseAmount()) / $item->getBaseAmount(), 2);
-                            }
-
-                            $priceType = $item->getBasePrice() ? OrderItemsDataBuilder::PRICEINCL : OrderItemsDataBuilder::PRICEEXCL;
-
-                            $billinkFeeItem->setCode('fooman_surcharge');
-                            $billinkFeeItem->setDescription($item->getLabel());
-                            $billinkFeeItem->setQuantity(1);
-                            $billinkFeeItem->setTaxPercent($taxRate);
-                            $billinkFeeItem->setPriceType($priceType);
-                            $billinkFeeItem->setPrice($item->getBaseAmount());
-
-                            $this->items[] = $billinkFeeItem;
-                        }
+                    $taxRate = 0;
+                    if ($item->getTaxAmount()) {
+                        $taxRate = round(
+                            ($item->getBaseTaxAmount() + $item->getBaseAmount()) / $item->getBaseAmount(),
+                            2
+                        );
                     }
+
+                    $priceType = $item->getBasePrice() ? OrderItemsDataBuilder::PRICEINCL :
+                        OrderItemsDataBuilder::PRICEEXCL;
+
+                    $billinkFeeItem->setCode('fooman_surcharge');
+                    $billinkFeeItem->setDescription($item->getLabel());
+                    $billinkFeeItem->setQuantity(1);
+                    $billinkFeeItem->setTaxPercent($taxRate);
+                    $billinkFeeItem->setPriceType($priceType);
+                    $billinkFeeItem->setPrice($item->getBaseAmount());
+
+                    $this->items[] = $billinkFeeItem;
                 }
             }
         }

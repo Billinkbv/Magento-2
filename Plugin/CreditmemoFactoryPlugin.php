@@ -3,8 +3,10 @@
 namespace Billink\Billink\Plugin;
 
 use Magento\Framework\Locale\FormatInterface;
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Creditmemo;
 use Magento\Sales\Model\Order\CreditmemoFactory as SubjectClass;
+use Magento\Sales\Model\Order\Invoice;
 
 class CreditmemoFactoryPlugin
 {
@@ -17,20 +19,22 @@ class CreditmemoFactoryPlugin
     public function afterCreateByOrder(
         SubjectClass $subject,
         Creditmemo $result,
-        \Magento\Sales\Model\Order $order,
+        Order $order,
         array $data = []
     ): Creditmemo {
         $this->attachBillinkFees($result, $data);
+
         return $result;
     }
 
     public function afterCreateByInvoice(
         SubjectClass $subject,
         Creditmemo $result,
-        \Magento\Sales\Model\Order\Invoice $invoice,
+        Invoice $invoice,
         array $data = []
     ): Creditmemo {
         $this->attachBillinkFees($result, $data);
+
         return $result;
     }
 

@@ -7,24 +7,20 @@ use Billink\Billink\Model\Total\AvailabilityTrait;
 use Magento\Sales\Model\Order\Invoice;
 use Magento\Sales\Model\Order\Invoice\Total\AbstractTotal;
 
-/**
- * Class BillinkFee
- * @package Billink\Billink\Model\Total\Invoice
- */
+use function min;
+
 class AbstractBillinkFee extends AbstractTotal
 {
     use AvailabilityTrait;
 
     public function __construct(
-        private readonly Config $config
+        private readonly Config $config,
+        array $data = []
     ) {
+        parent::__construct($data);
     }
 
-    /**
-     * @param Invoice $invoice
-     * @return $this
-     */
-    public function collect(Invoice $invoice)
+    public function collect(Invoice $invoice): static
     {
         $order = $invoice->getOrder();
 
@@ -35,7 +31,6 @@ class AbstractBillinkFee extends AbstractTotal
         $invoice->setBaseBillinkFeeAmountTax($order->getBaseBillinkFeeAmountTax());
 
         if ($this->isApplicable($order)) {
-
             $allowedTax = $order->getTaxAmount() - $order->getTaxInvoiced() - $invoice->getTaxAmount();
             $allowedBaseTax = $order->getBaseTaxAmount() - $order->getBaseTaxInvoiced() - $invoice->getBaseTaxAmount();
 
@@ -53,6 +48,7 @@ class AbstractBillinkFee extends AbstractTotal
                 $invoice->getBaseGrandTotal() + $invoice->getBaseBillinkFeeAmount() + $baseTotalTaxAmount
             );
         }
+
         return $this;
     }
 }

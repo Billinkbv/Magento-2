@@ -1,19 +1,23 @@
 <?php
+
 namespace Billink\Billink\Model\Payment;
 
+use Exception;
+use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Api\OrderRepositoryInterfaceFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Api\OrderRepositoryInterfaceFactory;
 use Psr\Log\LoggerInterface;
-use Magento\Checkout\Model\Session as CheckoutSession;
+
+use function __;
 
 class MidpageCancelService
 {
     public function __construct(
-        protected readonly OrderRepositoryInterfaceFactory $orderRepositoryFactory,
-        protected readonly LoggerInterface $logger,
-        protected readonly CheckoutSession $session
+        private readonly OrderRepositoryInterfaceFactory $orderRepositoryFactory,
+        private readonly LoggerInterface $logger,
+        private readonly CheckoutSession $session
     ) {
     }
 
@@ -30,15 +34,12 @@ class MidpageCancelService
                 $repository->save($order);
                 $this->restoreQuote();
             }
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->logger->critical($exception);
             throw new LocalizedException(__('There was an error during request. Please contact support'));
         }
     }
 
-    /**
-     * restore checkout quote
-     */
     public function restoreQuote(): void
     {
         $this->session->restoreQuote();

@@ -4,24 +4,11 @@ namespace Billink\Billink\Model\Billink\Response;
 
 interface ResponseInterface
 {
-    /**
-     * @return bool
-     */
-    public function hasError();
+    public function hasError(): bool;
 
-    /**
-     * @return mixed
-     */
-    public function getErrorCode();
+    public function getErrorCode(): mixed;
 
-    /**
-     * @param array $data
-     * @return $this
-     */
-    public function setData(array $data);
+    public function setData(array $data): static;
 
-    /**
-     * @return mixed
-     */
-    public function getMsg();
+    public function getMsg(): mixed;
 }

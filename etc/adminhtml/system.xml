@@ -1,72 +1,92 @@
 <?xml version="1.0"?>
 
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <section id="payment">
-            <group id="billink" translate="label" type="text" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="billink" translate="label" type="text" sortOrder="11" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Billink Legacy</label>
-                <field id="version_label" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="version_label" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Version</label>
                     <frontend_model>Billink\Billink\Block\Adminhtml\System\Config\Form\Field\Version</frontend_model>
                 </field>
-                <field id="active" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="active" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1"
+                       showInStore="0">
                     <label>Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="title" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="title" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Title</label>
                 </field>
-                <field id="logo" translate="label" type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="31" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="logo" translate="label" type="Magento\Config\Block\System\Config\Form\Field\File"
+                       sortOrder="31" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Logo</label>
                     <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>
                     <upload_dir config="system" scope_info="1">billink</upload_dir>
                 </field>
-                <field id="sort_order" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="sort_order" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Sort Order</label>
                     <frontend_class>validate-number</frontend_class>
                 </field>
 
-                <field id="account_name" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="account_name" translate="label" type="text" sortOrder="40" showInDefault="1"
+                       showInWebsite="1" showInStore="0">
                     <label>Billink Account Name</label>
                 </field>
-                <field id="account_id" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="account_id" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1"
+                       showInStore="0">
                     <label>Billink Account ID</label>
                 </field>
 
-                <field id="debug" translate="label tooltip" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="debug" translate="label tooltip" type="select" sortOrder="60" showInDefault="1"
+                       showInWebsite="1" showInStore="0">
                     <label>Debug Mode</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <tooltip>If 'Yes' is selected, orders are sent to the Billink test environment. Select 'No' to use a normal production site.</tooltip>
+                    <tooltip>If 'Yes' is selected, orders are sent to the Billink test environment. Select 'No' to use a
+                        normal production site.
+                    </tooltip>
                 </field>
-                <field id="debug_backdoor" translate="label tooltip" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="debug_backdoor" translate="label tooltip" type="select" sortOrder="70" showInDefault="1"
+                       showInWebsite="1" showInStore="0">
                     <label>Enable Backdoor Option</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <tooltip>Lets you determine what should be the result of the Billink credit check when the system is in Test mode.</tooltip>
+                    <tooltip>Lets you determine what should be the result of the Billink credit check when the system is
+                        in Test mode.
+                    </tooltip>
                     <depends>
                         <field id="*/*/debug">1</field>
                     </depends>
                 </field>
-                <field id="use_workflow" translate="label" type="select" sortOrder="75" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="use_workflow" translate="label" type="select" sortOrder="75" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Used workflow</label>
                     <source_model>Billink\Billink\Model\Config\Source\UsedWorkflow</source_model>
                 </field>
-                <field id="workflow" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="workflow" translate="label comment tooltip" sortOrder="80" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Workflow List</label>
                     <frontend_model>Billink\Billink\Block\Adminhtml\System\Config\Form\Field\Workflow</frontend_model>
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                 </field>
 
-                <field id="is_invoice_email_enabled" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_invoice_email_enabled" translate="label" type="select" sortOrder="90" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Enable Invoice Emails</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
 
-                <field id="is_alternate_delivery_address_allowed" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_alternate_delivery_address_allowed" translate="label" type="select" sortOrder="100"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Is Alternate Delivery Address Allowed?</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
 
-                <field id="allowspecific" translate="label" type="allowspecific" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="allowspecific" translate="label" type="allowspecific" sortOrder="110" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Payment from Applicable Countries</label>
                     <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
                 </field>
@@ -76,52 +96,64 @@
                     <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                 </field>
 
-                <field id="is_totalcheck_active" translate="label" type="select" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_totalcheck_active" translate="label" type="select" sortOrder="130" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Order Total Check</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <tooltip>
-                        If this option is turned on compared the order totals Billink and Magento. If the totals do not match the consumer is notified that Billink option can not be used.
-                        If Magento Prices excluding VAT is introduced, it may be rounding differences occur between Magento and Billink and thus prevents an abnormality in the totals. If this is the case then this option can be disabled.
+                        If this option is turned on compared the order totals Billink and Magento. If the totals do not
+                        match the consumer is notified that Billink option can not be used.
+                        If Magento Prices excluding VAT is introduced, it may be rounding differences occur between
+                        Magento and Billink and thus prevents an abnormality in the totals. If this is the case then
+                        this option can be disabled.
                     </tooltip>
                 </field>
 
-                <field id="is_fee_active" translate="label" type="select" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_fee_active" translate="label" type="select" sortOrder="140" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Billink Fee Active</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
 
-                <field id="fee_label" translate="label" type="text" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="fee_label" translate="label" type="text" sortOrder="150" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Billink Fee Label</label>
                 </field>
 
-                <field id="fee_type" translate="label" type="select" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="fee_type" translate="label" type="select" sortOrder="160" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Billink Fee Type</label>
                     <source_model>Magento\Tax\Model\System\Config\Source\PriceType</source_model>
                 </field>
 
-                <field id="fee_tax_class" translate="label" type="select" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="fee_tax_class" translate="label" type="select" sortOrder="170" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Billink Fee Tax Class</label>
                     <source_model>Magento\Tax\Model\TaxClass\Source\Product</source_model>
                 </field>
 
-                <field id="fee_range" translate="label" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="fee_range" translate="label" sortOrder="180" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Billink Fee Ranges</label>
                     <frontend_model>\Billink\Billink\Block\Adminhtml\System\Config\Form\Field\FeeRange</frontend_model>
                     <backend_model>\Billink\Billink\Model\Config\Backend\Serialized\FeeSerialized</backend_model>
                 </field>
             </group>
-            <group id="billink_midpage" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="billink_midpage" translate="label comment" type="text" sortOrder="10" showInDefault="1"
+                   showInWebsite="1" showInStore="1">
                 <label>Billink</label>
                 <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1"
                        showInStore="0">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="title" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="title" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Title</label>
                 </field>
 
-                <field id="sort_order" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="sort_order" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Sort Order</label>
                     <frontend_class>validate-number</frontend_class>
                 </field>
@@ -140,14 +172,17 @@
                     <comment>Enables logs in var/log</comment>
                 </field>
 
-                <field id="account_name" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="account_name" translate="label" type="text" sortOrder="60" showInDefault="1"
+                       showInWebsite="1" showInStore="0">
                     <label>Billink Username</label>
                 </field>
-                <field id="account_id" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="account_id" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1"
+                       showInStore="0">
                     <label>Billink Account ID</label>
                 </field>
 
-                <field id="logo" translate="label" type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="logo" translate="label" type="Magento\Config\Block\System\Config\Form\Field\File"
+                       sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Logo</label>
                     <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>
                     <upload_dir config="system" scope_info="1">billink</upload_dir>
@@ -157,26 +192,31 @@
                     <frontend_model>Billink\Billink\Block\Adminhtml\System\Config\Validate\SyncSettings</frontend_model>
                 </field>
 
-                <field id="is_fee_active" translate="label" type="select" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_fee_active" translate="label" type="select" sortOrder="200" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Payment Cost Active</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
 
-                <field id="fee_label" translate="label" type="text" sortOrder="210" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="fee_label" translate="label" type="text" sortOrder="210" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Payment Cost Label</label>
                 </field>
 
-                <field id="fee_type" translate="label" type="select" sortOrder="220" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="fee_type" translate="label" type="select" sortOrder="220" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Payment Cost Type</label>
                     <source_model>Magento\Tax\Model\System\Config\Source\PriceType</source_model>
                 </field>
 
-                <field id="fee_tax_class" translate="label" type="select" sortOrder="230" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="fee_tax_class" translate="label" type="select" sortOrder="230" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Payment Cost Tax Class</label>
                     <source_model>Magento\Tax\Model\TaxClass\Source\Product</source_model>
                 </field>
 
-                <field id="fee_range" translate="label" sortOrder="240" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="fee_range" translate="label" sortOrder="240" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Payment Cost Ranges</label>
                     <frontend_model>\Billink\Billink\Block\Adminhtml\System\Config\Form\Field\FeeRange</frontend_model>
                     <backend_model>\Billink\Billink\Model\Config\Backend\Serialized\FeeSerialized</backend_model>
@@ -186,7 +226,8 @@
         </section>
         <section id="sales">
             <group id="totals_sort">
-                <field id="billink_midpage_fee" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" canRestore="1">
+                <field id="billink_midpage_fee" translate="label" type="text" sortOrder="4" showInDefault="1"
+                       showInWebsite="1" canRestore="1">
                     <label>Billink Payment Cost</label>
                     <validate>required-number validate-number</validate>
                 </field>

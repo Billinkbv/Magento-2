@@ -1,25 +1,19 @@
 <?php
 
-
 namespace Billink\Billink\Model;
 
 use Magento\Framework\Module\ModuleListInterface;
 
-class VersionChecker implements \Billink\Billink\Model\VersionCheckerInterface
+class VersionChecker implements VersionCheckerInterface
 {
-    const MODULE_NAME = 'Billink_Billink';
+    public const MODULE_NAME = 'Billink_Billink';
 
-    protected $moduleList;
-
-    public function __construct(ModuleListInterface $moduleList)
-    {
-        $this->moduleList = $moduleList;
-
+    public function __construct(
+        private readonly ModuleListInterface $moduleList
+    ) {
     }
-    /**
-     * @return mixed
-     */
-    public function getRemoteVersion()
+
+    public function getRemoteVersion(): string
     {
         return $this->moduleList->getOne(static::MODULE_NAME)['setup_version'];
     }

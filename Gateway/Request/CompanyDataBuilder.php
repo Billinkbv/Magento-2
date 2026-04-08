@@ -7,40 +7,21 @@ use Billink\Billink\Gateway\Helper\Workflow as WorkflowHelper;
 use Billink\Billink\Observer\DataAssignObserver;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
-/**
- * Class AddressDataBuilder
- */
 class CompanyDataBuilder implements BuilderInterface
 {
-    const COMPANYNAME = 'COMPANYNAME';
-    const CHAMBEROFCOMMERCE = 'CHAMBEROFCOMMERCE';
+    public const COMPANYNAME = 'COMPANYNAME';
+    public const CHAMBEROFCOMMERCE = 'CHAMBEROFCOMMERCE';
 
-    /**
-     * @var SubjectReader
-     */
-    private $subjectReader;
-
-    /**
-     * CompanyDataBuilder constructor.
-     * @param SubjectReader $subjectReader
-     */
     public function __construct(
-        SubjectReader $subjectReader
+        private readonly SubjectReader $subjectReader
     ) {
-        $this->subjectReader = $subjectReader;
     }
 
-    /**
-     * Builds ENV request
-     *
-     * @param array $buildSubject
-     * @return array
-     */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
         $workflowType = $this->subjectReader->readPaymentWorkflowType($buildSubject);
 
-        if (WorkflowHelper::TYPE_BUSINESS !== $workflowType) {
+        if ($workflowType !== WorkflowHelper::TYPE_BUSINESS) {
             return [];
         }
 

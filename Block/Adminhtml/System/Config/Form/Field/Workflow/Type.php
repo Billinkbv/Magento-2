@@ -4,24 +4,16 @@ namespace Billink\Billink\Block\Adminhtml\System\Config\Form\Field\Workflow;
 
 use Magento\Framework\View\Element\AbstractBlock;
 
-/**
- * Class Type
- * @package Billink\Billink\Block\Adminhtml\System\Config\Form\Field\Workflow
- */
+use function __;
+
 class Type extends AbstractBlock
 {
-    /**
-     * @return string
-     */
-    protected function _toHtml()
+    protected function _toHtml(): string
     {
         return $this->getTypeHtml();
     }
 
-    /**
-     * @return string
-     */
-    private function getTypeHtml()
+    private function getTypeHtml(): string
     {
         $html = '<%- ' . __($this->getColumnName()) . ' %>';
         $html .= '<input type="hidden" name="'

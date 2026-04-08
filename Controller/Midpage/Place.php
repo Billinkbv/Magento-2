@@ -1,21 +1,26 @@
 <?php
+
 namespace Billink\Billink\Controller\Midpage;
 
+use Exception;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
+use Magento\Framework\Exception\NotFoundException;
+use Magento\Payment\Gateway\Command\CommandException;
+use Magento\Sales\Model\Order;
+
+use function __;
 
 class Place extends AbstractAction
 {
-    /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
-     */
-    public function execute()
+    public function execute(): Redirect
     {
         $resultRedirect = $this->redirectFactory->create();
 
         $transactionOrderId = $this->getOrderIdFromTransaction();
         if ($transactionOrderId === null) {
             $resultRedirect->setPath('checkout/cart');
+
             return $resultRedirect;
         }
 
@@ -44,21 +49,27 @@ class Place extends AbstractAction
             $this->logger->notice($e->getMessage());
             $this->messageManager->addExceptionMessage($e);
             $resultRedirect->setPath('checkout/cart', $params);
+
             return $resultRedirect;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->messageManager->addErrorMessage(__('There was an error during your request.'));
             $this->logger->critical($e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $resultRedirect->setPath('checkout/cart', $params);
+
             return $resultRedirect;
         }
         $resultRedirect->setPath('checkout/onepage/success', $params);
+
         return $resultRedirect;
     }
 
-    private function executeOrderUpdate(\Magento\Sales\Model\Order $order)
+    /**
+     * @throws NotFoundException
+     * @throws CommandException
+     */
+    private function executeOrderUpdate(Order $order): void
     {
         $command = $this->commandPool->get('order_update');
-        /** @var PaymentDataObjectInterface $paymentDO */
         $paymentDO = [
             'payment' => $this->paymentDataObjectFactory->create($order->getPayment())
         ];

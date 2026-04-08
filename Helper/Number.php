@@ -2,18 +2,11 @@
 
 namespace Billink\Billink\Helper;
 
-/**
- * Class Number
- * @package Billink\Billink\Helper
- */
+use function abs;
+
 class Number
 {
-    /**
-     * @param float $number1
-     * @param float $number2
-     * @return bool
-     */
-    public function floatsAreEqual($number1, $number2)
+    public function floatsAreEqual(float $number1, float $number2): bool
     {
         if ($number2 == 0.00) {
             return false;

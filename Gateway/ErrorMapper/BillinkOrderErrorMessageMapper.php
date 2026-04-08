@@ -1,12 +1,16 @@
 <?php
+
 namespace Billink\Billink\Gateway\ErrorMapper;
 
 use Magento\Framework\Phrase;
+use Magento\Payment\Gateway\ErrorMapper\ErrorMessageMapperInterface;
 
-class BillinkOrderErrorMessageMapper implements \Magento\Payment\Gateway\ErrorMapper\ErrorMessageMapperInterface
+use function __;
+
+class BillinkOrderErrorMessageMapper implements ErrorMessageMapperInterface
 {
-    public function getMessage(string $code)
+    public function getMessage(string $code): ?Phrase
     {
-        return __("Could not process billink order: %1", $code);
+        return __('Could not process billink order: %1', $code);
     }
 }

@@ -3,45 +3,27 @@
 namespace Billink\Billink\Gateway\Validator;
 
 use Billink\Billink\Gateway\Config\Config;
-use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
+use Magento\Payment\Gateway\Validator\ResultInterface;
+use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 
-/**
- * Class CountryValidator
- * @package Billink\Billink\Gateway\Validator
- */
+use function explode;
+use function in_array;
+
 class CountryValidator extends AbstractValidator
 {
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * CountryValidator constructor.
-     * @param ResultInterfaceFactory $resultFactory
-     * @param Config $config
-     */
     public function __construct(
         ResultInterfaceFactory $resultFactory,
-        Config $config
+        private readonly Config $config
     ) {
-        $this->config = $config;
-
         parent::__construct($resultFactory);
     }
 
-    /**
-     * @param array $validationSubject
-     * @return bool
-     * @throws NotFoundException
-     * @throws \Exception
-     */
-    public function validate(array $validationSubject)
+    public function validate(array $validationSubject): ResultInterface
     {
         $isValid = true;
 
-        if ((int)$this->config->getAllowSpecific()) {
+        if ((int) $this->config->getAllowSpecific()) {
             $availableCountries = explode(
                 ',',
                 $this->config->getSpecificCountry()

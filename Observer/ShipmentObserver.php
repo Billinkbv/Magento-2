@@ -3,16 +3,14 @@
 namespace Billink\Billink\Observer;
 
 use Billink\Billink\Model\Ui\ConfigProvider;
+use Exception;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Payment\Gateway\Command\GatewayCommand;
+use Magento\Shipping\Model\Shipment;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * Class ShipmentObserver
- * @package Billink\Billink\Observer
- */
 class ShipmentObserver implements ObserverInterface
 {
     public const METHOD_CODE = ConfigProvider::CODE;
@@ -25,7 +23,7 @@ class ShipmentObserver implements ObserverInterface
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function execute(Observer $observer): void
     {
@@ -45,18 +43,14 @@ class ShipmentObserver implements ObserverInterface
 
             // restore current store
             $this->storeManager->setCurrentStore($originalStore);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error($e->getMessage());
 
             throw $e;
         }
     }
 
-    /**
-     * @param \Magento\Shipping\Model\Shipment $shipment
-     * @return mixed
-     */
-    private function getPayment($shipment)
+    private function getPayment(Shipment $shipment): mixed
     {
         return $shipment->getOrder()->getPayment();
     }

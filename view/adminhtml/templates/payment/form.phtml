@@ -3,15 +3,15 @@
 echo $code; ?>" style="display: none">
     <div class="field-type radio admin__field _required">
         <span class="admin__field-label">
-            <span><?php echo __('Workflow Type'); ?></span>
+            <span><?= __('Workflow Type'); ?></span>
         </span>
         <div class="admin__field-control">
             <?php foreach ($block->getCustomerTypes() as $customerType): ?>
                 <div>
                     <input type="radio" id="<?php /* @noEscape */
-                    echo $code; ?>_customer_type_<?php echo strtolower($customerType['value']); ?>"
-                           name="payment[<?php echo $code; ?>_customer_type]"
-                           value="<?php echo $customerType['value']; ?>"
+                    echo $code; ?>_customer_type_<?= strtolower($customerType['value']); ?>"
+                           name="payment[<?= $code; ?>_customer_type]"
+                           value="<?= $customerType['value']; ?>"
                            class="admin__control-radio required-entry"
                            data-type-value="<?php /* @noEscape */
                            echo strtolower($customerType['value']); ?>"
@@ -21,8 +21,8 @@ echo $code; ?>" style="display: none">
                     />
                     <label class="admin__field-label"
                            for="<?php /* @noEscape */
-                           echo $code; ?>_customer_type_<?php echo strtolower($customerType['value']); ?>">
-                        <span><?php echo $block->escapeHtml($customerType['label']); ?></span>
+                           echo $code; ?>_customer_type_<?= strtolower($customerType['value']); ?>">
+                        <span><?= $block->escapeHtml($customerType['label']); ?></span>
                     </label>
                 </div>
             <?php endforeach; ?>
@@ -31,57 +31,57 @@ echo $code; ?>" style="display: none">
 
     <div class="field-type admin__field _required field-type-b" style="display: none">
         <label class="admin__field-label" for="<?php /* @noEscape */ echo $code; ?>_company">
-            <span><?php echo $block->escapeHtml(__('Company')); ?></span>
+            <span><?= $block->escapeHtml(__('Company')); ?></span>
         </label>
         <div class="admin__field-control">
             <input type="text"
                    id="<?php /* @noEscape */ echo $code; ?>_company"
                    name="payment[<?php /* @noEscape */ echo $code; ?>_company]"
-                   title="<?php echo $block->escapeHtml(__('Company')); ?>"
+                   title="<?= $block->escapeHtml(__('Company')); ?>"
                    class="admin__control-text"
-                   value="<?php echo $block->getInfoData($code . '_company'); ?>" />
+                   value="<?= $block->getInfoData($code . '_company'); ?>" />
         </div>
     </div>
 
     <div class="field-type admin__field _required field-type-b" style="display: none">
         <label class="admin__field-label" for="<?php /* @noEscape */
         echo $code; ?>_chamber_of_commerce">
-            <span><?php echo $block->escapeHtml(__('Chamber of commerce')); ?></span>
+            <span><?= $block->escapeHtml(__('Chamber of commerce')); ?></span>
         </label>
         <div class="admin__field-control">
             <input type="text" id="<?php /* @noEscape */
                echo $code; ?>_chamber_of_commerce" name="payment[<?php /* @noEscape */
                echo $code; ?>_chamber_of_commerce]"
-               value="<?php echo $block->getInfoData($code . '_chamber_of_commerce'); ?>"
-               title="<?php echo $block->escapeHtml(__('Chamber of commerce')); ?>" class="admin__control-text"/>
+               value="<?= $block->getInfoData($code . '_chamber_of_commerce'); ?>"
+               title="<?= $block->escapeHtml(__('Chamber of commerce')); ?>" class="admin__control-text"/>
         </div>
     </div>
 
     <div class="field-type admin__field date _required field-type-p" style="display: none">
-        <label class="admin__field-label" for="<?php echo $code; ?>_birthdate">
-            <span><?php echo $block->escapeHtml(__('Birthdate')); ?></span>
+        <label class="admin__field-label" for="<?= $code; ?>_birthdate">
+            <span><?= $block->escapeHtml(__('Birthdate')); ?></span>
         </label>
         <div class="admin__field-control">
             <input type="text" id="<?php /* @noEscape */
             echo $code; ?>_birthdate" name="payment[<?php /* @noEscape */
             echo $code; ?>_customer_birthdate]"
-                   title="<?php echo $block->escapeHtml(__('Birthdate')); ?>" class="admin__control-text"
-                   value="<?php echo $block->getInfoData($code . '_customer_birthdate'); ?>"
+                   title="<?= $block->escapeHtml(__('Birthdate')); ?>" class="admin__control-text"
+                   value="<?= $block->getInfoData($code . '_customer_birthdate'); ?>"
             />
         </div>
     </div>
     <div class="field-type admin__field required _required">
         <label class="admin__field-label" for="<?php /* @noEscape */
         echo $code; ?>_street_name">
-            <span><?php echo $block->escapeHtml(__('Street name')); ?></span>
+            <span><?= $block->escapeHtml(__('Street name')); ?></span>
         </label>
         <div class="admin__field-control">
             <input type="text" id="<?php /* @noEscape */
             echo $code; ?>_street_name" name="payment[<?php /* @noEscape */
             echo $code; ?>_street]"
-                   title="<?php echo $block->escapeHtml(__('Street name')); ?>"
+                   title="<?= $block->escapeHtml(__('Street name')); ?>"
                    class="required-entry admin__control-text"
-                   value="<?php echo $block->getInfoData($code . '_street'); ?>"
+                   value="<?= $block->getInfoData($code . '_street'); ?>"
             />
         </div>
     </div>
@@ -89,15 +89,15 @@ echo $code; ?>" style="display: none">
     <div class="field-type admin__field _required">
         <label class="admin__field-label" for="<?php /* @noEscape */
         echo $code; ?>_house_number">
-            <span><?php echo $block->escapeHtml(__('House number')); ?></span>
+            <span><?= $block->escapeHtml(__('House number')); ?></span>
         </label>
         <div class="admin__field-control">
             <input type="text" id="<?php /* @noEscape */
             echo $code; ?>_house_number" name="payment[<?php /* @noEscape */
             echo $code; ?>_house_number]"
-                   title="<?php echo $block->escapeHtml(__('House number')); ?>"
+                   title="<?= $block->escapeHtml(__('House number')); ?>"
                    class="required-entry admin__control-text"
-                   value="<?php echo $block->getInfoData($code . '_house_number'); ?>"
+                   value="<?= $block->getInfoData($code . '_house_number'); ?>"
             />
         </div>
     </div>
@@ -105,31 +105,31 @@ echo $code; ?>" style="display: none">
     <div class="field-type admin__field">
         <label class="admin__field-label" for="<?php /* @noEscape */
         echo $code; ?>_house_extension">
-            <span><?php echo $block->escapeHtml(__('House extension')); ?></span>
+            <span><?= $block->escapeHtml(__('House extension')); ?></span>
         </label>
         <div class="admin__field-control">
             <input type="text" id="<?php /* @noEscape */
             echo $code; ?>_house_extension" name="payment[<?php /* @noEscape */
             echo $code; ?>_house_extension]"
-                   title="<?php echo $block->escapeHtml(__('House extension')); ?>" class="admin__control-text"
-                   value="<?php echo $block->getInfoData($code . '_house_extension'); ?>"
+                   title="<?= $block->escapeHtml(__('House extension')); ?>" class="admin__control-text"
+                   value="<?= $block->getInfoData($code . '_house_extension'); ?>"
             />
         </div>
     </div>
 
-    <h3><?php echo $block->escapeHtml(__('Delivery Address')); ?></h3>
+    <h3><?= $block->escapeHtml(__('Delivery Address')); ?></h3>
 
     <div class="field-type admin__field">
         <label class="admin__field-label" for="<?php /* @noEscape */
         echo $code; ?>_delivery_street_name">
-            <span><?php echo $block->escapeHtml(__('Delivery street name')); ?></span>
+            <span><?= $block->escapeHtml(__('Delivery street name')); ?></span>
         </label>
         <div class="admin__field-control">
             <input type="text" id="<?php /* @noEscape */
             echo $code; ?>_delivery_street_name" name="payment[<?php /* @noEscape */
             echo $code; ?>_delivery_address_street]"
-                   title="<?php echo $block->escapeHtml(__('Delivery street name')); ?>" class="admin__control-text"
-                   value="<?php echo $block->getInfoData($code . '_delivery_address_street'); ?>"
+                   title="<?= $block->escapeHtml(__('Delivery street name')); ?>" class="admin__control-text"
+                   value="<?= $block->getInfoData($code . '_delivery_address_street'); ?>"
             />
         </div>
     </div>
@@ -137,14 +137,14 @@ echo $code; ?>" style="display: none">
     <div class="field-type admin__field">
         <label class="admin__field-label" for="<?php /* @noEscape */
         echo $code; ?>_delivery_house_number">
-            <span><?php echo $block->escapeHtml(__('Delivery house number')); ?></span>
+            <span><?= $block->escapeHtml(__('Delivery house number')); ?></span>
         </label>
         <div class="admin__field-control">
             <input type="text" id="<?php /* @noEscape */
             echo $code; ?>_delivery_house_number" name="payment[<?php /* @noEscape */
             echo $code; ?>_delivery_address_housenumber]"
-                   title="<?php echo $block->escapeHtml(__('Delivery house number')); ?>" class="admin__control-text"
-                   value="<?php echo $block->getInfoData($code . '_delivery_address_housenumber'); ?>"
+                   title="<?= $block->escapeHtml(__('Delivery house number')); ?>" class="admin__control-text"
+                   value="<?= $block->getInfoData($code . '_delivery_address_housenumber'); ?>"
             />
         </div>
     </div>
@@ -152,18 +152,18 @@ echo $code; ?>" style="display: none">
     <div class="field-type admin__field">
         <label class="admin__field-label" for="<?php /* @noEscape */
         echo $code; ?>_delivery_house_extension">
-            <span><?php echo $block->escapeHtml(__('Delivery house Extension')); ?></span>
+            <span><?= $block->escapeHtml(__('Delivery house Extension')); ?></span>
         </label>
         <div class="admin__field-control">
             <input type="text" id="<?php /* @noEscape */
             echo $code; ?>_delivery_house_extension" name="payment[<?php /* @noEscape */
             echo $code; ?>_delivery_address_housenumber_extension]"
-                   title="<?php echo $block->escapeHtml(__('Delivery house Extension')); ?>"
-                   value="<?php echo $block->getInfoData($code . '_delivery_address_housenumber_extension'); ?>"
+                   title="<?= $block->escapeHtml(__('Delivery house Extension')); ?>"
+                   value="<?= $block->getInfoData($code . '_delivery_address_housenumber_extension'); ?>"
                    class="admin__control-text"/>
         </div>
     </div>
-    <input type="hidden" name="payment[<?php echo $code; ?>_validate_order]" value="1"/>
+    <input type="hidden" name="payment[<?= $code; ?>_validate_order]" value="1"/>
 </fieldset>
 <script type="text/javascript">
     var order = window.order;

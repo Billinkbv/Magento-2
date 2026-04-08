@@ -2,68 +2,40 @@
 
 namespace Billink\Billink\Gateway\Response\Order;
 
-use Billink\Billink\Gateway\Config\Config;
 use Billink\Billink\Gateway\Helper\SubjectReader;
 use Billink\Billink\Gateway\Validator\OrderDataValidator;
-use Magento\Payment\Gateway\Response\HandlerInterface;
+use Exception;
 use Magento\Framework\DB\TransactionFactory;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Payment\Gateway\Response\HandlerInterface;
+use Magento\Sales\Model\Order;
 
-/**
- * Class Handler
- * @package Billink\Billink\Gateway\Response\Order
- */
 class Handler implements HandlerInterface
 {
-    /**
-     * @var SubjectReader
-     */
-    private $subjectReader;
-
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * @var TransactionFactory
-     */
-    private $transactionFactory;
-
-    /**
-     * Handler constructor.
-     * @param SubjectReader $subjectReader
-     * @param Config $config
-     * @param TransactionFactory $transactionFactory
-     */
     public function __construct(
-        SubjectReader $subjectReader,
-        Config $config,
-        TransactionFactory $transactionFactory
+        private readonly SubjectReader $subjectReader,
+        private readonly TransactionFactory $transactionFactory
     ) {
-        $this->subjectReader = $subjectReader;
-        $this->config = $config;
-        $this->transactionFactory = $transactionFactory;
     }
 
     /**
      * Handles response
      *
-     * @param array $handlingSubject
-     * @param array $response
-     * @return void
+     * @throws LocalizedException
+     * @throws Exception
      */
-    public function handle(array $handlingSubject, array $response)
+    public function handle(array $handlingSubject, array $response): void
     {
         if (isset($handlingSubject[OrderDataValidator::INDEX_FLAG_VALIDATION])) {
             return;
         }
 
-        /** @var \Magento\Sales\Model\Order $order */
+        /** @var Order $order */
         $order = $this->subjectReader->readOrder($handlingSubject);
         $order->addStatusHistoryComment('Order was created in Billink system.');
 
         if ($order->canInvoice()) {
-            $txnId = "billink-" . $order->getIncrementId();
+            $txnId = 'billink-' . $order->getIncrementId();
             $order->getPayment()->setLastTransId($txnId);
             $invoice = $order->prepareInvoice()
                 ->register()

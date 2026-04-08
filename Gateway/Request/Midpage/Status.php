@@ -11,14 +11,10 @@ class Status extends Authorize
     public const BILLINK_INVOICE_FIELD = 'billinkInvoiceNumber';
     public const SESSION_FIELD = 'sessionID';
 
-    /**
-     * @inheritdoc
-     */
     public function build(array $buildSubject): array
     {
         $data = [];
-        $paymentDO = SubjectReader::readPayment($buildSubject);
-        $payment = $paymentDO->getPayment();
+        $payment = SubjectReader::readPayment($buildSubject)->getPayment();
         $sessionId = $payment->getAdditionalInformation(SessionCreate::SESSION_ID);
         if ($sessionId) {
             $data[self::SESSION_FIELD] = $sessionId;
@@ -26,6 +22,7 @@ class Status extends Authorize
             // Fall back and compatibility with old orders
             $data[self::BILLINK_INVOICE_FIELD] = $payment->getLastTransId();
         }
+
         return $data;
     }
 }

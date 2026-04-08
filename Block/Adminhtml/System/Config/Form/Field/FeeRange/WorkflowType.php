@@ -6,40 +6,25 @@ use Billink\Billink\Gateway\Helper\Workflow;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\View\Element\Html\Select;
 
-/**
- * Class WorkflowType
- * @package Billink\Billink\Block\Adminhtml\System\Config\Form\Field\FeeRange
- */
 class WorkflowType extends Select
 {
-    /**
-     * @var Workflow
-     */
-    private $workflowHelper;
-
-    /**
-     * WorkflowType constructor.
-     * @param Context $context
-     * @param Workflow $workflowHelper
-     * @param array $data
-     */
     public function __construct(
         Context $context,
-        Workflow $workflowHelper,
+        private readonly Workflow $workflowHelper,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->workflowHelper = $workflowHelper;
     }
 
-    /**
-     * @return string
-     */
-    protected function _toHtml()
+    public function setInputName(string $value): static
+    {
+        return $this->setName($value);
+    }
+
+    protected function _toHtml(): string
     {
         if (!$this->getOptions()) {
-            $types = $this->workflowHelper->getTypes();
-            foreach ($types as $type) {
+            foreach ($this->workflowHelper->getTypes() as $type) {
                 $key = $this->workflowHelper->getOptionKey($type['value']);
 
                 $this->addOption($key, $type['label']);
@@ -47,16 +32,5 @@ class WorkflowType extends Select
         }
 
         return parent::_toHtml();
-    }
-
-    /**
-     * Sets name for input element
-     *
-     * @param string $value
-     * @return $this
-     */
-    public function setInputName($value): static
-    {
-        return $this->setName($value);
     }
 }

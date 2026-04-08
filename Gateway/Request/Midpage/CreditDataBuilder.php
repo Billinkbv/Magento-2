@@ -20,17 +20,11 @@ class CreditDataBuilder extends Authorize
         parent::__construct($midpageConfig);
     }
 
-    /**
-     * Builds ENV request
-     */
     public function build(array $buildSubject): array
     {
         $order = $this->subjectReader->readOrder($buildSubject);
         $amount = $this->subjectReader->readRefundAmount($buildSubject);
-        $payment = $this->subjectReader->readPayment($buildSubject);
-
-        $creditmemo = $payment->getCreditmemo();
-        $billinkFee = $creditmemo?->getData('billink_fee_amount');
+        $billinkFee = $this->subjectReader->readPayment($buildSubject)->getCreditmemo()?->getData('billink_fee_amount');
 
         $return = [
             self::USER_NAME => $this->midpageConfig->getAccountName(),
@@ -47,6 +41,7 @@ class CreditDataBuilder extends Authorize
             $return['returnCosts'] = 1;
             $return['returnCostsAmount'] = $billinkFee;
         }
+
         return $return;
     }
 }

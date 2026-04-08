@@ -4,54 +4,31 @@ namespace Billink\Billink\Gateway\Request;
 
 use Billink\Billink\Gateway\Helper\SubjectReader;
 use Billink\Billink\Gateway\Helper\Workflow as WorkflowHelper;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
-/**
- * Class AddressDataBuilder
- */
 class InvoiceDataBuilder implements BuilderInterface
 {
-    const INVOICES = 'INVOICES';
-    const ITEM = 'ITEM';
-    const INVOICE_NUMBER = 'INVOICENUMBER';
-    const WORKFLOW_NUMBER = 'WORKFLOWNUMBER';
+    public const INVOICES = 'INVOICES';
+    public const ITEM = 'ITEM';
+    public const INVOICE_NUMBER = 'INVOICENUMBER';
+    public const WORKFLOW_NUMBER = 'WORKFLOWNUMBER';
 
-    /**
-     * @var SubjectReader
-     */
-    private $subjectReader;
-
-    /**
-     * @var Workflow
-     */
-    private $workflowHelper;
-
-    /**
-     * InvoiceDataBuilder constructor.
-     *
-     * @param SubjectReader $subjectReader
-     * @param WorkflowHelper $workflowHelper
-     */
     public function __construct(
-        SubjectReader $subjectReader,
-        WorkflowHelper $workflowHelper
+        private readonly SubjectReader $subjectReader,
+        private readonly WorkflowHelper $workflowHelper
     ) {
-        $this->subjectReader = $subjectReader;
-        $this->workflowHelper = $workflowHelper;
     }
 
     /**
-     * Builds ENV request
-     *
-     * @param array $buildSubject
-     * @return array
+     * @throws LocalizedException
      */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
         $order = $this->subjectReader->readOrder($buildSubject);
         $workflowType = $this->subjectReader->readPaymentWorkflowType($buildSubject);
 
-        $result = [
+        return [
             self::INVOICES => [
                 self::ITEM => [
                     self::INVOICE_NUMBER => $order->getIncrementId(),
@@ -59,7 +36,5 @@ class InvoiceDataBuilder implements BuilderInterface
                 ]
             ]
         ];
-
-        return $result;
     }
 }

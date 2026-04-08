@@ -6,47 +6,21 @@ use Billink\Billink\Gateway\Helper\SubjectReader;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
-/**
- * Class AddressDataBuilder
- */
+use function round;
+
 class OrderDataBuilder implements BuilderInterface
 {
-    const ORDERAMOUNT = 'ORDERAMOUNT';
-    const ORDERNUMBER = 'ORDERNUMBER';
-    const DATE = 'DATE';
+    public const ORDERAMOUNT = 'ORDERAMOUNT';
+    public const ORDERNUMBER = 'ORDERNUMBER';
+    public const DATE = 'DATE';
 
-    /**
-     * @var SubjectReader
-     */
-    private $subjectReader;
-
-    /**
-     * @var DateTime
-     */
-    private $datetime;
-
-    /**
-     * OrderDataBuilder constructor.
-     *
-     * @param SubjectReader $subjectReader
-     * @param DateTime $datetime
-     */
     public function __construct(
-        SubjectReader $subjectReader,
-        DateTime $datetime
+        private readonly SubjectReader $subjectReader,
+        private readonly DateTime $datetime
     ) {
-
-        $this->subjectReader = $subjectReader;
-        $this->datetime = $datetime;
     }
 
-    /**
-     * Builds ENV request
-     *
-     * @param array $buildSubject
-     * @return array
-     */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
         $payment = $this->subjectReader->readPayment($buildSubject);
         $validationFlag = $this->subjectReader->readValidationFlag($buildSubject);
@@ -58,13 +32,9 @@ class OrderDataBuilder implements BuilderInterface
         ];
 
         if ($orderData->getIncrementId()) {
-            $result = array_merge($result, [
-                self::ORDERNUMBER => $orderData->getIncrementId()
-            ]);
+            $result[self::ORDERNUMBER] = $orderData->getIncrementId();
         } else {
-            $result = array_merge($result, [
-                self::ORDERAMOUNT => round($orderData->getGrandTotal(), 2)
-            ]);
+            $result[self::ORDERAMOUNT] = round($orderData->getGrandTotal(), 2);
         }
 
         if ($validationFlag) {

@@ -9,11 +9,13 @@ use Magento\Payment\Gateway\Http\TransferBuilder;
 use Magento\Payment\Gateway\Http\TransferFactoryInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
 
+use function json_encode;
+
 class JsonTransferFactory implements TransferFactoryInterface
 {
     public function __construct(
-        protected readonly TransferBuilder $transferBuilder,
-        protected readonly GatewayHelper $gatewayHelper
+        private readonly TransferBuilder $transferBuilder,
+        private readonly GatewayHelper $gatewayHelper
     ) {
     }
 
@@ -25,7 +27,7 @@ class JsonTransferFactory implements TransferFactoryInterface
         $service = $request[ActionDataBuilder::SERVICE];
         unset($request[ActionDataBuilder::SERVICE], $request[ActionDataBuilder::ACTION]);
 
-        $body = \json_encode($request);
+        $body = json_encode($request);
 
         return $this->transferBuilder
             ->setHeaders(['Content-Type' => 'application/json'])

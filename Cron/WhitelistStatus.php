@@ -3,7 +3,6 @@
 namespace Billink\Billink\Cron;
 
 use Billink\Billink\Gateway\Command\MidpageGatewayCommand;
-use Magento\Sales\Api\Data\OrderInterface;
 
 class WhitelistStatus
 {
@@ -14,7 +13,6 @@ class WhitelistStatus
 
     public function execute(): void
     {
-        /** @var OrderInterface $order */
         $this->command->execute([]);
     }
 }

@@ -12,61 +12,31 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 
 class CustomerDataBuilder implements BuilderInterface
 {
-    const FIRSTNAME = 'FIRSTNAME';
-    const LASTNAME = 'LASTNAME';
-    const INITIALS = 'INITIALS';
-    const HOUSENUMBER = 'HOUSENUMBER';
-    const HOUSEEXTENSION = 'HOUSEEXTENSION';
-    const POSTALCODE = 'POSTALCODE';
-    const PHONENUMBER = 'PHONENUMBER';
-    const BIRTHDATE = 'BIRTHDATE';
-    const EMAIL = 'EMAIL';
-    const IP = 'IP';
-    const STREET = 'STREET';
-    const COUNTRYCODE = 'COUNTRYCODE';
-    const CITY = 'CITY';
-    const DEVICE = 'DEVICE';
-    const BROWSER = 'BROWSER';
-    const REFERENCE = 'ADITIONALTEXT';
+    public const FIRSTNAME = 'FIRSTNAME';
+    public const LASTNAME = 'LASTNAME';
+    public const INITIALS = 'INITIALS';
+    public const HOUSENUMBER = 'HOUSENUMBER';
+    public const HOUSEEXTENSION = 'HOUSEEXTENSION';
+    public const POSTALCODE = 'POSTALCODE';
+    public const PHONENUMBER = 'PHONENUMBER';
+    public const BIRTHDATE = 'BIRTHDATE';
+    public const EMAIL = 'EMAIL';
+    public const IP = 'IP';
+    public const STREET = 'STREET';
+    public const COUNTRYCODE = 'COUNTRYCODE';
+    public const CITY = 'CITY';
+    public const DEVICE = 'DEVICE';
+    public const BROWSER = 'BROWSER';
+    public const REFERENCE = 'ADITIONALTEXT';
 
-    /**
-     * @var SubjectReader
-     */
-    private $subjectReader;
-
-    /**
-     * @var DateTime
-     */
-    private $dateTime;
-
-    /**
-     * @var Header
-     */
-    private $headerService;
-
-    /**
-     * CustomerDataBuilder constructor.
-     * @param SubjectReader $subjectReader
-     * @param DateTime $dateTime
-     * @param Header $headerService
-     */
     public function __construct(
-        SubjectReader $subjectReader,
-        DateTime $dateTime,
-        Header $headerService
+        private readonly SubjectReader $subjectReader,
+        private readonly DateTime $dateTime,
+        private readonly Header $headerService
     ) {
-        $this->subjectReader = $subjectReader;
-        $this->dateTime = $dateTime;
-        $this->headerService = $headerService;
     }
 
-    /**
-     * Builds ENV request
-     *
-     * @param array $buildSubject
-     * @return array
-     */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
         $payment = $this->subjectReader->readPayment($buildSubject);
         $workflowType = $this->subjectReader->readPaymentWorkflowType($buildSubject);
@@ -98,12 +68,10 @@ class CustomerDataBuilder implements BuilderInterface
             self::REFERENCE => $this->subjectReader->readPaymentAIField(DataAssignObserver::REFERENCE, $buildSubject)
         ];
 
-        if (WorkflowHelper::TYPE_PRIVATE === $workflowType) {
+        if ($workflowType === WorkflowHelper::TYPE_PRIVATE) {
             $birthDate = $this->subjectReader->readPaymentAIField(DataAssignObserver::BIRTHDATE, $buildSubject);
 
-            $result = array_merge($result, [
-                self::BIRTHDATE => $this->dateTime->date('d-m-Y', $birthDate .' 00:00:01')
-            ]);
+            $result[self::BIRTHDATE] = $this->dateTime->date('d-m-Y', $birthDate . ' 00:00:01');
         }
 
         return $result;

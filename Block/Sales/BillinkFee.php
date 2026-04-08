@@ -7,15 +7,14 @@ use Billink\Billink\Gateway\Config\MidpageConfig;
 use Billink\Billink\Model\Ui\ConfigProvider;
 use Magento\Framework\DataObject;
 use Magento\Framework\View\Element\Template;
+use Magento\Sales\Model\Order;
 
-/**
- * Class BillinkFee
- * @package Billink\Billink\Block\Sales
- */
+use function in_array;
+
 class BillinkFee extends Template
 {
     /**
-     * @var \Magento\Sales\Model\Order
+     * @var Order
      */
     private $source;
 
@@ -72,8 +71,7 @@ class BillinkFee extends Template
 
     private function isApplicable(): bool
     {
-        return ConfigProvider::CODE === $this->getMethodCode()
-            || ConfigProvider::CODE_MIDPAGE === $this->getMethodCode();
+        return in_array($this->getMethodCode(), [ConfigProvider::CODE, ConfigProvider::CODE_MIDPAGE], true);
     }
 
     private function getMethodCode(): string
@@ -82,7 +80,7 @@ class BillinkFee extends Template
         if (!$payment) {
             $payment = $this->source->getOrder()->getPayment();
         }
-        return (string)$payment->getMethod();
-    }
 
+        return (string) $payment->getMethod();
+    }
 }

@@ -5,12 +5,12 @@ namespace Billink\Billink\Gateway\Config;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Asset\Repository;
+use Magento\Payment\Gateway\Config\Config as MagentoConfig;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\Store;
 
 /**
  * Class Config
- * @package Billink\Billink\Gateway\Config
  */
 class MidpageConfig extends BasePaymentConfig
 {
@@ -25,21 +25,17 @@ class MidpageConfig extends BasePaymentConfig
         ScopeConfigInterface $scopeConfig,
         private readonly Repository $assetRepository,
         $methodCode = null,
-        $pathPattern = \Magento\Payment\Gateway\Config\Config::DEFAULT_PATH_PATTERN
+        $pathPattern = MagentoConfig::DEFAULT_PATH_PATTERN
     ) {
-        \Magento\Payment\Gateway\Config\Config::__construct($scopeConfig, $methodCode, $pathPattern);
+        MagentoConfig::__construct($scopeConfig, $methodCode, $pathPattern);
     }
 
     public function getApiVersion(): string
     {
-        return (string)$this->getValue(self::FIELD_API_VERSION);
+        return (string) $this->getValue(self::FIELD_API_VERSION);
     }
 
-    /**
-     * @param StoreInterface|null $store
-     * @return string
-     */
-    public function getLogo(StoreInterface $store = null): string
+    public function getLogo(?StoreInterface $store = null): string
     {
         $value = $this->getValue(self::FIELD_LOGO);
 
@@ -58,6 +54,6 @@ class MidpageConfig extends BasePaymentConfig
 
     public function isTestMode(): bool
     {
-        return (bool)$this->getValue(static::TEST_MODE);
+        return (bool) $this->getValue(static::TEST_MODE);
     }
 }

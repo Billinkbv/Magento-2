@@ -4,7 +4,8 @@
     <body>
         <referenceContainer name="content">
             <referenceBlock name="creditmemo_totals">
-                <block class="Billink\Billink\Block\Sales\Order\Creditmemo\ReturnCost" name="billink_adjustments" after="adjustments"
+                <block class="Billink\Billink\Block\Sales\Order\Creditmemo\ReturnCost" name="billink_adjustments"
+                       after="adjustments"
                        template="Billink_Billink::order/creditmemo/totals/billink_adjustments.phtml"/>
             </referenceBlock>
         </referenceContainer>

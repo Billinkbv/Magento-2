@@ -6,25 +6,22 @@ use Billink\Billink\Gateway\Exception\InvalidResponseException;
 use Billink\Billink\Gateway\Helper\Gateway;
 use Billink\Billink\Gateway\Validator\AbstractResponseValidator;
 use Billink\Billink\Model\Billink\Response\Response;
+use Closure;
 
-/**
- * Class ResponseValidator
- *
- * @package Billink\Billink\Gateway\Validator\Order
- */
+use function array_merge;
+use function is_numeric;
+use function key;
+
 class ResponseValidator extends AbstractResponseValidator
 {
-    const RESULT_SUCCESS = 200;
+    public const RESULT_SUCCESS = 200;
+
+    protected string $service = Gateway::SERVICE_ORDER;
 
     /**
-     * @var string
+     * @return array|Closure[]
      */
-    protected $service = Gateway::SERVICE_ORDER;
-
-    /**
-     * @return array|\Closure[]
-     */
-    public function getResponseValidators()
+    public function getResponseValidators(): array
     {
         return array_merge(
             parent::getResponseValidators(),
@@ -46,12 +43,11 @@ class ResponseValidator extends AbstractResponseValidator
     }
 
     /**
-     * @param $code
-     *
      * @throws InvalidResponseException
      */
-    private function validateItem($code) {
-        if ((int)$code !== self::RESULT_SUCCESS) {
+    private function validateItem(int|string $code): void
+    {
+        if ((int) $code !== self::RESULT_SUCCESS) {
             throw new InvalidResponseException('Invalid Credit result');
         }
     }

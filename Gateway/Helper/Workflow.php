@@ -5,40 +5,24 @@ namespace Billink\Billink\Gateway\Helper;
 use Billink\Billink\Gateway\Config\Config;
 use Magento\Framework\Exception\LocalizedException;
 
-/**
- * Class Workflow
- * @package Billink\Billink\Gateway\Helper
- */
 class Workflow
 {
-    const WORKFLOW_TYPE_PREFIX = 'workflow_';
+    public const WORKFLOW_TYPE_PREFIX = 'workflow_';
 
-    const TYPE_PRIVATE = 'P';
-    const TYPE_BUSINESS = 'B';
+    public const TYPE_PRIVATE = 'P';
+    public const TYPE_BUSINESS = 'B';
 
-    const FIELD_TYPE = 'type';
-    const FIELD_NUMBER = 'number';
-    const FIELD_MAX_AMOUNT = 'max_amount';
-    const FIELD_CHECK = 'is_with_check';
+    public const FIELD_TYPE = 'type';
+    public const FIELD_NUMBER = 'number';
+    public const FIELD_MAX_AMOUNT = 'max_amount';
+    public const FIELD_CHECK = 'is_with_check';
 
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * Workflow constructor.
-     * @param Config $config
-     */
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
+    public function __construct(
+        private readonly Config $config
+    ) {
     }
 
-    /**
-     * @return array
-     */
-    public function getTypes()
+    public function getTypes(): array
     {
         return [
             [
@@ -52,30 +36,20 @@ class Workflow
         ];
     }
 
-    /**
-     * @param int $storeId
-     * @return ?string
-     */
-    public function getUsedWorkflows($storeId = null)
+    public function getUsedWorkflows(?int $storeId = null): ?string
     {
         return $this->config->getUsedWorkflow($storeId);
     }
 
-    /**
-     * @param string $type
-     * @return string
-     */
-    public function getOptionKey($type)
+    public function getOptionKey(string $type): string
     {
         return self::WORKFLOW_TYPE_PREFIX . $type;
     }
 
     /**
-     * @param string $type
-     * @return mixed
      * @throws LocalizedException
      */
-    public function getData($type)
+    public function getData(string $type): mixed
     {
         $workflow = $this->config->getWorkflow();
         $key = $this->getOptionKey($type);
@@ -88,11 +62,9 @@ class Workflow
     }
 
     /**
-     * @param string $type
-     * @return mixed
      * @throws LocalizedException
      */
-    public function getNumber($type)
+    public function getNumber(string $type): mixed
     {
         $workflow = $this->getData($type);
 
@@ -104,11 +76,9 @@ class Workflow
     }
 
     /**
-     * @param string $type
-     * @return bool
      * @throws LocalizedException
      */
-    public function getIsWithCheck($type)
+    public function getIsWithCheck(string $type): bool
     {
         $workflow = $this->getData($type);
 
@@ -116,15 +86,13 @@ class Workflow
             throw new LocalizedException(__('Please contact your system administrator with a code 5003'));
         }
 
-        return (bool)$workflow[self::FIELD_CHECK];
+        return (bool) $workflow[self::FIELD_CHECK];
     }
 
     /**
-     * @param string $type
-     * @return float
      * @throws LocalizedException
      */
-    public function getMaxAmount($type)
+    public function getMaxAmount(string $type): float
     {
         $workflow = $this->getData($type);
 
@@ -132,6 +100,6 @@ class Workflow
             throw new LocalizedException(__('Please contact your system administrator with a code 5004'));
         }
 
-        return (float)$workflow[self::FIELD_MAX_AMOUNT];
+        return (float) $workflow[self::FIELD_MAX_AMOUNT];
     }
 }

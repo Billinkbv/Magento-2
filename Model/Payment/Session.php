@@ -1,4 +1,5 @@
 <?php
+
 namespace Billink\Billink\Model\Payment;
 
 use Magento\Framework\Session\SessionManager;
@@ -10,6 +11,7 @@ class Session extends SessionManager
     {
         $this->setMidpageSessionActive(true);
         $this->setSessionOrderId($order->getId());
+
         return $this;
     }
 
@@ -17,6 +19,7 @@ class Session extends SessionManager
     {
         $this->setMidpageSessionActive(false);
         $this->setSessionOrderId(null);
+
         return $this;
     }
 
@@ -35,7 +38,7 @@ class Session extends SessionManager
      */
     public function deactivatePaymentSessionById(int $entityId): void
     {
-        $currentSessionId = (int)$this->getPaymentSessionOrderId();
+        $currentSessionId = (int) $this->getPaymentSessionOrderId();
         if ($currentSessionId === $entityId) {
             $this->deactivatePaymentSession();
         }

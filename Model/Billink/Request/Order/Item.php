@@ -2,150 +2,86 @@
 
 namespace Billink\Billink\Model\Billink\Request\Order;
 
-/**
- * Class Item
- * @package Billink\Billink\Model\Billink\Request\Order
- */
 class Item implements ItemInterface
 {
-    /**
-     * @var string
-     */
-    protected $code;
+    private string $code;
 
-    /**
-     * @var string
-     */
-    protected $description;
+    private string $description;
 
-    /**
-     * @var int
-     */
-    protected $quantity;
+    private int $quantity;
 
-    /**
-     * @var float
-     */
-    protected $taxPercent;
+    private float $taxPercent;
 
-    /**
-     * @var string
-     */
-    protected $priceType;
+    private string $priceType;
 
-    /**
-     * @var float
-     */
-    protected $price;
+    private float $price;
 
-    /**
-     * @return mixed
-     */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->code;
     }
 
-    /**
-     * @param mixed $code
-     * @return $this
-     */
-    public function setCode($code)
+    public function setCode(string $code): static
     {
         $this->code = $code;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    /**
-     * @param mixed $description
-     * @return $this
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getQuantity()
+    public function getQuantity(): int
     {
         return $this->quantity;
     }
 
-    /**
-     * @param mixed $quantity
-     * @return $this
-     */
-    public function setQuantity($quantity)
+    public function setQuantity(int $quantity): static
     {
         $this->quantity = $quantity;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTaxPercent()
+    public function getTaxPercent(): float
     {
         return $this->taxPercent;
     }
 
-    /**
-     * @param mixed $taxPercent
-     * @return $this
-     */
-    public function setTaxPercent($taxPercent)
+    public function setTaxPercent(float $taxPercent): static
     {
         $this->taxPercent = $taxPercent;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPriceType()
+    public function getPriceType(): string
     {
         return $this->priceType;
     }
 
-    /**
-     * @param mixed $priceType
-     * @return $this
-     */
-    public function setPriceType($priceType)
+    public function setPriceType(string $priceType): static
     {
         $this->priceType = $priceType;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPrice()
+    public function getPrice(): float
     {
         return $this->price;
     }
 
-    /**
-     * @param mixed $price
-     * @return $this
-     */
-    public function setPrice($price)
+    public function setPrice(float $price): static
     {
         $this->price = $price;
 

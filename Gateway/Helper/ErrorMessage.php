@@ -4,20 +4,15 @@ namespace Billink\Billink\Gateway\Helper;
 
 use Billink\Billink\Gateway\Exception\InvalidResponseException;
 
-/**
- * Class ErrorMessage
- * @package Billink\Billink\Gateway\Helper
- */
+use function __;
+use function strtoupper;
+
 class ErrorMessage
 {
     /**
-     * @param string $code
-     * @param string $service
-     * @param string|null $errorDescription
-     * @return \Magento\Framework\Phrase
      * @throws InvalidResponseException
      */
-    public static function get($code, $service, $errorDescription = null)
+    public static function get(string $code, string $service, ?string $errorDescription = null): string
     {
         $messageId = 'billink_' . $service . '_error_code_' . $code;
         $message = __($messageId);

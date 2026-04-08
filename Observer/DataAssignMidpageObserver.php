@@ -4,14 +4,12 @@ namespace Billink\Billink\Observer;
 
 use Billink\Billink\Gateway\Helper\Workflow;
 use Magento\Framework\Event\Observer;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Observer\AbstractDataAssignObserver;
 use Magento\Quote\Api\Data\CartInterface;
-use Magento\Quote\Api\Data\PaymentInterface;
 
-/**
- * Class DataAssignObserver
- * @package Billink\Billink\Observer
- */
+use function trim;
+
 class DataAssignMidpageObserver extends AbstractDataAssignObserver
 {
     protected array $additionalInformationList = [
@@ -27,17 +25,15 @@ class DataAssignMidpageObserver extends AbstractDataAssignObserver
     }
 
     /**
-     * @param Observer $observer
-     *
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
-    public function execute(Observer $observer)
+    public function execute(Observer $observer): void
     {
         $paymentInfo = $this->readPaymentModelArgument($observer);
         /** @var CartInterface $quote */
         $quote = $paymentInfo->getQuote();
         $address = $quote->getBillingAddress();
-        $company = trim((string)$address->getCompany());
+        $company = trim((string) $address->getCompany());
         $customerType = $company ? 'B' : 'P';
 
         $oldValue = $paymentInfo->getAdditionalInformation(DataAssignObserver::CUSTOMER_TYPE);

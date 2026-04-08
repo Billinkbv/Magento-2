@@ -6,50 +6,26 @@ use Billink\Billink\Gateway\Converter\Order\ConverterInterface;
 use Billink\Billink\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
-/**
- * Class AddressDataBuilder
- */
+use function round;
+
 class OrderItemsDataBuilder implements BuilderInterface
 {
-    const ORDERITEMS = 'ORDERITEMS';
-    const ITEM = 'ITEM';
-    const CODE = 'CODE';
-    const DESCRIPTION = 'DESCRIPTION';
-    const ITEMQUANTITY = 'ITEMQUANTITY';
-    const PRICEINCL = 'PRICEINCL';
-    const PRICEEXCL = 'PRICEEXCL';
-    const BTW = 'BTW';
+    public const ORDERITEMS = 'ORDERITEMS';
+    public const ITEM = 'ITEM';
+    public const CODE = 'CODE';
+    public const DESCRIPTION = 'DESCRIPTION';
+    public const ITEMQUANTITY = 'ITEMQUANTITY';
+    public const PRICEINCL = 'PRICEINCL';
+    public const PRICEEXCL = 'PRICEEXCL';
+    public const BTW = 'BTW';
 
-    /**
-     * @var SubjectReader
-     */
-    private $subjectReader;
-
-    /**
-     * @var ConverterInterface
-     */
-    private $orderItemsConverter;
-
-    /**
-     * OrderItemsDataBuilder constructor.
-     * @param SubjectReader $subjectReader
-     * @param ConverterInterface $orderItemsConverter
-     */
     public function __construct(
-        SubjectReader $subjectReader,
-        ConverterInterface $orderItemsConverter
+        private readonly SubjectReader $subjectReader,
+        private readonly ConverterInterface $orderItemsConverter
     ) {
-        $this->subjectReader = $subjectReader;
-        $this->orderItemsConverter = $orderItemsConverter;
     }
 
-    /**
-     * Builds ENV request
-     *
-     * @param array $buildSubject
-     * @return array
-     */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
         $payment = $this->subjectReader->readPayment($buildSubject);
         $orderData = $payment->getQuote() ?: $payment->getOrder();
@@ -57,7 +33,7 @@ class OrderItemsDataBuilder implements BuilderInterface
         $items = $this->orderItemsConverter->convert($orderData);
 
         $result = [
-             self::ORDERITEMS => []
+            self::ORDERITEMS => []
         ];
 
         foreach ($items as $index => $item) {

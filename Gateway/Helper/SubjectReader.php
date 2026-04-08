@@ -4,12 +4,9 @@ namespace Billink\Billink\Gateway\Helper;
 
 use Billink\Billink\Gateway\Validator\OrderDataValidator;
 use Billink\Billink\Observer\DataAssignObserver;
+use InvalidArgumentException;
 use Magento\Framework\Exception\LocalizedException;
 
-/**
- * Class SubjectReader
- * @package Billink\Billink\Gateway\Helper
- */
 class SubjectReader
 {
     public const INDEX_PAYMENT = 'payment';
@@ -18,71 +15,40 @@ class SubjectReader
 
     public const INDEX_INVOICE_ID = 'invoice_id';
 
-    /**
-     * @param array $subject
-     * @return mixed
-     */
-    public function readPayment(array $subject)
+    public function readPayment(array $subject): mixed
     {
         if (!isset($subject[self::INDEX_PAYMENT])) {
-            throw new \InvalidArgumentException('Payment object does not exists');
+            throw new InvalidArgumentException('Payment object does not exists');
         }
 
         return $subject[self::INDEX_PAYMENT]->getPayment() ?: $subject[self::INDEX_PAYMENT];
     }
 
-    /**
-     * @param array $subject
-     * @return array
-     */
-    public function readPaymentAdditionalInformation(array $subject)
+    public function readPaymentAdditionalInformation(array $subject): array
     {
         $payment = $this->readPayment($subject);
 
-        if (!isset($payment[self::INDEX_ADDITIONAL_INFO])) {
-            return [];
-        }
-
-        return $payment[self::INDEX_ADDITIONAL_INFO];
+        return $payment[self::INDEX_ADDITIONAL_INFO] ?? [];
     }
 
-    /**
-     * @param string $index
-     * @param array $subject
-     * @return bool|mixed
-     */
-    public function readPaymentAIField($index, array $subject)
+    public function readPaymentAIField(string $index, array $subject): mixed
     {
         $paymentAI = $this->readPaymentAdditionalInformation($subject);
 
-        if (!isset($paymentAI[$index])) {
-            return false;
-        }
-
-        return $paymentAI[$index];
+        return $paymentAI[$index] ?? false;
     }
 
-    /**
-     * @param array $subject
-     * @return mixed
-     */
-    public function readPaymentWorkflowType(array $subject)
+    public function readPaymentWorkflowType(array $subject): mixed
     {
         $paymentAI = $this->readPaymentAdditionalInformation($subject);
 
-        if (!isset($paymentAI[DataAssignObserver::CUSTOMER_TYPE])) {
-            return false;
-        }
-
-        return $paymentAI[DataAssignObserver::CUSTOMER_TYPE];
+        return $paymentAI[DataAssignObserver::CUSTOMER_TYPE] ?? false;
     }
 
     /**
-     * @param array $subject
-     * @return mixed
      * @throws LocalizedException
      */
-    public function readPaymentCheckUUID(array $subject)
+    public function readPaymentCheckUUID(array $subject): mixed
     {
         $paymentAI = $this->readPaymentAdditionalInformation($subject);
 
@@ -93,50 +59,29 @@ class SubjectReader
         return $paymentAI[Gateway::CHECKUUID];
     }
 
-    /**
-     * @param array $subject
-     * @return mixed
-     */
-    public function readOrder(array $subject)
+    public function readOrder(array $subject): mixed
     {
         return $this->readPayment($subject)->getOrder();
     }
 
-    /**
-     * @param array $subject
-     * @return float
-     */
-    public function readRefundAmount(array $subject)
+    public function readRefundAmount(array $subject): float
     {
-        return (float)$subject[self::INDEX_REFUND_AMOUNT];
+        return (float) $subject[self::INDEX_REFUND_AMOUNT];
     }
 
-    /**
-     * @param array $subject
-     * @return bool|mixed
-     */
-    public function readValidationFlag(array $subject)
+    public function readValidationFlag(array $subject): mixed
     {
-        if (!isset($subject[OrderDataValidator::INDEX_FLAG_VALIDATION])) {
-            return false;
-        }
-
-        return $subject[OrderDataValidator::INDEX_FLAG_VALIDATION];
+        return $subject[OrderDataValidator::INDEX_FLAG_VALIDATION] ?? false;
     }
 
-    /**
-     * @param array $subject
-     * @return mixed
-     */
-    public function readResponse(array $subject)
+    public function readResponse(array $subject): mixed
     {
         if (!isset($subject['response']) && !isset($subject['response']['result'])) {
-
             if (isset($subject['result'])) {
                 return $subject['result'];
             }
 
-            throw new \InvalidArgumentException('Response data does not exists');
+            throw new InvalidArgumentException('Response data does not exists');
         }
 
         return $subject['response']['result'];

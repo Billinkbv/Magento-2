@@ -1,16 +1,19 @@
 <?php
+
 namespace Billink\Billink\Block\Sales\Order\Creditmemo;
 
 use Billink\Billink\Model\Ui\ConfigProvider;
+use Magento\Backend\Block\Template;
 use Magento\Framework\Currency\Data\Currency as CurrencyData;
+use Magento\Framework\DataObject;
 use Magento\Sales\Model\Order;
 
-class ReturnCost extends \Magento\Backend\Block\Template
+class ReturnCost extends Template
 {
     /**
      * Source object
      */
-    protected \Magento\Framework\DataObject $source;
+    protected DataObject $source;
 
     /**
      * Initialize creditmemo adjustment totals
@@ -19,9 +22,12 @@ class ReturnCost extends \Magento\Backend\Block\Template
     {
         $parent = $this->getParentBlock();
         $this->source = $parent->getSource();
-        $total = new \Magento\Framework\DataObject(['code' => 'billink_adjustments', 'block_name' => $this->getNameInLayout()]);
+        $total = new DataObject(
+            ['code' => 'billink_adjustments', 'block_name' => $this->getNameInLayout()]
+        );
         $parent->removeTotal('billink_fee_amount');
         $parent->addTotal($total);
+
         return $this;
     }
 
@@ -45,7 +51,7 @@ class ReturnCost extends \Magento\Backend\Block\Template
     /**
      * Get source object
      */
-    public function getSource(): \Magento\Framework\DataObject
+    public function getSource(): DataObject
     {
         return $this->source;
     }
@@ -53,6 +59,7 @@ class ReturnCost extends \Magento\Backend\Block\Template
     public function isBillink(): bool
     {
         $method = $this->source?->getOrder()?->getPayment()?->getMethod();
+
         return $method === ConfigProvider::CODE_MIDPAGE;
     }
 }

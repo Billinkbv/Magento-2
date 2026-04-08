@@ -7,34 +7,22 @@ use Billink\Billink\Gateway\Helper\Gateway;
 use Billink\Billink\Gateway\Validator\AbstractResponseValidator;
 use Billink\Billink\Model\Billink\Response\Response;
 
-/**
- * Class ResponseValidator
- * @package Billink\Billink\Gateway\Validator\Order
- */
+use function array_merge;
+
 class ResponseValidator extends AbstractResponseValidator
 {
-    const RESULT_SUCCESS = 200;
+    public const RESULT_SUCCESS = 200;
 
-    /**
-     * @var string
-     */
-    protected $service = Gateway::SERVICE_ORDER;
+    protected string $service = Gateway::SERVICE_ORDER;
 
-    /**
-     * @return array
-     */
-    public function getResponseValidators()
+    public function getResponseValidators(): array
     {
         return array_merge(
             parent::getResponseValidators(),
             [
-                function ($response) {
-                    switch ($response->getMsg(Response::INDEX_MSG_CODE)) {
-                        case self::RESULT_SUCCESS:
-                            return ['result' => true];
-                        default:
-                            throw new InvalidResponseException('Invalid Order result');
-                    }
+                static fn($response) => match ($response->getMsg(Response::INDEX_MSG_CODE)) {
+                    self::RESULT_SUCCESS => ['result' => true],
+                    default => throw new InvalidResponseException('Invalid Order result'),
                 }
             ]
         );

@@ -16,9 +16,6 @@ class ClientDataBuilder implements BuilderInterface
     ) {
     }
 
-    /**
-     * Builds ENV request
-     */
     public function build(array $buildSubject): array
     {
         return [

@@ -1,32 +1,33 @@
 <?php
+
 namespace Billink\Billink\Controller\Midpage;
 
+use Exception;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
+
+use function __;
 
 class Cancel extends AbstractAction
 {
-    /**
-     * @return
-     */
-    public function execute()
+    public function execute(): Redirect
     {
         $resultRedirect = $this->redirectFactory->create();
 
         $transactionOrderId = $this->getOrderIdFromTransaction();
         if ($transactionOrderId === null) {
             $resultRedirect->setPath('checkout/cart');
+
             return $resultRedirect;
         }
 
         $params = ['_secure' => true];
         try {
             $order = $this->checkoutSession->getLastRealOrder();
-            if ((string)$order->getIncrementId() !== $transactionOrderId) {
+            if ((string) $order->getIncrementId() !== $transactionOrderId) {
                 $order = $this->loadOrderByIncrementId($transactionOrderId);
             }
             $this->paymentSession->deactivatePaymentSessionById($order->getEntityId());
-            /** @var PaymentDataObjectInterface $paymentDO */
             $paymentDO = [
                 'payment' => $this->paymentDataObjectFactory->create($order->getPayment())
             ];
@@ -35,10 +36,11 @@ class Cancel extends AbstractAction
         } catch (LocalizedException $e) {
             $this->logger->notice($e->getMessage());
             $this->messageManager->addExceptionMessage($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->messageManager->addErrorMessage(__('There was an error during your request.'));
             $this->logger->critical($e->getMessage(), ['trace' => $e->getTraceAsString()]);
         }
+
         return $resultRedirect->setPath('checkout/cart', $params);
     }
 }

@@ -5,66 +5,63 @@ namespace Billink\Billink\Block\Adminhtml\System\Config\Form\Field;
 use Billink\Billink\Block\Adminhtml\System\Config\Form\Field\FeeRange\CountryType;
 use Billink\Billink\Block\Adminhtml\System\Config\Form\Field\FeeRange\WorkflowType;
 use Billink\Billink\Helper\Fee;
-use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\View\Element\BlockInterface;
 
-/**
- * Class FeeRange
- * @package Billink\Billink\Block\Adminhtml\System\Config\Form\Field
- */
 class FeeRange extends AbstractFieldArray
 {
     private ?WorkflowType $typeRenderer = null;
-    private ?CountryType $countryRenderer = null;
 
-    /**
-     * FeeRange constructor.
-     *
-     * @param Context $context
-     * @param array $data
-     */
-    public function __construct(
-        Context $context,
-        array $data = []
-    ) {
-        parent::__construct($context, $data);
-    }
+    private ?CountryType $countryRenderer = null;
 
     /**
      * Add table system config columns
      */
-    protected function _prepareToRender()
+    protected function _prepareToRender(): void
     {
-        $this->addColumn(Fee::COUNTRY, [
-            'label' => __('Country'),
-            'renderer' => $this->getCountryRenderer()
-        ]);
+        $this->addColumn(
+            Fee::COUNTRY,
+            [
+                'label' => __('Country'),
+                'renderer' => $this->getCountryRenderer()
+            ]
+        );
 
-        $this->addColumn(Fee::INDEX_WORKFLOW_TYPE, [
-            'label' => __('Workflow Type'),
-            'renderer' => $this->getWorkflowTypeRenderer()
-        ]);
+        $this->addColumn(
+            Fee::INDEX_WORKFLOW_TYPE,
+            [
+                'label' => __('Workflow Type'),
+                'renderer' => $this->getWorkflowTypeRenderer()
+            ]
+        );
 
-        $this->addColumn(Fee::INDEX_TOTAL_FROM, [
-            'label' => __('From')
-        ]);
+        $this->addColumn(
+            Fee::INDEX_TOTAL_FROM,
+            [
+                'label' => __('From')
+            ]
+        );
 
-        $this->addColumn(Fee::INDEX_TOTAL_TO, [
-            'label' => __('To')
-        ]);
+        $this->addColumn(
+            Fee::INDEX_TOTAL_TO,
+            [
+                'label' => __('To')
+            ]
+        );
 
-        $this->addColumn(Fee::INDEX_AMOUNT, [
-            'label' => __('Amount')
-        ]);
+        $this->addColumn(
+            Fee::INDEX_AMOUNT,
+            [
+                'label' => __('Amount')
+            ]
+        );
 
         $this->_addAfter = false;
     }
 
     /**
-     * @return WorkflowType|BlockInterface
      * @throws LocalizedException
      */
     protected function getWorkflowTypeRenderer(): WorkflowType|BlockInterface
@@ -76,9 +73,13 @@ class FeeRange extends AbstractFieldArray
                 ['data' => ['is_render_to_js_template' => true]]
             );
         }
+
         return $this->typeRenderer;
     }
 
+    /**
+     * @throws LocalizedException
+     */
     protected function getCountryRenderer(): CountryType|BlockInterface
     {
         if ($this->countryRenderer === null) {
@@ -88,12 +89,11 @@ class FeeRange extends AbstractFieldArray
                 ['data' => ['is_render_to_js_template' => true]]
             );
         }
+
         return $this->countryRenderer;
     }
 
     /**
-     * @param DataObject $row
-     *
      * @throws LocalizedException
      */
     protected function _prepareArrayRow(DataObject $row): void

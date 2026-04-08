@@ -7,12 +7,18 @@ use Billink\Billink\Gateway\Data\Quote\NlAddressAdapter;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Data\AddressAdapterInterface;
-use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Data\Quote\AddressAdapterFactory;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
+
+use function __;
+use function array_filter;
+use function array_pop;
+use function method_exists;
+use function preg_match;
+use function trim;
 
 class Customer implements BuilderInterface
 {
@@ -25,13 +31,12 @@ class Customer implements BuilderInterface
 
     /**
      * @inheritdoc
+     * @throws LocalizedException
      */
     public function build(array $buildSubject): array
     {
         $paymentDO = SubjectReader::readPayment($buildSubject);
-        /** @var OrderAdapterInterface $orderAdapter */
-        $orderAdapter = $paymentDO->getOrder();
-        $address = $orderAdapter->getBillingAddress();
+        $address = $paymentDO->getOrder()->getBillingAddress();
         $shippingAddress = $this->getShippingAddress($paymentDO);
         // In case of downloadable products shipping is not applied.
         if (!$shippingAddress) {
@@ -40,7 +45,7 @@ class Customer implements BuilderInterface
         if (!$address || !$shippingAddress) {
             throw new LocalizedException(__('The customer address is not valid.'));
         }
-        $company = trim((string)$address->getCompany());
+        $company = trim((string) $address->getCompany());
 
         $customer = [
             'firstName' => $address->getFirstname(),
@@ -54,8 +59,8 @@ class Customer implements BuilderInterface
             'birthdate' => '',
             'company' => $company,
             'companyNumber' => '',
-            'payTrustScore' => (int)$this->config->getValue('trust_score')
-		];
+            'payTrustScore' => (int) $this->config->getValue('trust_score')
+        ];
 
         return [
             'customer' => $customer,
@@ -82,6 +87,7 @@ class Customer implements BuilderInterface
             // Use the street line-3 as a house extension
             $parts['ext'] = $address->getStreetLine3();
         }
+
         return [
             'street' => $parts['street'],
             'houseNumber' => $parts['housenumber'],
@@ -96,6 +102,7 @@ class Customer implements BuilderInterface
     {
         $regexp = '/^(?<street>\d*[\p{L}\d \'\/\-\.]+)[,\s]+(?<housenumber>\d+)\s*(?<ext>[\p{L} \d\-\/\'"\(\)]*)$/';
         preg_match($regexp, $street, $matches);
+
         return $matches;
     }
 
@@ -113,15 +120,17 @@ class Customer implements BuilderInterface
         $quote = $this->session->getQuote();
         if ($quote && $order && str_contains($order->getData('shipping_method'), 'tig_postnl')) {
             // Check any quote address to be set to postnl delivery
-            $addresses = array_filter($quote->getAllAddresses(), function ($address) {
-                return $address->getAddressType() === 'pakjegemak';
-            });
+            $addresses = array_filter(
+                $quote->getAllAddresses(),
+                static fn($address) => $address->getAddressType() === 'pakjegemak'
+            );
             if (!empty($addresses)) {
                 return $this->addressAdapterFactory->create(
                     ['address' => array_pop($addresses)]
                 );
             }
         }
+
         // Use the default one
         return $paymentDO->getOrder()->getShippingAddress();
     }

@@ -2,9 +2,10 @@
 
 namespace Billink\Billink\Gateway\Data\Quote;
 
+use Magento\Payment\Gateway\Data\Quote\AddressAdapter;
 use Magento\Quote\Api\Data\AddressInterface;
 
-class NlAddressAdapter extends \Magento\Payment\Gateway\Data\Quote\AddressAdapter
+class NlAddressAdapter extends AddressAdapter
 {
     public function __construct(
         private readonly AddressInterface $address
@@ -14,14 +15,11 @@ class NlAddressAdapter extends \Magento\Payment\Gateway\Data\Quote\AddressAdapte
 
     /**
      * Get street line 3 - House extension
-     *
-     * @return string
      */
     public function getStreetLine3(): string
     {
         $street = $this->address->getStreet();
+
         return $street[2] ?? '';
     }
-
-
 }

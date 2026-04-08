@@ -16,9 +16,6 @@ class Authorize implements BuilderInterface
     ) {
     }
 
-    /**
-     * @inheritdoc
-     */
     public function build(array $buildSubject): array
     {
         $data = [];

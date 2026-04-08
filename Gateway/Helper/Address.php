@@ -5,48 +5,31 @@ namespace Billink\Billink\Gateway\Helper;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Quote\Api\Data\AddressInterface;
 
-/**
- * Class Address
- * @package Billink\Billink\Gateway\Helper
- */
+use function array_map;
+
 class Address
 {
-    /** @var SerializerInterface */
-    private $serializer;
-
-    /**
-     * Address constructor.
-     * @param SerializerInterface $serializer
-     */
     public function __construct(
-        SerializerInterface $serializer
+        private readonly SerializerInterface $serializer
     ) {
-        $this->serializer = $serializer;
     }
 
-    /**
-     * @param AddressInterface $address1
-     * @param AddressInterface $address2
-     * @return bool
-     */
-    public function areEqual(AddressInterface $address1, AddressInterface $address2)
+    public function areEqual(AddressInterface $address1, AddressInterface $address2): bool
     {
         return $this->serializeAddress($address1) === $this->serializeAddress($address2);
     }
 
-    /**
-     * @param AddressInterface $address
-     * @return string
-     */
-    public function serializeAddress(AddressInterface $address)
+    public function serializeAddress(AddressInterface $address): string
     {
-        return $this->serializer->serialize([
-            'firstname'     => (string)$address->getFirstname(),
-            'lastname'      => (string)$address->getLastname(),
-            'street'        => array_map('strval', $address->getStreet()),
-            'company'       => (string)$address->getCompany(),
-            'city'          => (string)$address->getCity(),
-            'postcode'      => (string)$address->getPostcode(),
-        ]);
+        return $this->serializer->serialize(
+            [
+                'firstname' => (string) $address->getFirstname(),
+                'lastname' => (string) $address->getLastname(),
+                'street' => array_map('\strval', $address->getStreet()),
+                'company' => (string) $address->getCompany(),
+                'city' => (string) $address->getCity(),
+                'postcode' => (string) $address->getPostcode(),
+            ]
+        );
     }
 }

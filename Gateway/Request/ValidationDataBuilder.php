@@ -2,63 +2,29 @@
 
 namespace Billink\Billink\Gateway\Request;
 
-use Billink\Billink\Gateway\Config\Config;
 use Billink\Billink\Gateway\Helper\SubjectReader;
 use Billink\Billink\Gateway\Helper\Workflow as WorkflowHelper;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
-/**
- * Class AddressDataBuilder
- */
 class ValidationDataBuilder implements BuilderInterface
 {
-    const CHECKUUID = 'CHECKUUID';
-    const VALIDATEORDER = 'VALIDATEORDER';
+    public const CHECKUUID = 'CHECKUUID';
+    public const VALIDATEORDER = 'VALIDATEORDER';
 
-    /**
-     * @var SubjectReader
-     */
-    private $subjectReader;
-
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * @var Workflow
-     */
-    private $workflowHelper;
-
-    /**
-     * ValidationDataBuilder constructor.
-     * @param Config $config
-     * @param SubjectReader $subjectReader
-     * @param WorkflowHelper $workflowHelper
-     */
     public function __construct(
-        Config $config,
-        SubjectReader $subjectReader,
-        WorkflowHelper $workflowHelper
+        private readonly SubjectReader $subjectReader,
+        private readonly WorkflowHelper $workflowHelper
     ) {
-
-        $this->subjectReader = $subjectReader;
-        $this->config = $config;
-        $this->workflowHelper = $workflowHelper;
     }
 
     /**
-     * Builds ENV request
-     *
-     * @param array $buildSubject
-     * @return array
+     * @throws LocalizedException
      */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
         $type = $this->subjectReader->readPaymentWorkflowType($buildSubject);
-        $isWithCheck = $this->workflowHelper->getIsWithCheck($type);
-
-        if (!$isWithCheck) {
+        if (!$this->workflowHelper->getIsWithCheck($type)) {
             return [];
         }
 

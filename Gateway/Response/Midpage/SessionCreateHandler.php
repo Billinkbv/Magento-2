@@ -4,22 +4,22 @@ namespace Billink\Billink\Gateway\Response\Midpage;
 
 use Billink\Billink\Gateway\Helper\SessionReader;
 use Billink\Billink\Gateway\Validator\Midpage\SessionCreate;
-use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Helper\ContextHelper;
-use Magento\Sales\Model\Order\Payment\Transaction;
+use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Payment\Gateway\Response\HandlerInterface;
+use Magento\Sales\Api\Data\TransactionInterface;
 
-class SessionCreateHandler implements \Magento\Payment\Gateway\Response\HandlerInterface
+class SessionCreateHandler implements HandlerInterface
 {
     public function __construct(
-        protected readonly SessionReader $sessionReader
+        private readonly SessionReader $sessionReader
     ) {
     }
 
     public function handle(array $handlingSubject, array $response): void
     {
         $response = $this->sessionReader->getResponse($response);
-        $paymentDO = SubjectReader::readPayment($handlingSubject);
-        $payment = $paymentDO->getPayment();
+        $payment = SubjectReader::readPayment($handlingSubject)->getPayment();
         ContextHelper::assertOrderPayment($payment);
         $payment->setAdditionalInformation(
             SessionReader::REDIRECT_URL,
@@ -32,6 +32,6 @@ class SessionCreateHandler implements \Magento\Payment\Gateway\Response\HandlerI
         $payment->setLastTransId(
             $response[SessionCreate::INVOICE]
         );
-        $payment->addTransaction(Transaction::TYPE_ORDER);
+        $payment->addTransaction(TransactionInterface::TYPE_ORDER);
     }
 }

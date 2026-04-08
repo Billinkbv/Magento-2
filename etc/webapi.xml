@@ -5,20 +5,20 @@
     <route url="/V1/carts/:cartId/selected-payment-method" method="POST">
         <service class="Magento\Quote\Api\PaymentMethodManagementInterface" method="set"/>
         <resources>
-            <resource ref="Magento_Cart::manage" />
+            <resource ref="Magento_Cart::manage"/>
         </resources>
     </route>
     <route url="/V1/guest-carts/:cartId/selected-payment-method" method="POST">
         <service class="Magento\Quote\Api\GuestPaymentMethodManagementInterface" method="set"/>
         <resources>
-            <resource ref="anonymous" />
+            <resource ref="anonymous"/>
         </resources>
     </route>
 
     <route url="/V1/carts/mine/selected-payment-method" method="POST">
         <service class="Magento\Quote\Api\PaymentMethodManagementInterface" method="set"/>
         <resources>
-            <resource ref="self" />
+            <resource ref="self"/>
         </resources>
         <data>
             <parameter name="cartId" force="true">%cart_id%</parameter>
@@ -28,7 +28,7 @@
     <route url="/V1/billink/payment-data" method="POST">
         <service class="Billink\Billink\Api\MidpagePaymentDataInterface" method="savePaymentInformationAndPlaceOrder"/>
         <resources>
-            <resource ref="self" />
+            <resource ref="self"/>
         </resources>
         <data>
             <parameter name="cartId" force="true">%cart_id%</parameter>
@@ -36,9 +36,10 @@
     </route>
 
     <route url="/V1/billink/guest-payment-data/:cartId" method="POST">
-        <service class="Billink\Billink\Api\MidpagePaymentDataInterface" method="saveGuestPaymentInformationAndPlaceOrder"/>
+        <service class="Billink\Billink\Api\MidpagePaymentDataInterface"
+                 method="saveGuestPaymentInformationAndPlaceOrder"/>
         <resources>
-            <resource ref="anonymous" />
+            <resource ref="anonymous"/>
         </resources>
     </route>
 

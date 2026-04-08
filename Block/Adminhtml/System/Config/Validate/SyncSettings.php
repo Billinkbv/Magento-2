@@ -23,18 +23,6 @@ class SyncSettings extends Field
         return parent::render($element);
     }
 
-    /**
-     * Return element html
-     *
-     * @param  AbstractElement $element
-     * @return string
-     */
-    //@codingStandardsIgnoreLine
-    protected function _getElementHtml(AbstractElement $element): string
-    {
-        return $this->_toHtml();
-    }
-
     public function getAjaxUrl(): string
     {
         return $this->getUrl('billink/config/sync');
@@ -45,8 +33,7 @@ class SyncSettings extends Field
      */
     public function getButtonHtml(): string
     {
-        $layout = $this->getLayout();
-        $buttonBlock = $layout->createBlock(Button::class);
+        $buttonBlock = $this->getLayout()->createBlock(Button::class);
         $buttonBlock->setData(
             [
                 'id' => 'sync_settings',
@@ -55,5 +42,10 @@ class SyncSettings extends Field
         );
 
         return $buttonBlock->toHtml();
+    }
+
+    protected function _getElementHtml(AbstractElement $element): string
+    {
+        return $this->_toHtml();
     }
 }

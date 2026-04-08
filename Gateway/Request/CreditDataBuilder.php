@@ -3,56 +3,33 @@
 namespace Billink\Billink\Gateway\Request;
 
 use Billink\Billink\Gateway\Helper\SubjectReader;
-use Billink\Billink\Gateway\Helper\Workflow as WorkflowHelper;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
-/**
- * Class AddressDataBuilder
- */
 class CreditDataBuilder implements BuilderInterface
 {
-    const INVOICES = 'INVOICES';
-    const ITEM = 'ITEM';
-    const INVOICE_NUMBER = 'INVOICENUMBER';
-    const CREDITAMOUNT = 'CREDITAMOUNT';
-    const DESCRIPTION = 'DESCRIPTION';
-    /**
-     * @var SubjectReader
-     */
-    private $subjectReader;
+    public const INVOICES = 'INVOICES';
+    public const ITEM = 'ITEM';
+    public const INVOICE_NUMBER = 'INVOICENUMBER';
+    public const CREDITAMOUNT = 'CREDITAMOUNT';
+    public const DESCRIPTION = 'DESCRIPTION';
 
-    /**
-     * InvoiceDataBuilder constructor.
-     *
-     * @param SubjectReader  $subjectReader
-     */
     public function __construct(
-        SubjectReader $subjectReader
+        private readonly SubjectReader $subjectReader
     ) {
-        $this->subjectReader = $subjectReader;
     }
 
-    /**
-     * Builds ENV request
-     *
-     * @param array $buildSubject
-     *
-     * @return array
-     */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
         $order = $this->subjectReader->readOrder($buildSubject);
         $amount = $this->subjectReader->readRefundAmount($buildSubject);
 
-        $result = [
+        return [
             self::INVOICES => [
                 self::ITEM => [
-                    self::INVOICE_NUMBER  => $order->getIncrementId(),
+                    self::INVOICE_NUMBER => $order->getIncrementId(),
                     self::CREDITAMOUNT => $amount,
                 ]
             ]
         ];
-
-        return $result;
     }
 }

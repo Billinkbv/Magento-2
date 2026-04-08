@@ -4,21 +4,25 @@ namespace Billink\Billink\Gateway\Request\Midpage\SessionCreate;
 
 use Billink\Billink\Model\Fee\BillinkFee;
 use Billink\Billink\Model\LocalStorage;
+use Magento\Bundle\Model\Product\Type;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Tax\Helper\Data as TaxHelper;
 use Magento\Tax\Model\CalculationFactory;
+
+use function __;
+use function method_exists;
 
 class Transaction implements BuilderInterface
 {
     private array $items = [];
 
     public function __construct(
-        protected readonly LocalStorage $localStorage,
+        private readonly LocalStorage $localStorage,
         private readonly TaxHelper $taxData,
         private readonly CalculationFactory $calculationFactory,
         private readonly BillinkFee $billinkFee
@@ -27,7 +31,7 @@ class Transaction implements BuilderInterface
 
     /**
      * Fields converted to string so it will be sent as sting in the json.
-     * @inheritdoc
+     * @throws LocalizedException
      */
     public function build(array $buildSubject): array
     {
@@ -45,14 +49,34 @@ class Transaction implements BuilderInterface
         }
 
         $data = [
-            'totalAmount' => (string)$paymentOrder->getGrandTotalAmount(),
-            'totalTaxAmount' => (string)$order->getTaxAmount(),
+            'totalAmount' => (string) $paymentOrder->getGrandTotalAmount(),
+            'totalTaxAmount' => (string) $order->getTaxAmount(),
             'purchaseCountry' => $purchaseCountry,
             'purchaseCurrency' => $order->getOrderCurrencyCode(),
             'orderNumber' => $order->getIncrementId(),
             'orderItems' => $this->prepareItems($order)
         ];
+
         return ['transaction' => $data];
+    }
+
+    protected function addItem(OrderItemInterface $orderItem): void
+    {
+        $price = $orderItem->getPriceInclTax();
+        $rowTotal = $orderItem->getRowTotalInclTax();
+        $taxAmount = ($orderItem->getRowTotalInclTax() - $orderItem->getRowTotal()) / $orderItem->getQtyOrdered();
+
+        $this->items[] = [
+            'code' => (string) $orderItem->getSku(),
+            'name' => (string) $orderItem->getName(),
+            'description' => (string) $orderItem->getDescription(),
+            //'productIdentifiers' => [], // @todo add identifiers
+            'totalProductAmount' => (string) $rowTotal,
+            'productAmount' => (string) $price,
+            'productTaxAmount' => (string) $taxAmount,
+            'taxRate' => (string) ($orderItem->getTaxPercent() ?: 0),
+            'quantity' => (string) $orderItem->getQtyOrdered(),
+        ];
     }
 
     private function prepareItems(OrderInterface $order): array
@@ -60,8 +84,9 @@ class Transaction implements BuilderInterface
         $this->items = [];
         foreach ($order->getItems() as $item) {
             // Do not send simple products from configurable, but send simples from bundle
-            if ($item->getProductType() === \Magento\Bundle\Model\Product\Type::TYPE_CODE ||
-                (
+            if (
+                $item->getProductType() === Type::TYPE_CODE
+                || (
                     $item->getParentItem() !== null
                     && $item->getParentItem()->getProductType() === Configurable::TYPE_CODE
                 )
@@ -85,37 +110,19 @@ class Transaction implements BuilderInterface
 
             $this->items[] = [
                 'code' => '0001',
-                'name' => (string)$order->getShippingDescription(),
+                'name' => (string) $order->getShippingDescription(),
                 'description' => '',
-                'totalProductAmount' => (string)$order->getShippingInclTax(),
-                'productAmount' => (string)$order->getShippingInclTax(),
-                'productTaxAmount' => (string)$order->getShippingTaxAmount(),
-                'taxRate' => (string)($taxRate),
+                'totalProductAmount' => (string) $order->getShippingInclTax(),
+                'productAmount' => (string) $order->getShippingInclTax(),
+                'productTaxAmount' => (string) $order->getShippingTaxAmount(),
+                'taxRate' => (string) ($taxRate),
                 'quantity' => '1',
             ];
         }
         $this->prepareFeeItem($order);
         $this->addFoomanSurcharge($order);
+
         return $this->items;
-    }
-
-    protected function addItem(OrderItemInterface $orderItem): void
-    {
-        $price = $orderItem->getPriceInclTax();
-        $rowTotal = $orderItem->getRowTotalInclTax();
-        $taxAmount = ($orderItem->getRowTotalInclTax() - $orderItem->getRowTotal()) / $orderItem->getQtyOrdered();
-
-        $this->items[] = [
-            'code' => (string)$orderItem->getSku(),
-            'name' => (string)$orderItem->getName(),
-            'description' => (string)$orderItem->getDescription(),
-            //'productIdentifiers' => [], // @todo add identifiers
-            'totalProductAmount' => (string)$rowTotal,
-            'productAmount' => (string)$price,
-            'productTaxAmount' => (string)$taxAmount,
-            'taxRate' => (string)($orderItem->getTaxPercent() ?: 0),
-            'quantity' => (string)$orderItem->getQtyOrdered(),
-        ];
     }
 
     private function addItemDiscount(OrderItemInterface $item, OrderInterface $order): void
@@ -149,10 +156,10 @@ class Transaction implements BuilderInterface
             'code' => '0002',
             'name' => $name,
             'description' => '',
-            'totalProductAmount' => (string)$price,
-            'productAmount' => (string)$price,
-            'productTaxAmount' => (string)$diff,
-            'taxRate' => (string)($item->getTaxPercent() ?: 0),
+            'totalProductAmount' => (string) $price,
+            'productAmount' => (string) $price,
+            'productTaxAmount' => (string) $diff,
+            'taxRate' => (string) ($item->getTaxPercent() ?: 0),
             'quantity' => '1',
         ];
     }
@@ -160,7 +167,7 @@ class Transaction implements BuilderInterface
     private function prepareFeeItem(OrderInterface $order): void
     {
         if (!$this->billinkFee->isActive()) {
-            return ;
+            return;
         }
         $orderAmount = $order->getData('billink_fee_amount');
         $configAmount = $this->billinkFee->getBaseAmount($order);
@@ -175,10 +182,10 @@ class Transaction implements BuilderInterface
                 'code' => 'billink_fee',
                 'name' => $this->billinkFee->getFeeLabel(),
                 'description' => '',
-                'totalProductAmount' => (string)$configAmount,
-                'productAmount' => (string)$configAmount,
-                'productTaxAmount' => (string)$order->getData('billink_fee_amount_tax'),
-                'taxRate' => (string)$taxRate,
+                'totalProductAmount' => (string) $configAmount,
+                'productAmount' => (string) $configAmount,
+                'productTaxAmount' => (string) $order->getData('billink_fee_amount_tax'),
+                'taxRate' => (string) $taxRate,
                 'quantity' => '1',
             ];
         }
@@ -192,27 +199,25 @@ class Transaction implements BuilderInterface
         $extensionAttributes = $order->getExtensionAttributes();
 
         //If Fooman Surcharges is installed, this function should be part of the Order-/Address- ExtensionInterface
-        if ($extensionAttributes && method_exists($extensionAttributes, 'getFoomanTotalGroup')) {
-                if ($foomanTotalGroup = $extensionAttributes->getFoomanTotalGroup()) {
-                    foreach ($foomanTotalGroup->getItems() as $item) {
-                        if ($item->getAmount() > 0) {
-                            $price = $item->getPriceInclTax();
-                            $rowTotal = $item->getRowTotalInclTax();
-                            $taxAmount = $item->getRowTotalInclTax() - $item->getRowTotal();
-
-                            $this->items[] = [
-                                'code' => 'fooman_surcharge',
-                                'name' => $item->getLabel(),
-                                'description' => '',
-                                'totalProductAmount' => (string)($item->getBaseAmount() + $item->getBaseTaxAmount()),
-                                'productAmount' => (string)$item->getBaseAmount(),
-                                'productTaxAmount' => (string)$item->getTaxAmount(),
-                                'taxRate' => (string)$item->getTaxPercent(),
-                                'quantity' => '1',
-                            ];
-                        }
-                    }
+        if (
+            $extensionAttributes
+            && method_exists($extensionAttributes, 'getFoomanTotalGroup')
+            && $foomanTotalGroup = $extensionAttributes->getFoomanTotalGroup()
+        ) {
+            foreach ($foomanTotalGroup->getItems() as $item) {
+                if ($item->getAmount() > 0) {
+                    $this->items[] = [
+                        'code' => 'fooman_surcharge',
+                        'name' => $item->getLabel(),
+                        'description' => '',
+                        'totalProductAmount' => (string) ($item->getBaseAmount() + $item->getBaseTaxAmount()),
+                        'productAmount' => (string) $item->getBaseAmount(),
+                        'productTaxAmount' => (string) $item->getTaxAmount(),
+                        'taxRate' => (string) $item->getTaxPercent(),
+                        'quantity' => '1',
+                    ];
                 }
+            }
         }
     }
 }

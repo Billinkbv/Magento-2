@@ -1,4 +1,5 @@
 <?php
+
 namespace Billink\Billink\Gateway\Request\Midpage;
 
 use Billink\Billink\Gateway\Config\MidpageConfig;
@@ -8,19 +9,18 @@ use Magento\Store\Model\StoreManagerInterface;
 class Options implements BuilderInterface
 {
     public function __construct(
-        protected readonly MidpageConfig $midpageConfig,
-        protected readonly StoreManagerInterface $storeManager
+        private readonly MidpageConfig $midpageConfig,
+        private readonly StoreManagerInterface $storeManager
     ) {
     }
 
-    /**
-     * @inheritdoc
-     */
     public function build(array $buildSubject): array
     {
-        $data = ['options' => [
-            'logoURL' => $this->midpageConfig->getLogo($this->storeManager->getStore())
-        ]];
+        $data = [
+            'options' => [
+                'logoURL' => $this->midpageConfig->getLogo($this->storeManager->getStore())
+            ]
+        ];
 
         return ['client' => $data];
     }

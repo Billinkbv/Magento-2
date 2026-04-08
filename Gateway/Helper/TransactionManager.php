@@ -3,8 +3,13 @@
 namespace Billink\Billink\Gateway\Helper;
 
 use Billink\Billink\Gateway\Config\MidpageConfig;
+use Exception;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Serialize\SerializerInterface;
+
+use function is_array;
+use function urldecode;
+use function urlencode;
 
 class TransactionManager
 {
@@ -12,9 +17,9 @@ class TransactionManager
     public const TRANSACTION_ID = 'id';
 
     public function __construct(
-        protected readonly MidpageConfig $midpageConfig,
-        protected readonly EncryptorInterface $encryptor,
-        protected readonly SerializerInterface $serializer
+        private readonly MidpageConfig $midpageConfig,
+        private readonly EncryptorInterface $encryptor,
+        private readonly SerializerInterface $serializer
     ) {
     }
 
@@ -26,6 +31,7 @@ class TransactionManager
             self::TRANSACTION_ID => $incrementId
         ];
         $txn = $this->encryptor->encrypt($this->serializer->serialize($data));
+
         return urlencode($txn);
     }
 
@@ -33,6 +39,7 @@ class TransactionManager
     {
         // Add account id as salt to provide a bigger string
         $hashValue = $incrementId . $this->midpageConfig->getAccountId();
+
         return $this->encryptor->hash($hashValue);
     }
 
@@ -55,8 +62,9 @@ class TransactionManager
             if ($newHash === $transactionHash) {
                 return $orderId;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
         }
+
         return null;
     }
 
@@ -65,7 +73,7 @@ class TransactionManager
         $data = $this->encryptor->decrypt($transactionId);
         try {
             return $this->serializer->unserialize($data);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return null;
         }
     }

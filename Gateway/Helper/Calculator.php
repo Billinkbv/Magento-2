@@ -4,39 +4,23 @@ namespace Billink\Billink\Gateway\Helper;
 
 use Billink\Billink\Gateway\Converter\Order\ConverterInterface;
 use Billink\Billink\Gateway\Request\OrderItemsDataBuilder;
+use Magento\Quote\Model\Quote;
+use Magento\Sales\Model\Order;
 
-/**
- * Class Calculator
- * @package Billink\Billink\Gateway\Helper
- */
+use function round;
+
 class Calculator
 {
-    /**
-     * @var ConverterInterface
-     */
-    private $orderItemsConverter;
-
-    /**
-     * Calculator constructor.
-     * @param ConverterInterface $orderItemsConverter
-     */
     public function __construct(
-        ConverterInterface $orderItemsConverter
+        private readonly ConverterInterface $orderItemsConverter
     ) {
-        $this->orderItemsConverter = $orderItemsConverter;
     }
 
-    /**
-     * @param \Magento\Quote\Model\Quote $orderData
-     * @return float|int
-     */
-    public function calculateOrderTotal($orderData)
+    public function calculateOrderTotal(Quote|Order $orderData): float|int
     {
         $total = 0;
 
-        $items = $this->orderItemsConverter->convert($orderData);
-
-        foreach ($items as $item) {
+        foreach ($this->orderItemsConverter->convert($orderData) as $item) {
             if ($item->getPriceType() === OrderItemsDataBuilder::PRICEINCL) {
                 $price = $item->getPrice();
             } else {

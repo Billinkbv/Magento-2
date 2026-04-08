@@ -4,24 +4,39 @@ namespace Billink\Billink\Gateway\Http\Client;
 
 use Laminas\Http\Client;
 use Laminas\Http\Client\Adapter\Curl;
+use Laminas\Http\Exception\RuntimeException;
+use Laminas\Uri\Http;
+use Traversable;
+
+use function is_numeric;
 
 class LaminasClient extends Client
 {
     /**
      * @param null|string $uri
-     * @param null|array|\Traversable $options
+     * @param null|array|Traversable $options
      */
     public function __construct($uri = null, $options = null)
     {
-        $this->setOptions([
-            'useragent' => Client::class,
-            'adapter' => Curl::class,
-        ]);
+        $this->setOptions(
+            [
+                'useragent' => Client::class,
+                'adapter' => Curl::class,
+            ]
+        );
 
         parent::__construct($uri, $options);
     }
 
-    protected function prepareHeaders($body, $uri)
+    /**
+     * Prepare the request headers
+     *
+     * @param resource|string $body
+     * @param Http $uri
+     *
+     * @throws RuntimeException
+     */
+    protected function prepareHeaders($body, $uri): array
     {
         $headers = parent::prepareHeaders($body, $uri);
         $result = [];
@@ -34,6 +49,7 @@ class LaminasClient extends Client
             }
             $result[] = $key . ': ' . $value;
         }
+
         return $result;
     }
 }

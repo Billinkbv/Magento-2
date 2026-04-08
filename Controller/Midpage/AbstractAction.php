@@ -1,4 +1,5 @@
 <?php
+
 namespace Billink\Billink\Controller\Midpage;
 
 use Billink\Billink\Gateway\Helper\TransactionManager;
@@ -15,6 +16,9 @@ use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Psr\Log\LoggerInterface;
+
+use function __;
+use function array_shift;
 
 abstract class AbstractAction implements HttpGetActionInterface
 {
@@ -40,9 +44,13 @@ abstract class AbstractAction implements HttpGetActionInterface
         if (!$transactionId) {
             return null;
         }
+
         return $this->transactionManager->validateTransaction($transactionId);
     }
 
+    /**
+     * @throws LocalizedException
+     */
     protected function loadOrderByIncrementId(string $transactionOrder): OrderInterface
     {
         $searchCriteria = $this->searchCriteriaBuilder
@@ -51,8 +59,11 @@ abstract class AbstractAction implements HttpGetActionInterface
         $orders = $this->orderRepository->getList($searchCriteria)->getItems();
         $order = array_shift($orders);
         if (!$order) {
-            throw new LocalizedException(__('Incorrect order number provided: %1. Please reach out to support.', $transactionOrder));
+            throw new LocalizedException(
+                __('Incorrect order number provided: %1. Please reach out to support.', $transactionOrder)
+            );
         }
+
         return $order;
     }
 }

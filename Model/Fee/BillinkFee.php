@@ -4,58 +4,24 @@ namespace Billink\Billink\Model\Fee;
 
 use Billink\Billink\Helper\Fee as FeeHelper;
 use Billink\Billink\Helper\Quote as QuoteHelper;
+use Billink\Billink\Observer\DataAssignObserver;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\DataObject;
+use Magento\Quote\Model\Quote;
+use Magento\Sales\Model\Order;
 use Magento\Tax\Model\CalculationFactory;
 
-/**
- * Class BillinkFee
- * @package Billink\Billink\Model\Fee
- */
 class BillinkFee
 {
-    /**
-     * @var Fee
-     */
-    private $feeHelper;
-
-    /**
-     * @var CalculationFactory
-     */
-    private $calculationFactory;
-
-    /**
-     * @var Quote
-     */
-    private $quoteHelper;
-    /**
-     * @var \Magento\Framework\App\RequestInterface
-     */
-    private $request;
-
-    /**
-     * BillinkFee constructor.
-     * @param FeeHelper $feeHelper
-     * @param CalculationFactory $calculationFactory
-     * @param QuoteHelper $quoteHelper
-     * @param \Magento\Framework\App\RequestInterface $request
-     */
     public function __construct(
-        FeeHelper $feeHelper,
-        CalculationFactory $calculationFactory,
-        QuoteHelper $quoteHelper,
-        \Magento\Framework\App\RequestInterface $request
+        private readonly FeeHelper $feeHelper,
+        private readonly CalculationFactory $calculationFactory,
+        private readonly QuoteHelper $quoteHelper,
+        private readonly RequestInterface $request
     ) {
-        $this->feeHelper = $feeHelper;
-        $this->calculationFactory = $calculationFactory;
-        $this->quoteHelper = $quoteHelper;
-        $this->request = $request;
     }
 
-    /**
-     * @param \Magento\Quote\Model\Quote $quote
-     * @return DataObject
-     */
-    public function getFeeInfo($quote)
+    public function getFeeInfo(Quote $quote): DataObject
     {
         $fee = new DataObject();
 
@@ -68,42 +34,27 @@ class BillinkFee
         return $fee;
     }
 
-    /**
-     * @return bool
-     */
-    public function isActive()
+    public function isActive(): bool
     {
         return $this->feeHelper->getIsFeeActive();
     }
 
-    /**
-     * @return string
-     */
-    public function getFeeLabel()
+    public function getFeeLabel(): string
     {
         return $this->feeHelper->getFeeLabel();
     }
 
-
-    /**
-     * @return bool
-     */
-    public function getFeeIncludesTax()
+    public function getFeeIncludesTax(): bool
     {
         return $this->feeHelper->getFeeIncludesTax();
     }
 
-
-    /**
-     * @param \Magento\Quote\Model\Quote $quote
-     * @return mixed
-     */
-    public function getBaseAmount($quote)
+    public function getBaseAmount(Quote|Order $quote): float
     {
         $workflowType = $this->quoteHelper->getWorkflowType($quote);
 
         if (!$workflowType && !$workflowType = $this->getWorkflowTypeFromRequest()) {
-            return 0;
+            return 0.0;
         }
 
         $quoteTotal = $this->quoteHelper->getTotalInclTax($quote);
@@ -111,15 +62,10 @@ class BillinkFee
         return $this->feeHelper->getFeeAmount($quoteTotal, $workflowType, $quote->getBillingAddress()->getCountryId());
     }
 
-    /**
-     * @param float $baseAmount
-     * @param \Magento\Quote\Model\Quote $quote
-     * @return float
-     */
-    public function getBaseAmountTax($baseAmount, $quote)
+    public function getBaseAmountTax(float $baseAmount, Quote $quote): float
     {
         if (!$baseAmount) {
-            return 0;
+            return 0.0;
         }
 
         $taxCalculation = $this->calculationFactory->create();
@@ -129,26 +75,14 @@ class BillinkFee
         return $taxCalculation->calcTaxAmount($baseAmount, $taxRate, $this->feeHelper->getFeeIncludesTax());
     }
 
-    /**
-     * @param \Magento\Quote\Model\Quote $quote
-     * @return float
-     */
-    public function getTaxRate($quote)
+    public function getTaxRate(Quote $quote): float
     {
-        $taxCalculation = $this->calculationFactory->create();
-
-        return $taxCalculation->getRate($this->getTaxRequest($quote));
+        return $this->calculationFactory->create()->getRate($this->getTaxRequest($quote));
     }
 
-    /**
-     * @param \Magento\Quote\Model\Quote $quote
-     * @return mixed
-     */
-    private function getTaxRequest($quote)
+    private function getTaxRequest(Quote $quote): mixed
     {
-        $taxCalculation = $this->calculationFactory->create();
-
-        return $taxCalculation->getRateRequest(
+        return $this->calculationFactory->create()->getRateRequest(
             $quote->getShippingAddress(),
             $quote->getBillingAddress(),
             $quote->getCustomerTaxClassId(),
@@ -156,14 +90,10 @@ class BillinkFee
         )->setProductClassId($this->feeHelper->getFeeTaxClass());
     }
 
-    private function getWorkflowTypeFromRequest()
+    private function getWorkflowTypeFromRequest(): mixed
     {
         $payment = $this->request->getParam('payment');
 
-        if (!isset($payment[\Billink\Billink\Observer\DataAssignObserver::CUSTOMER_TYPE])) {
-            return false;
-        }
-
-        return $payment[\Billink\Billink\Observer\DataAssignObserver::CUSTOMER_TYPE];
+        return $payment[DataAssignObserver::CUSTOMER_TYPE] ?? false;
     }
 }

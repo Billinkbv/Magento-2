@@ -6,44 +6,27 @@ use Billink\Billink\Gateway\Exception\InvalidResponseException;
 use Billink\Billink\Gateway\Exception\ResponseException;
 use Billink\Billink\Gateway\Helper\SubjectReader;
 use Billink\Billink\Model\Billink\Response\ResponseInterface;
+use Exception;
+use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 
-/**
- * Class AbstractResponseValidator
- * @package Billink\Billink\Gateway\Validator
- */
-abstract class AbstractResponseValidator extends \Magento\Payment\Gateway\Validator\AbstractValidator
+abstract class AbstractResponseValidator extends AbstractValidator
 {
-    /**
-     * @var SubjectReader
-     */
-    private $subjectReader;
-
-    /**
-     * AbstractResponseValidator constructor.
-     *
-     * @param ResultInterfaceFactory $resultFactory
-     * @param SubjectReader $subjectReader
-     */
     public function __construct(
         ResultInterfaceFactory $resultFactory,
-        SubjectReader $subjectReader
+        private readonly SubjectReader $subjectReader
     ) {
-        $this->subjectReader = $subjectReader;
-
         parent::__construct($resultFactory);
     }
 
     /**
      * Performs domain-related validation for business object
      *
-     * @param array $validationSubject
-     * @return ResultInterface
      * @throws ResponseException
-     * @throws \Exception
+     * @throws Exception
      */
-    public function validate(array $validationSubject)
+    public function validate(array $validationSubject): ResultInterface
     {
         $response = $this->subjectReader->readResponse($validationSubject);
 
@@ -56,7 +39,11 @@ abstract class AbstractResponseValidator extends \Magento\Payment\Gateway\Valida
                 $validationResult = $validator($response);
 
                 if (!$validationResult['result']) {
-                    throw new ResponseException($validationResult['code'], $this->getService(), $validationResult['message'] ?? '');
+                    throw new ResponseException(
+                        $validationResult['code'],
+                        $this->getService(),
+                        $validationResult['message'] ?? ''
+                    );
                 }
             }
         } catch (InvalidResponseException $e) {
@@ -66,10 +53,7 @@ abstract class AbstractResponseValidator extends \Magento\Payment\Gateway\Valida
         return $this->createResult(true);
     }
 
-    /**
-     * @return array
-     */
-    public function getResponseValidators()
+    public function getResponseValidators(): array
     {
         return [
             function ($response) {
@@ -78,7 +62,11 @@ abstract class AbstractResponseValidator extends \Magento\Payment\Gateway\Valida
                 }
 
                 if ($response->hasError()) {
-                    return ['result' => false, 'code' => $response->getErrorCode(), 'message' => $response->getErrorDescription()];
+                    return [
+                        'result' => false,
+                        'code' => $response->getErrorCode(),
+                        'message' => $response->getErrorDescription()
+                    ];
                 }
 
                 return ['result' => true];
@@ -86,10 +74,7 @@ abstract class AbstractResponseValidator extends \Magento\Payment\Gateway\Valida
         ];
     }
 
-    /**
-     * @return string
-     */
-    protected function getService()
+    protected function getService(): string
     {
         return $this->service;
     }

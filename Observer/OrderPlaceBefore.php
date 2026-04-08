@@ -9,7 +9,7 @@ use Magento\Framework\Event\ObserverInterface;
 class OrderPlaceBefore implements ObserverInterface
 {
     public function __construct(
-        protected readonly LocalStorage $localStorage
+        private readonly LocalStorage $localStorage
     ) {
     }
 
@@ -17,5 +17,4 @@ class OrderPlaceBefore implements ObserverInterface
     {
         $this->localStorage->setOrder($observer->getData('order'));
     }
-
 }

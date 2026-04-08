@@ -1,72 +1,78 @@
 <?php
+
 namespace Billink\Billink\Gateway\Command;
 
 use Billink\Billink\Model\Payment\MidpageCancelService;
 use Billink\Billink\Model\Payment\OrderHistory;
+use Exception;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Gateway\Helper\ContextHelper;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order\Payment;
 use Psr\Log\LoggerInterface;
+
+use function __;
 
 class MidpageUpdateCommand implements CommandInterface
 {
     public function __construct(
-        protected readonly OrderRepositoryInterface $orderRepository,
-        protected readonly LoggerInterface $logger,
-        protected readonly OrderHistory $orderHistory,
-        protected readonly MidpageCancelService $cancelService
+        private readonly OrderRepositoryInterface $orderRepository,
+        private readonly LoggerInterface $logger,
+        private readonly OrderHistory $orderHistory,
+        private readonly MidpageCancelService $cancelService
     ) {
     }
 
     /**
-     * {@inheritdoc}
+     * @throws LocalizedException
      */
-    public function execute(array $commandSubject)
+    public function execute(array $commandSubject): void
     {
-        $paymentDO = SubjectReader::readPayment($commandSubject);
         /** @var Payment $payment */
-        $payment = $paymentDO->getPayment();
+        $payment = SubjectReader::readPayment($commandSubject)->getPayment();
         ContextHelper::assertOrderPayment($payment);
         try {
             $order = $payment->getOrder();
             $this->authorizeOrder($payment->getOrder());
             $this->createInvoice($payment->getOrder());
         } catch (LocalizedException $e) {
-            $this->logger->error($e, [
-                'order' => $order ? $order->getIncrementId() : 'undefined',
-                'trace' => $e->getTraceAsString()
-            ]);
+            $this->logger->error(
+                $e,
+                [
+                    'order' => $order ? $order->getIncrementId() : 'undefined',
+                    'trace' => $e->getTraceAsString()
+                ]
+            );
             $this->cancelService->cancelOrder($payment->getOrder());
             throw $e;
-        } catch (\Exception $e) {
-            $this->logger->critical($e, [
-                'order' => $order ? $order->getIncrementId() : 'undefined',
-                'trace' => $e->getTraceAsString()
-            ]);
+        } catch (Exception $e) {
+            $this->logger->critical(
+                $e,
+                [
+                    'order' => $order ? $order->getIncrementId() : 'undefined',
+                    'trace' => $e->getTraceAsString()
+                ]
+            );
             $this->cancelService->cancelOrder($payment->getOrder());
-            throw new LocalizedException(__("There was an error during your request."));
+            throw new LocalizedException(__('There was an error during your request.'));
         } finally {
             $this->orderHistory->processOrderMessages();
         }
     }
 
     /**
-     * @param OrderInterface $order
+     * @throws LocalizedException
      */
-    protected function createInvoice(OrderInterface $order)
+    private function createInvoice(OrderInterface $order): void
     {
         $invoice = $order->getPayment()->capture(null);
         $this->orderRepository->save($invoice->getOrder());
     }
 
-    /**
-     * @param OrderInterface $order
-     */
-    protected function authorizeOrder(OrderInterface $order)
+    private function authorizeOrder(OrderInterface $order): void
     {
         $baseTotalDue = $order->getBaseTotalDue();
         $order->getPayment()->authorize(true, $baseTotalDue);

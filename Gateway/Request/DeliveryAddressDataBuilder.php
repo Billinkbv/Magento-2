@@ -8,59 +8,26 @@ use Billink\Billink\Observer\DataAssignObserver;
 use Magento\Framework\Session\SessionManager as Session;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
-/**
- * Class AddressDataBuilder
- */
 class DeliveryAddressDataBuilder implements BuilderInterface
 {
-    const DELIVERY_STREET = 'DELIVERYSTREET';
-    const DELIVERY_HOUSENUMBER = 'DELIVERYHOUSENUMBER';
-    const DELIVERY_HOUSEEXTENSION = 'DELIVERYHOUSEEXTENSION';
-    const DELIVERY_POSTALCODE = 'DELIVERYPOSTALCODE';
-    const DELIVERY_COUNTRYCODE = 'DELIVERYCOUNTRYCODE';
-    const DELIVERY_CITY = 'DELIVERYCITY';
-    const DELIVERY_COMPANYNAME = 'DELIVERYADDRESSCOMPANYNAME';
-    const DELIVERY_FIRSTNAME = 'DELIVERYADDRESSFIRSTNAME';
-    const DELIVERY_LASTNAME = 'DELIVERYADDRESSLASTNAME';
+    public const DELIVERY_STREET = 'DELIVERYSTREET';
+    public const DELIVERY_HOUSENUMBER = 'DELIVERYHOUSENUMBER';
+    public const DELIVERY_HOUSEEXTENSION = 'DELIVERYHOUSEEXTENSION';
+    public const DELIVERY_POSTALCODE = 'DELIVERYPOSTALCODE';
+    public const DELIVERY_COUNTRYCODE = 'DELIVERYCOUNTRYCODE';
+    public const DELIVERY_CITY = 'DELIVERYCITY';
+    public const DELIVERY_COMPANYNAME = 'DELIVERYADDRESSCOMPANYNAME';
+    public const DELIVERY_FIRSTNAME = 'DELIVERYADDRESSFIRSTNAME';
+    public const DELIVERY_LASTNAME = 'DELIVERYADDRESSLASTNAME';
 
-    /**
-     * @var SubjectReader
-     */
-    private $subjectReader;
-
-    /**
-     * @var Session
-     */
-    private $checkoutSession;
-
-    /**
-     * @var AddressHelper
-     */
-    private $addressHelper;
-
-    /**
-     * DeliveryAddressDataBuilder constructor.
-     * @param SubjectReader $subjectReader
-     * @param Session $checkoutSession
-     * @param AddressHelper $addressHelper
-     */
     public function __construct(
-        SubjectReader $subjectReader,
-        Session $checkoutSession,
-        AddressHelper $addressHelper
+        private readonly SubjectReader $subjectReader,
+        private readonly Session $checkoutSession,
+        private readonly AddressHelper $addressHelper
     ) {
-        $this->subjectReader = $subjectReader;
-        $this->checkoutSession = $checkoutSession;
-        $this->addressHelper = $addressHelper;
     }
 
-    /**
-     * Builds ENV request
-     *
-     * @param array $buildSubject
-     * @return array
-     */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
         $quote = $this->checkoutSession->getQuote();
         $shippingAddress = $quote->getShippingAddress();
@@ -91,5 +58,4 @@ class DeliveryAddressDataBuilder implements BuilderInterface
 
         return $result;
     }
-
 }

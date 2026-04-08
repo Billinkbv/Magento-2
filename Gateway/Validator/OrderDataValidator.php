@@ -9,107 +9,44 @@ use Billink\Billink\Gateway\Helper\SubjectReader;
 use Billink\Billink\Gateway\Helper\Workflow as WorkflowHelper;
 use Billink\Billink\Helper\Number as NumberHelper;
 use Billink\Billink\Observer\DataAssignObserver;
+use Exception;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Command\GatewayCommand;
+use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 use Psr\Log\LoggerInterface;
 
-/**
- * Class OrderDataValidator
- * @package Billink\Billink\Gateway\Validator
- */
-class OrderDataValidator extends \Magento\Payment\Gateway\Validator\AbstractValidator
+use function __;
+use function array_key_exists;
+
+class OrderDataValidator extends AbstractValidator
 {
-    const INDEX_FLAG_VALIDATION = 'validation';
+    public const INDEX_FLAG_VALIDATION = 'validation';
 
-    /**
-     * @var GatewayCommand
-     */
-    private $checkCommand;
-
-    /**
-     * @var SubjectReader
-     */
-    private $subjectReader;
-
-    /**
-     * @var Workflow
-     */
-    private $workflowHelper;
-
-    /**
-     * @var GatewayCommand
-     */
-    private $orderCommand;
-
-    /**
-     * @var Number
-     */
-    private $numberHelper;
-
-    /**
-     * @var Calculator
-     */
-    private $orderTotalCalculator;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * OrderDataValidator constructor.
-     * @param ResultInterfaceFactory $resultFactory
-     * @param Config $config
-     * @param GatewayCommand $checkCommand
-     * @param GatewayCommand $orderCommand
-     * @param SubjectReader $subjectReader
-     * @param WorkflowHelper $workflowHelper
-     * @param NumberHelper $numberHelper
-     * @param Calculator $orderTotalCalculator
-     * @param LoggerInterface $logger
-     */
     public function __construct(
         ResultInterfaceFactory $resultFactory,
-        Config $config,
-        GatewayCommand $checkCommand,
-        GatewayCommand $orderCommand,
-        SubjectReader $subjectReader,
-        WorkflowHelper $workflowHelper,
-        NumberHelper $numberHelper,
-        Calculator $orderTotalCalculator,
-        LoggerInterface $logger
+        private readonly Config $config,
+        private readonly GatewayCommand $checkCommand,
+        private readonly GatewayCommand $orderCommand,
+        private readonly SubjectReader $subjectReader,
+        private readonly WorkflowHelper $workflowHelper,
+        private readonly NumberHelper $numberHelper,
+        private readonly Calculator $orderTotalCalculator,
+        private readonly LoggerInterface $logger
     ) {
-        $this->config = $config;
-        $this->checkCommand = $checkCommand;
-        $this->orderCommand = $orderCommand;
-        $this->subjectReader = $subjectReader;
-        $this->workflowHelper = $workflowHelper;
-        $this->numberHelper = $numberHelper;
-        $this->orderTotalCalculator = $orderTotalCalculator;
-        $this->logger = $logger;
-
         parent::__construct($resultFactory);
     }
 
     /**
      * Performs domain-related validation for business object
-     *
-     * @param array $validationSubject
-     * @return ResultInterface
      */
-    public function validate(array $validationSubject)
+    public function validate(array $validationSubject): ResultInterface
     {
         $payment = $this->subjectReader->readPayment($validationSubject);
         $paymentAI = $this->subjectReader->readPaymentAdditionalInformation($validationSubject);
 
-        $validateFlag = isset($paymentAI[DataAssignObserver::VALIDATE_ORDER_FLAG])
-            ? (bool)$paymentAI[DataAssignObserver::VALIDATE_ORDER_FLAG] : false;
+        $validateFlag = isset($paymentAI[DataAssignObserver::VALIDATE_ORDER_FLAG]) && (bool) $paymentAI[DataAssignObserver::VALIDATE_ORDER_FLAG];
 
         $result = true;
         $resultMsg = [];
@@ -120,13 +57,11 @@ class OrderDataValidator extends \Magento\Payment\Gateway\Validator\AbstractVali
 
         try {
             foreach ($this->getValidators() as $validator) {
-                $validatorResult = $validator($validationSubject);
-
-                if (!$validatorResult) {
+                if (!$validator($validationSubject)) {
                     $result = false;
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $result = false;
             $resultMsg[] = $e->getMessage();
         }
@@ -138,10 +73,7 @@ class OrderDataValidator extends \Magento\Payment\Gateway\Validator\AbstractVali
         return $this->createResult($result, $resultMsg);
     }
 
-    /**
-     * @return array
-     */
-    protected function getValidators()
+    protected function getValidators(): array
     {
         return [
             function ($validationSubject) {
@@ -174,8 +106,9 @@ class OrderDataValidator extends \Magento\Payment\Gateway\Validator\AbstractVali
                 $paymentAI = $this->subjectReader->readPaymentAdditionalInformation($validationSubject);
                 $workflowType = $this->subjectReader->readPaymentWorkflowType($validationSubject);
 
-                if (!$this->workflowHelper->getIsWithCheck($workflowType) ||
-                    array_key_exists(GatewayHelper::CHECKUUID, $paymentAI)
+                if (
+                    !$this->workflowHelper->getIsWithCheck($workflowType)
+                    || array_key_exists(GatewayHelper::CHECKUUID, $paymentAI)
                 ) {
                     return true;
                 }

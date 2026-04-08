@@ -5,10 +5,6 @@ namespace Billink\Billink\Block\Adminhtml\System\Config\Form\Field;
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
-/**
- * Class Version
- * @package Billink\Billink\Block\Adminhtml\System\Config\Form\Field
- */
 class Version extends Field
 {
     /**
@@ -16,19 +12,12 @@ class Version extends Field
      */
     protected $_template = 'Billink_Billink::system/config/version.phtml';
 
-    /**
-     * @param AbstractElement $element
-     * @return string
-     */
-    public function _getElementHtml(AbstractElement $element)
+    public function _getElementHtml(AbstractElement $element): string
     {
         return $this->_toHtml();
     }
 
-    /**
-     * @return string
-     */
-    public function getCheckerUrl()
+    public function getCheckerUrl(): string
     {
         return $this->getUrl('billink/version/check', ['isAjax' => 1]);
     }

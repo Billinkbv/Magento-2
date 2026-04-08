@@ -2,11 +2,9 @@
 
 namespace Billink\Billink\Gateway\Converter\Order;
 
+use Magento\Sales\Model\Order;
+
 interface ConverterInterface
 {
-    /**
-     * @param \Magento\Sales\Model\Order $order
-     * @return mixed
-     */
-    public function convert($order);
+    public function convert(?Order $order = null): array;
 }

@@ -4,10 +4,6 @@ namespace Billink\Billink\Gateway\Helper;
 
 use Billink\Billink\Gateway\Config\MidpageConfig;
 
-/**
- * Class Gateway
- * @package Billink\Billink\Gateway\Helper
- */
 class SessionGateway
 {
     public const GATEWAY_URL = 'https://api.billink.nl/';
@@ -19,7 +15,7 @@ class SessionGateway
     public const SERVICE_INVOICE_CREDIT = 'v2/client/invoice/credit';
 
     public function __construct(
-        protected readonly MidpageConfig $config
+        private readonly MidpageConfig $config
     ) {
     }
 

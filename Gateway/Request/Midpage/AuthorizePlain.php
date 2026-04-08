@@ -8,13 +8,10 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 class AuthorizePlain implements BuilderInterface
 {
     public function __construct(
-        protected readonly MidpageConfig $midpageConfig
+        private readonly MidpageConfig $midpageConfig
     ) {
     }
 
-    /**
-     * @inheritdoc
-     */
     public function build(array $buildSubject): array
     {
         $data = [];

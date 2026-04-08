@@ -2,6 +2,11 @@
 
 namespace Billink\Billink\Gateway\Helper;
 
+use Exception;
+
+use function is_string;
+use function json_decode;
+
 class SessionReader
 {
     public const REDIRECT_URL = 'sessionURL';
@@ -10,12 +15,13 @@ class SessionReader
     {
         $response = ['status' => 'error', 'message' => 'Incorrect response'];
         try {
-            if (\is_string($responseObject[0])) {
-                $response = \json_decode($responseObject[0], true);
+            if (is_string($responseObject[0])) {
+                $response = json_decode($responseObject[0], true);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Use default error above
         }
+
         return $response;
     }
 }

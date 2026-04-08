@@ -3,14 +3,9 @@
 namespace Billink\Billink\Gateway\Request\Midpage;
 
 use Billink\Billink\Gateway\Helper\SubjectReader;
-use Billink\Billink\Gateway\Helper\Workflow as WorkflowHelper;
 use Billink\Billink\Gateway\Request\Workflow;
-use Billink\Billink\Model\Ui\ConfigProvider;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
-/**
- * Class AddressDataBuilder
- */
 class InvoiceDataBuilder implements BuilderInterface
 {
     public const INVOICES = 'INVOICES';

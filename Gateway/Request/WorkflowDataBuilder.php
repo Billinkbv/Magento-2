@@ -5,27 +5,24 @@ namespace Billink\Billink\Gateway\Request;
 use Billink\Billink\Gateway\Config\Config;
 use Billink\Billink\Gateway\Helper\SubjectReader;
 use Billink\Billink\Gateway\Helper\Workflow as WorkflowHelper;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
-/**
- * Class WorkflowDataBuilder
- * @package Billink\Billink\Gateway\Request
- */
 class WorkflowDataBuilder implements BuilderInterface
 {
-    const TYPE = 'TYPE';
-    const WORKFLOWNUMBER = 'WORKFLOWNUMBER';
-    const BACKDOOR = 'BACKDOOR';
+    public const TYPE = 'TYPE';
+    public const WORKFLOWNUMBER = 'WORKFLOWNUMBER';
+    public const BACKDOOR = 'BACKDOOR';
 
     public function __construct(
-        protected readonly Config $config,
-        protected readonly SubjectReader $subjectReader,
-        protected readonly WorkflowHelper $workflowHelper
+        private readonly Config $config,
+        private readonly SubjectReader $subjectReader,
+        private readonly WorkflowHelper $workflowHelper
     ) {
     }
 
     /**
-     * Builds ENV request
+     * @throws LocalizedException
      */
     public function build(array $buildSubject): array
     {

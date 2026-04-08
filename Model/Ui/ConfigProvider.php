@@ -14,24 +14,20 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Model\StoreManagerInterface;
 
-/**
- * Class ConfigProvider
- * @package Billink\Billink\Model\Ui
- */
 class ConfigProvider implements ConfigProviderInterface
 {
     /**
      * Payment method code used in the system
      */
-    const CODE = 'billink';
-    const CODE_MIDPAGE = 'billink_midpage';
+    public const CODE = 'billink';
+    public const CODE_MIDPAGE = 'billink_midpage';
 
     public function __construct(
-        protected readonly Config $config,
-        protected readonly Session $checkoutSession,
-        protected readonly SubjectReader $subjectReader,
-        protected readonly StoreManagerInterface $storeManager,
-        protected readonly MidpageConfig $midpageConfig
+        private readonly Config $config,
+        private readonly Session $checkoutSession,
+        private readonly SubjectReader $subjectReader,
+        private readonly StoreManagerInterface $storeManager,
+        private readonly MidpageConfig $midpageConfig
     ) {
     }
 
@@ -39,17 +35,15 @@ class ConfigProvider implements ConfigProviderInterface
      * Retrieve assoc array of checkout configuration
      *
      * @throws NoSuchEntityException
+     * @throws LocalizedException
      */
     public function getConfig(): array
     {
-        return array_merge([
-            'payment' => $this->preparePaymentConfig(),
-            'quoteData' => $this->prepareQuoteData()
-        ]);
+        return ['payment' => $this->preparePaymentConfig(), 'quoteData' => $this->prepareQuoteData()];
     }
 
     /**
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws NoSuchEntityException
      */
     private function preparePaymentConfig(): array
     {
@@ -85,19 +79,14 @@ class ConfigProvider implements ConfigProviderInterface
 
         $usedWorkflows = $this->config->getUsedWorkflow($quote->getStoreId());
 
-        switch ($usedWorkflows) {
-            case UsedWorkflow::CONFIG_WORKFLOW_PRIVATE:
-                $selectedWorkflow = 'P';
-                break;
-            case UsedWorkflow::CONFIG_WORKFLOW_BUSINESS:
-                $selectedWorkflow = 'B';
-                break;
-            default:
-                $selectedWorkflow = $this->subjectReader->readPaymentAIField(
-                    DataAssignObserver::CUSTOMER_TYPE,
-                    ['payment' => $payment]
-                );
-        }
+        $selectedWorkflow = match ($usedWorkflows) {
+            UsedWorkflow::CONFIG_WORKFLOW_PRIVATE => 'P',
+            UsedWorkflow::CONFIG_WORKFLOW_BUSINESS => 'B',
+            default => $this->subjectReader->readPaymentAIField(
+                DataAssignObserver::CUSTOMER_TYPE,
+                ['payment' => $payment]
+            ),
+        };
 
         return [
             'payment_method' => $payment->getMethod(),

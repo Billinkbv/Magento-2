@@ -4,35 +4,28 @@ namespace Billink\Billink\Model\Billink\Response;
 
 use Billink\Billink\Gateway\Exception\InvalidResponseException;
 
-/**
- * Class Response
- * @package Billink\Billink\Model\Billink\Response
- */
+use function explode;
+
 class Response implements ResponseInterface
 {
-    const INDEX_RESULT = 'RESULT';
-    const INDEX_ERROR = 'ERROR';
-    const INDEX_MSG = 'MSG';
-    const INDEX_UUID = 'UUID';
-    const INDEX_MSG_CODE = 'MSG/CODE';
-    const INDEX_ERROR_CODE = 'ERROR/CODE';
-    const INDEX_ERROR_DESCRIPTION = 'ERROR/DESCRIPTION';
-    const INDEX_MSG_STATUSES_ITEM = 'MSG/STATUSES/ITEM';
+    public const INDEX_RESULT = 'RESULT';
+    public const INDEX_ERROR = 'ERROR';
+    public const INDEX_MSG = 'MSG';
+    public const INDEX_UUID = 'UUID';
+    public const INDEX_MSG_CODE = 'MSG/CODE';
+    public const INDEX_ERROR_CODE = 'ERROR/CODE';
+    public const INDEX_ERROR_DESCRIPTION = 'ERROR/DESCRIPTION';
+    public const INDEX_MSG_STATUSES_ITEM = 'MSG/STATUSES/ITEM';
 
-    const RESULT_ERROR = 'ERROR';
-    const RESULT_SUCCESS = 'MSG';
+    public const RESULT_ERROR = 'ERROR';
+    public const RESULT_SUCCESS = 'MSG';
 
-    /**
-     * @var array
-     */
-    private $data = [];
+    private array $data = [];
 
     /**
-     * @param array $data
-     * @return $this
      * @throws InvalidResponseException
      */
-    public function setData(array $data)
+    public function setData(array $data): static
     {
         if (!is_array($data)) {
             throw new InvalidResponseException('Response data is invalid');
@@ -43,19 +36,15 @@ class Response implements ResponseInterface
         return $this;
     }
 
-
-    /**
-     * @return bool
-     */
-    public function hasData() {
-        return !empty($this->data);
+    public function hasData(): bool
+    {
+        return count($this->data) !== 0;
     }
 
     /**
-     * @return bool
      * @throws InvalidResponseException
      */
-    public function hasError()
+    public function hasError(): bool
     {
         if (!$this->data || !isset($this->data[self::INDEX_RESULT])) {
             throw new InvalidResponseException('Response data is invalid');
@@ -65,10 +54,9 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @return mixed
      * @throws InvalidResponseException
      */
-    public function getErrorCode()
+    public function getErrorCode(): mixed
     {
         if (!$this->hasError()) {
             return false;
@@ -81,7 +69,10 @@ class Response implements ResponseInterface
         return $this->getValueByPath(self::INDEX_ERROR_CODE);
     }
 
-    public function getErrorDescription()
+    /**
+     * @throws InvalidResponseException
+     */
+    public function getErrorDescription(): mixed
     {
         if (!$this->hasError()) {
             return false;
@@ -95,11 +86,9 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @param string|null $index
-     * @return bool
      * @throws InvalidResponseException
      */
-    public function getMsg($index = null)
+    public function getMsg(?string $index = null): bool
     {
         if (!$this->data || !isset($this->data[self::INDEX_MSG])) {
             throw new InvalidResponseException('Invalid response data');
@@ -108,11 +97,7 @@ class Response implements ResponseInterface
         return $index !== null ? $this->getValueByPath($index) : $this->data[self::INDEX_MSG];
     }
 
-    /**
-     * @param string $path
-     * @return mixed
-     */
-    protected function getValueByPath($path)
+    protected function getValueByPath(string $path): mixed
     {
         $indexes = explode('/', $path);
 

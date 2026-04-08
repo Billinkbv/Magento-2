@@ -5,12 +5,8 @@ namespace Billink\Billink\Gateway\Response\Order\Refund;
 use Billink\Billink\Gateway\Helper\SubjectReader;
 use Billink\Billink\Gateway\Validator\OrderDataValidator;
 use Magento\Payment\Gateway\Response\HandlerInterface;
+use Magento\Sales\Model\Order;
 
-/**
- * Class Handler
- *
- * @package Billink\Billink\Gateway\Response\Order\Refund
- */
 class Handler implements HandlerInterface
 {
     public function __construct(
@@ -18,17 +14,13 @@ class Handler implements HandlerInterface
     ) {
     }
 
-    /**
-     * @param array $handlingSubject
-     * @param array $response
-     */
-    public function handle(array $handlingSubject, array $response)
+    public function handle(array $handlingSubject, array $response): void
     {
         if (isset($handlingSubject[OrderDataValidator::INDEX_FLAG_VALIDATION])) {
             return;
         }
 
-        /** @var \Magento\Sales\Model\Order $order */
+        /** @var Order $order */
         $order = $this->subjectReader->readOrder($handlingSubject);
         $order->addCommentToStatusHistory('Refund was created in Billink system.');
 
