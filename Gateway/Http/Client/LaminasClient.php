@@ -27,29 +27,4 @@ class LaminasClient extends Client
 
         parent::__construct($uri, $options);
     }
-
-    /**
-     * Prepare the request headers
-     *
-     * @param resource|string $body
-     * @param Http $uri
-     *
-     * @throws RuntimeException
-     */
-    protected function prepareHeaders($body, $uri): array
-    {
-        $headers = parent::prepareHeaders($body, $uri);
-        $result = [];
-        // Fix magento issue https://github.com/magento/magento2/issues/37641
-        foreach ($headers as $key => $value) {
-            // Validate if the bug was fixed and the code return correct headers
-            if (is_numeric($key)) {
-                $result[] = $value;
-                continue;
-            }
-            $result[] = $key . ': ' . $value;
-        }
-
-        return $result;
-    }
 }

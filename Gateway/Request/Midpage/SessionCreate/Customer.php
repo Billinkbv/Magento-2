@@ -118,7 +118,7 @@ class Customer implements BuilderInterface
 
         // Get current quote and quote addresses
         $quote = $this->session->getQuote();
-        if ($quote && $order && str_contains($order->getData('shipping_method'), 'tig_postnl')) {
+        if ($quote && $order && str_contains((string)$order->getData('shipping_method'), 'tig_postnl')) {
             // Check any quote address to be set to postnl delivery
             $addresses = array_filter(
                 $quote->getAllAddresses(),
