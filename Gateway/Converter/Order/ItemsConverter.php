@@ -6,6 +6,7 @@ use Billink\Billink\Gateway\Request\OrderItemsDataBuilder;
 use Billink\Billink\Model\Billink\Request\Order\ItemFactory;
 use Billink\Billink\Model\Billink\Request\Order\ItemInterfaceFactory;
 use Billink\Billink\Model\Fee\BillinkFee;
+use Magento\Quote\Api\Data\CartItemInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Model\Order;
@@ -27,7 +28,7 @@ class ItemsConverter implements ConverterInterface
     ) {
     }
 
-    public function convert(?Order $order = null): array
+    public function convert(Quote|Order|null $order = null): array
     {
         $this->items = [];
 
@@ -68,7 +69,7 @@ class ItemsConverter implements ConverterInterface
             OrderItemsDataBuilder::PRICEINCL : OrderItemsDataBuilder::PRICEEXCL;
     }
 
-    private function getShippingPriceType(Order $order): string
+    private function getShippingPriceType(Quote|Order $order): string
     {
         return $this->taxData->shippingPriceIncludesTax($order->getStore()) ?
             OrderItemsDataBuilder::PRICEINCL : OrderItemsDataBuilder::PRICEEXCL;
@@ -80,12 +81,12 @@ class ItemsConverter implements ConverterInterface
             OrderItemsDataBuilder::PRICEINCL : OrderItemsDataBuilder::PRICEEXCL;
     }
 
-    private function getShippingDescription(Order $order): string
+    private function getShippingDescription(Quote|Order $order): string
     {
         return $order->getShippingDescription() ?: $order->getShippingAddress()->getShippingDescription();
     }
 
-    private function getShippingAmount(Order $order): ?float
+    private function getShippingAmount(Quote|Order $order): ?float
     {
         if ($this->taxData->shippingPriceIncludesTax($order->getStore())) {
             return $order->getShippingInclTax() ?: $order->getShippingAddress()->getShippingInclTax();
@@ -94,7 +95,7 @@ class ItemsConverter implements ConverterInterface
         return $order->getShippingAmount() ?: $order->getShippingAddress()->getShippingAmount();
     }
 
-    private function addOrderItem(OrderItemInterface $item): void
+    private function addOrderItem(OrderItemInterface|CartItemInterface $item): void
     {
         $price = $this->taxData->priceIncludesTax() ? $item->getPriceInclTax() : $item->getPrice();
 
@@ -109,7 +110,7 @@ class ItemsConverter implements ConverterInterface
         $this->items[] = $orderItem;
     }
 
-    private function addDiscountOrderItem(OrderItemInterface $item, Order $order): void
+    private function addDiscountOrderItem(OrderItemInterface|CartItemInterface $item, Quote|Order $order): void
     {
         $price = 0 - $item->getDiscountAmount();
 
@@ -124,7 +125,7 @@ class ItemsConverter implements ConverterInterface
         $this->items[] = $discountOrderItem;
     }
 
-    private function addShippingAmountItem(Order $order): void
+    private function addShippingAmountItem(Quote|Order $order): void
     {
         $taxCalculation = $this->calculationFactory->create();
 

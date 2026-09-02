@@ -62,7 +62,7 @@ class BillinkFee
         return $this->feeHelper->getFeeAmount($quoteTotal, $workflowType, $quote->getBillingAddress()->getCountryId());
     }
 
-    public function getBaseAmountTax(float $baseAmount, Quote $quote): float
+    public function getBaseAmountTax(float $baseAmount, Quote|Order $quote): float
     {
         if (!$baseAmount) {
             return 0.0;
@@ -75,12 +75,12 @@ class BillinkFee
         return $taxCalculation->calcTaxAmount($baseAmount, $taxRate, $this->feeHelper->getFeeIncludesTax());
     }
 
-    public function getTaxRate(Quote $quote): float
+    public function getTaxRate(Quote|Order $quote): float
     {
         return $this->calculationFactory->create()->getRate($this->getTaxRequest($quote));
     }
 
-    private function getTaxRequest(Quote $quote): mixed
+    private function getTaxRequest(Quote|Order $quote): mixed
     {
         return $this->calculationFactory->create()->getRateRequest(
             $quote->getShippingAddress(),
