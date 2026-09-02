@@ -7,7 +7,7 @@ use Exception;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Payment\Gateway\Command\GatewayCommand;
-use Magento\Shipping\Model\Shipment;
+use Magento\Sales\Model\Order\Shipment;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 
