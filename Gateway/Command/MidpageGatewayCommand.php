@@ -2,11 +2,11 @@
 
 namespace Billink\Billink\Gateway\Command;
 
+use Billink\Billink\Gateway\Helper\SubjectReader;
 use Billink\Billink\Model\Payment\OrderHistory;
 use Exception;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\CommandInterface;
-use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\ConverterException;
@@ -32,6 +32,7 @@ class MidpageGatewayCommand implements CommandInterface
         private readonly HandlerInterface $handler,
         private readonly ValidatorInterface $validator,
         private readonly OrderHistory $orderHistory,
+        private readonly SubjectReader $subjectReader,
         private readonly LoggerInterface $errorLogger
     ) {
     }
@@ -87,13 +88,12 @@ class MidpageGatewayCommand implements CommandInterface
      */
     private function processErrors(array $commandSubject, ResultInterface $result): void
     {
-        $payment = SubjectReader::readPayment($commandSubject);
         $messages = [];
         foreach ($result->getFailsDescription() as $failPhrase) {
             $messages[] = (string) $failPhrase;
         }
         $messages = array_unique($messages);
-        $order = $payment->getPayment()->getOrder();
+        $order = $this->subjectReader->readOrder($commandSubject);
         $messageLog = sprintf(
             'Payment Gateway Error: Order # %s - %s',
             $order->getIncrementId(),

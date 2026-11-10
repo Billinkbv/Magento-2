@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
         <payment>
+            <!-- Kept only so historical orders placed with the legacy method can still be viewed/refunded
+                 in admin (payment/billink/model must resolve). Deliberately not selectable for new orders:
+                 the billink group was removed from system.xml, so Magento's payment registry never lists it. -->
             <billink>
                 <api_version>BILLINK2.0</api_version>
                 <active>0</active>
-                <title>Billink Payment Method</title>
+                <title>Achteraf betalen</title>
                 <debug>0</debug>
                 <sort_order>2</sort_order>
                 <use_workflow>workflow_all</use_workflow>
@@ -54,6 +56,10 @@
                 <trust_score>0</trust_score>
                 <fee_type>1</fee_type>
                 <fee_label>Betaalkosten</fee_label>
+                <use_workflow>workflow_all</use_workflow>
+                <workflow>
+                    {"workflow_P":{"type":"Private","number":"3","max_amount":"400","is_with_check":"1"},"workflow_B":{"type":"Business","number":"3","max_amount":"500","is_with_check":"1"}}
+                </workflow>
             </billink_midpage>
         </payment>
         <sales>

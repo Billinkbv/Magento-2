@@ -2,7 +2,7 @@
 
 namespace Billink\Billink\Gateway\Helper;
 
-use Billink\Billink\Gateway\Config\Config;
+use Billink\Billink\Gateway\Config\BasePaymentConfig as Config;
 use Magento\Framework\Exception\LocalizedException;
 
 class Workflow

@@ -33,7 +33,7 @@ class CreditDataBuilder extends Authorize
                 [
                     self::INCREMENT_ID => $order->getIncrementId(),
                     self::AMOUNT => $amount,
-                    self::DESCRIPTION => 'Order refund via...'
+                    self::DESCRIPTION => 'Refund for order ' . $order->getIncrementId()
                 ]
             ]
         ];
