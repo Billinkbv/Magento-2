@@ -2,7 +2,7 @@
 
 namespace Billink\Billink\Gateway\Validator;
 
-use Billink\Billink\Gateway\Config\Config;
+use Billink\Billink\Gateway\Config\BasePaymentConfig as Config;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;

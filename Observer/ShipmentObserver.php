@@ -6,8 +6,8 @@ use Billink\Billink\Model\Ui\ConfigProvider;
 use Exception;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Payment\Gateway\Command\GatewayCommand;
-use Magento\Shipping\Model\Shipment;
+use Magento\Payment\Gateway\CommandInterface;
+use Magento\Sales\Model\Order\Shipment;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -16,7 +16,7 @@ class ShipmentObserver implements ObserverInterface
     public const METHOD_CODE = ConfigProvider::CODE;
 
     public function __construct(
-        private readonly GatewayCommand $startWorkflowCommand,
+        private readonly CommandInterface $startWorkflowCommand,
         private readonly LoggerInterface $logger,
         private readonly StoreManagerInterface $storeManager
     ) {

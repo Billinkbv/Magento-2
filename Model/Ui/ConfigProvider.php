@@ -5,7 +5,6 @@ namespace Billink\Billink\Model\Ui;
 use Billink\Billink\Gateway\Config\Config;
 use Billink\Billink\Gateway\Config\MidpageConfig;
 use Billink\Billink\Gateway\Helper\SubjectReader;
-use Billink\Billink\Gateway\Helper\Workflow as WorkflowHelper;
 use Billink\Billink\Model\Config\Source\UsedWorkflow;
 use Billink\Billink\Observer\DataAssignObserver;
 use Magento\Checkout\Model\ConfigProviderInterface;
@@ -48,15 +47,6 @@ class ConfigProvider implements ConfigProviderInterface
     private function preparePaymentConfig(): array
     {
         return [
-            self::CODE => [
-                'logo' => $this->config->getLogo($this->storeManager->getStore()),
-                'isActive' => $this->config->isActive(),
-                'isAlternateDeliveryAddressAllowed' => $this->config->getIsAlternateDeliveryAddressAllowed(),
-                'workflow' => $this->config->getWorkflow($this->storeManager->getStore()->getId()),
-                'workflowTypePrefix' => WorkflowHelper::WORKFLOW_TYPE_PREFIX,
-                'feeActive' => $this->config->getIsFeeActive(),
-                'feeLabel' => $this->config->getFeeLabel()
-            ],
             self::CODE_MIDPAGE => [
                 'logo' => $this->midpageConfig->getLogo($this->storeManager->getStore()),
                 'isActive' => $this->midpageConfig->isActive(),
